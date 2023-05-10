@@ -1,0 +1,128 @@
+@tailwind base;
+
+.disableStyles ol {
+  list-style: decimal;
+  margin: 0 0 0 10px;
+  padding: 3px 10px 10px 10px;
+}
+.disableStyles ul {
+  list-style: circle;
+  margin: 0 0 0 10px;
+  padding: 3px 10px 10px 10px;
+}
+.disableStyles h1 {
+  font-size: 20px !important;
+  font-weight: bold !important;
+  color: #75787c !important;
+}
+.disableStyles h2 {
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: #75787c !important;
+}
+.disableStyles h3 {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #75787c !important;
+}
+@tailwind components;
+@tailwind utilities;
+
+/* fonts */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  scroll-behavior: smooth;
+  font-family: "Rubik", sans-serif;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: #f6f6f5;
+  scroll-behavior: smooth;
+}
+input,
+select {
+  outline: none;
+}
+.batch_heart {
+  background: tomato;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  position: absolute;
+  right: -24%;
+  top: -9%;
+  cursor: pointer;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.categoryCard::-webkit-scrollbar {
+  display: none;
+}
+.categoryCard {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.categoryCard {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: flex-start;
+  margin: 0 !important;
+  max-width: 100%;
+  overflow: auto;
+  position: relative;
+  white-space: nowrap;
+  width: 100vw !important;
+  position: relative !important;
+}
+.scrollDivScroll {
+  position: relative;
+}
+.categoryCardDetails {
+  display: block;
+  border: 1px solid #c4bebe;
+  margin: 0 12px;
+  padding: 5px;
+  border-radius: 5px;
+}
+.categoryCardDetails h5 {
+  width: 170px;
+}
+.categoryCardDetails img {
+  width: 167px;
+  height: 100px;
+}
+/* scroll styling */
+.rightScroll,
+.leftScroll {
+  position: absolute !important;
+  z-index: 9;
+  top: 37%;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  background: #eee;
+  color: #000;
+  cursor: pointer;
+}
+.leftScroll {
+  right: 45px !important;
+}
+.rightScroll {
+  left: 45px !important;
+}
