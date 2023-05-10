@@ -5,7 +5,7 @@ const express = require("express");
 const { isSeller, isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
 
-// create a new conversation
+// create a new conversation // testing git updates
 router.post(
   "/create-new-conversation",
   catchAsyncErrors(async (req, res, next) => {
@@ -58,7 +58,6 @@ router.get(
     }
   })
 );
-
 
 // get user conversations
 router.get(
