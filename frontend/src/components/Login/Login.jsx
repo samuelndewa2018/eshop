@@ -7,6 +7,7 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import Spinner from "../Spinner";
 
 const loginSchema = yup.object({
   email: yup
@@ -23,6 +24,7 @@ const Login = () => {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -31,8 +33,7 @@ const Login = () => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      // setEmail(values.email);
-      // setPassword(values.password);
+      setLoading(true);
       const email = values.email;
       const password = values.password;
 
@@ -53,8 +54,10 @@ const Login = () => {
         .catch((err) => {
           toast.error(err.response.data.message);
           setError(true);
+          setLoading(false);
           setErrorMessage(err.response.data.message);
         });
+      setLoading(false);
     },
   });
   // const handleSubmit = async (e) => {
@@ -185,13 +188,19 @@ const Login = () => {
                 type="submit"
                 className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
               >
-                Submit
+                {loading ? (
+                  <p className="flex">
+                    <Spinner /> signing...
+                  </p>
+                ) : (
+                  <p className="">Login In</p>
+                )}
               </button>
             </div>
             <div className={`${styles.noramlFlex} w-full`}>
               <h4>Not have any account?</h4>
               <Link to="/sign-up" className="text-blue-600 pl-2">
-                Sign Up
+                Register
               </Link>
             </div>
           </form>

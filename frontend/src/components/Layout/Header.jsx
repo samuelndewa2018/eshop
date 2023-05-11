@@ -124,10 +124,16 @@ const Header = ({ activeHeading }) => {
           </div>
 
           <div className={`${styles.button}`}>
-            <Link to={`${isSeller ? "/dashboard" : "/shop-create"}`}>
+            <Link to={`${isAuthenticated ? "/profile" : "/login"}`}>
               <h1 className="text-[#fff] flex items-center">
-                {isSeller ? "Go Dashboard" : "Become Seller"}{" "}
-                <IoIosArrowForward className="ml-1" />
+                {isAuthenticated
+                  ? `Hello, ${
+                      user?.name.indexOf(" ") >= 0
+                        ? user?.name.substring(0, user?.name.indexOf(" "))
+                        : user?.name
+                    }`
+                  : "Login/Register"}
+                {!isAuthenticated && <IoIosArrowForward className="ml-1" />}
               </h1>
             </Link>
           </div>

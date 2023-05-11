@@ -2,10 +2,13 @@ import React from "react";
 import AdminHeader from "../components/Layout/AdminHeader";
 import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
 import AdminDashboardMain from "../components/Admin/AdminDashboardMain";
+import Meta from "../components/Meta";
 
 const AdminDashboardPage = () => {
   return (
     <div>
+      <Meta title="Admin Dashboard" />
+
       <AdminHeader />
       <div className="w-full flex">
         <div className="flex items-start justify-between w-full">

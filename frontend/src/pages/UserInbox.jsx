@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import { TfiGallery } from "react-icons/tfi";
 import styles from "../styles/styles";
+import Meta from "../components/Meta";
 const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
@@ -204,6 +205,8 @@ const UserInbox = () => {
 
   return (
     <div className="w-full">
+      <Meta title="Inbox" />
+
       {!open && (
         <>
           <Header />

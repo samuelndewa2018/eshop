@@ -61,6 +61,7 @@ import { server } from "./server";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import TrialPage from "./TrialPage";
+import Contact from "./pages/Contact";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -109,6 +110,7 @@ const App = () => {
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQPage />} />
         <Route
           path="/checkout"

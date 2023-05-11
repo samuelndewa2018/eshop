@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AiFillFacebook,
   AiFillInstagram,
@@ -11,8 +11,45 @@ import {
   footerProductLinks,
   footerSupportLinks,
 } from "../../static/data";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import axios from "axios";
+import { server } from "../../server";
+import { toast } from "react-toastify";
+import Spinner from "../Spinner";
+
+const subscribeSchema = yup.object({
+  email: yup
+    .string()
+    .required("Email is required")
+    .email("Email should be valid"),
+});
 
 const Footer = () => {
+  const [loading, setLoading] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: subscribeSchema,
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      await axios
+        .post(`${server}/user/subscribe`, {
+          email: values.email,
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+          setLoading(false);
+        });
+      setLoading(false);
+      resetForm();
+    },
+  });
   return (
     <div className="bg-[#000] text-white">
       <div className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-[#342ac8] py-7">
@@ -21,16 +58,35 @@ const Footer = () => {
           events and offers
         </h1>
         <div>
-          <input
-            type="text"
-            required
-            placeholder="Enter your email..."
-            className="text-gray-800
+          <form onSubmit={formik.handleSubmit} className="block lg:flex">
+            <div className="block">
+              <input
+                type="text"
+                required
+                placeholder="Enter your email..."
+                onChange={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+                value={formik.values.email}
+                className="text-gray-800
                 sm:w-72 w-full sm:mr-5 mr-1 lg:mb-0 mb-4 py-2.5 rounded px-2 focus:outline-none"
-          />
-          <button className="bg-[#56d879] hover:bg-teal-500 duration-300 px-5 py-2.5 rounded-md text-whie md:w-auto w-full">
-            Submit
-          </button>
+              />
+              <p class="text-red-500 text-xs mt-0 lg:mt-1">
+                {formik.touched.email && formik.errors.email}
+              </p>
+            </div>
+            <button
+              type="submit"
+              className="bg-[#56d879] hover:bg-teal-500 duration-300 px-5 py-2.5 rounded-md text-whie md:w-auto w-full"
+            >
+              {loading ? (
+                <p className="flex">
+                  <Spinner /> sending...
+                </p>
+              ) : (
+                <p className="">Send</p>
+              )}
+            </button>
+          </form>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:gird-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 sm:text-center">

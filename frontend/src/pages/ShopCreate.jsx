@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ShopCreate from "../components/Shop/ShopCreate";
+import Meta from "../components/Meta";
 
 const ShopCreatePage = () => {
   const navigate = useNavigate();
-  const { isSeller,seller } = useSelector((state) => state.seller);
+  const { isSeller, seller } = useSelector((state) => state.seller);
 
   useEffect(() => {
-    if(isSeller === true){
+    if (isSeller === true) {
       navigate(`/shop/${seller._id}`);
     }
-  }, [])
+  }, []);
   return (
     <div>
-        <ShopCreate />
-    </div>
-  )
-}
+      <Meta title="Create Shop" />
 
-export default ShopCreatePage
+      <ShopCreate />
+    </div>
+  );
+};
+
+export default ShopCreatePage;

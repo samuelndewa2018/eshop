@@ -1,6 +1,6 @@
 import React from "react";
 
-const TrialPage = () => {
+const Spinner = () => {
   return (
     <div>
       <svg
@@ -27,4 +27,4 @@ const TrialPage = () => {
   );
 };
 
-export default TrialPage;
+export default Spinner;

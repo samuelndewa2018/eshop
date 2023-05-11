@@ -106,6 +106,64 @@ router.post(
   })
 );
 
+// contact email
+router.post(
+  "/email",
+  catchAsyncErrors(async (req, res) => {
+    const { name, email, mobile, comment } = req.body;
+    try {
+      await sendMail({
+        email: "samuelndewa2018@gmail.com",
+        subject: "Contact Us",
+        message: `Hello eShop,\nYou have a new contact us message.\n\nName:      ${name}\nEmail:       ${email}\nNumber:   ${mobile}\nMessage:  ${comment} \n\n*******************************\n@Quality is our middle name.`,
+      });
+      await sendMail({
+        email: email,
+        subject: `Contact Us`,
+        message: `
+        Hello ${name}, 
+        eShop has received your email. We will reply as soon as we can.
+        Thanks for contacting us. \n
+        *******************************\n
+        @Quality is our middle name.
+        `,
+      });
+      res.status(201).json({
+        success: true,
+        message: "We have received your email. We'll reply to you soon",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// contact email
+router.post(
+  "/subscribe",
+  catchAsyncErrors(async (req, res) => {
+    const { email } = req.body;
+    try {
+      await sendMail({
+        email: "samuelndewa2018@gmail.com",
+        subject: `Subscription`,
+        message: `Hello eShop,\nYou have a new subscription. Email: ${email}\n*******************************\n@Quality is our middle name.`,
+      });
+      await sendMail({
+        email: email,
+        subject: `Subscription`,
+        message: `Dear User,\nThank you for subscribing to our Newsletter.\nYou'll be the first one to receive our News.\n*******************************\n@Quality is our middle name.`,
+      });
+      res.status(201).json({
+        success: true,
+        message: "Thanks. You'll be the first one to receive our News.",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 // login user
 router.post(
   "/login-user",

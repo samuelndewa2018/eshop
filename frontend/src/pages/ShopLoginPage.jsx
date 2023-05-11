@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ShopLogin from "../components/Shop/ShopLogin";
+import Meta from "../components/Meta";
 
 const ShopLoginPage = () => {
   const navigate = useNavigate();
-  const { isSeller,isLoading } = useSelector((state) => state.seller);
+  const { isSeller, isLoading } = useSelector((state) => state.seller);
 
   useEffect(() => {
-    if(isSeller === true){
+    if (isSeller === true) {
       navigate(`/dashboard`);
     }
-  }, [isLoading,isSeller])
+  }, [isLoading, isSeller]);
   return (
     <div>
-        <ShopLogin />
-    </div>
-  )
-}
+      <Meta title="Shop Login" />
 
-export default ShopLoginPage
+      <ShopLogin />
+    </div>
+  );
+};
+
+export default ShopLoginPage;

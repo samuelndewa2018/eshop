@@ -3,10 +3,13 @@ import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import Lottie from "react-lottie";
 import animationData from "../Assests/animations/107043-success.json";
+import Meta from "../components/Meta";
 
 const OrderSuccessPage = () => {
   return (
     <div>
+      <Meta title="Orders" />
+
       <Header />
       <Success />
       <Footer />

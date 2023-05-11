@@ -8,7 +8,7 @@ import {
   MdOutlineTrackChanges,
 } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
-import { RxPerson } from "react-icons/rx";
+import { RxPerson, RxDashboard } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
@@ -17,7 +17,9 @@ import { useSelector } from "react-redux";
 
 const ProfileSidebar = ({ setActive, active }) => {
   const navigate = useNavigate();
- const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
+  const { isSeller } = useSelector((state) => state.seller);
+  console.log(isSeller);
   const logoutHandler = () => {
     axios
       .get(`${server}/user/logout`, { withCredentials: true })
@@ -148,14 +150,31 @@ const ProfileSidebar = ({ setActive, active }) => {
           </div>
         </Link>
       )}
+      {isSeller && (
+        <Link to="/dashboard">
+          <div
+            className="flex items-center cursor-pointer w-full mb-8"
+            onClick={() => setActive(8)}
+          >
+            <RxDashboard size={20} color={active === 8 ? "red" : ""} />
+            <span
+              className={`pl-3 ${
+                active === 8 ? "text-[red]" : ""
+              } 800px:block hidden`}
+            >
+              Shop Dashboard
+            </span>
+          </div>
+        </Link>
+      )}
       <div
         className="single_item flex items-center cursor-pointer w-full mb-8"
         onClick={logoutHandler}
       >
-        <AiOutlineLogin size={20} color={active === 8 ? "red" : ""} />
+        <AiOutlineLogin size={20} color={active === 9 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 8 ? "text-[red]" : ""
+            active === 9 ? "text-[red]" : ""
           } 800px:block hidden`}
         >
           Log out

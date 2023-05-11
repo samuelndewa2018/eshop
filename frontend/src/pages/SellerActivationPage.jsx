@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { server } from "../server";
+import Meta from "../components/Meta";
 
 const SellerActivationPage = () => {
   const { activation_token } = useParams();
@@ -36,6 +37,8 @@ const SellerActivationPage = () => {
         alignItems: "center",
       }}
     >
+      <Meta title="Seller Activation" />
+
       {error ? (
         <p>Your token is expired!</p>
       ) : (

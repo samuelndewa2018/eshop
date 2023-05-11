@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import defaultavatar from "../../Assests/defaultavatar.png";
+import Spinner from "../Spinner";
 
 const signupSchema = yup.object({
   name: yup.string().required("Name is required"),
@@ -252,13 +253,19 @@ const Singup = () => {
                 type="submit"
                 className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
               >
-                {loading ? "Loading..." : "Submit"}
+                {loading ? (
+                  <p className="flex">
+                    <Spinner /> Registering...
+                  </p>
+                ) : (
+                  <p className="">Register</p>
+                )}
               </button>
             </div>
             <div className={`${styles.noramlFlex} w-full`}>
               <h4>Already have an account?</h4>
               <Link to="/login" className="text-blue-600 pl-2">
-                Sign In
+                Log In
               </Link>
             </div>
           </form>

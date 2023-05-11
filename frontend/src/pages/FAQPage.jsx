@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import styles from "../styles/styles";
+import Meta from "../components/Meta";
 
 const FAQPage = () => {
   return (
     <div>
-      <Header activeHeading={5} />
+      <Meta title="FAQs" />
+
+      <Header activeHeading={6} />
       <Faq />
       <Footer />
     </div>

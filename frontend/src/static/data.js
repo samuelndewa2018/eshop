@@ -17,6 +17,10 @@ export const navItems = [
     url: "/events",
   },
   {
+    title: "Contact Us",
+    url: "/contact",
+  },
+  {
     title: "FAQ",
     url: "/faq",
   },

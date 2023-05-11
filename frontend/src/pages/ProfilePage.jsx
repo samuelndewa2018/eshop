@@ -5,6 +5,7 @@ import Loader from "../components/Layout/Loader";
 import ProfileSideBar from "../components/Profile/ProfileSidebar";
 import ProfileContent from "../components/Profile/ProfileContent";
 import { useSelector } from "react-redux";
+import Meta from "../components/Meta";
 
 const ProfilePage = () => {
   const { loading } = useSelector((state) => state.user);
@@ -12,6 +13,8 @@ const ProfilePage = () => {
 
   return (
     <div>
+      <Meta title="Profile" />
+
       {loading ? (
         <Loader />
       ) : (

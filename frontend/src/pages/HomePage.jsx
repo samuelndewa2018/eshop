@@ -7,10 +7,13 @@ import FeaturedProduct from "../components/Route/FeaturedProduct/FeaturedProduct
 import Events from "../components/Events/Events";
 import Sponsored from "../components/Route/Sponsored";
 import Footer from "../components/Layout/Footer";
+import Meta from "../components/Meta";
 
 const HomePage = () => {
   return (
     <div>
+      <Meta title="Home" />
+
       <Header activeHeading={1} />
       <Hero />
       <Categories />
