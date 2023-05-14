@@ -62,6 +62,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import TrialPage from "./TrialPage";
 import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -98,6 +101,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/terms" element={<Terms />} />
         <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}
@@ -112,6 +116,9 @@ const App = () => {
         <Route path="/events" element={<EventsPage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/login/forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password/:token" element={<ResetPassword />} />
+
         <Route
           path="/checkout"
           element={
@@ -322,16 +329,16 @@ const App = () => {
         />
       </Routes>
       <ToastContainer
-        position="bottom-center"
+        position="top-center"
         autoClose={5000}
         hideProgressBar={false}
-        newestOnTop={false}
+        newestOnTop={true}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
       />
     </BrowserRouter>
   );

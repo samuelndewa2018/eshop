@@ -11,6 +11,7 @@ const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 const user = require("../model/user");
+const crypto = require("crypto");
 
 router.post("/create-user", upload.single("file"), async (req, res, next) => {
   try {
@@ -53,7 +54,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       });
       res.status(201).json({
         success: true,
-        message: `please check your email:- ${user.email} to activate your account!`,
+        message: `Registered successfully. Please check your email to activate your account.`,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -368,6 +369,53 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
+  })
+);
+
+//forgot password token
+router.post(
+  "/forgot-password-token",
+  catchAsyncErrors(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) throw new Error("User not found with this email");
+    try {
+      const token = await user.createPasswordResetToken();
+      await user.save();
+      const resetURL = `Hi, Please follow this link to reset your Password. \nThis link is valid for 10 minutes starting now.\n Click the link below to reset \n http://localhost:3000/reset-password/${token}`;
+      const data = {
+        email: email,
+        subject: "Forgot Password Link",
+        message: resetURL,
+      };
+      sendMail(data);
+      res.json(token);
+    } catch (error) {
+      throw new Error(error);
+    }
+  })
+);
+
+//reset password
+router.put(
+  "/reset-password/:token",
+  catchAsyncErrors(async (req, res) => {
+    const { password } = req.body;
+    const { token } = req.params;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordTime: { $gt: Date.now() },
+    });
+    if (!user)
+      throw new Error(
+        "Password reset link Expired or invalid, please try again"
+      );
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTime = undefined;
+    await user.save();
+    res.json(user);
   })
 );
 

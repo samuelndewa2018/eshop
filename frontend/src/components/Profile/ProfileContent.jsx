@@ -12,6 +12,7 @@ import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { MdTrackChanges } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
+import Typed from "react-typed";
 import {
   deleteUserAddress,
   loadUser,
@@ -23,6 +24,11 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Spinner from "../Spinner";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -65,8 +71,8 @@ const ProfileContent = ({ active }) => {
         withCredentials: true,
       })
       .then((response) => {
-         dispatch(loadUser());
-         toast.success("avatar updated successfully!");
+        dispatch(loadUser());
+        toast.success("avatar updated successfully!");
       })
       .catch((error) => {
         toast.error(error);
@@ -138,7 +144,16 @@ const ProfileContent = ({ active }) => {
                 </div>
 
                 <div className=" w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2">Enter your password</label>
+                  <label className="block pb-2">
+                    {/* Enter your password to Update */}
+                    <Typed
+                      // className="text-white lg:ml-20 sm:ml-0"
+                      strings={["Enter your password to Update"]}
+                      typeSpeed={40}
+                      backSpeed={50}
+                      loop
+                    />
+                  </label>
                   <input
                     type="password"
                     className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -291,7 +306,8 @@ const AllRefundOrders = () => {
     dispatch(getAllOrdersOfUser(user._id));
   }, []);
 
-  const eligibleOrders = orders && orders.filter((item) => item.status === "Processing refund");
+  const eligibleOrders =
+    orders && orders.filter((item) => item.status === "Processing refund");
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -347,7 +363,7 @@ const AllRefundOrders = () => {
   const row = [];
 
   eligibleOrders &&
-   eligibleOrders.forEach((item) => {
+    eligibleOrders.forEach((item) => {
       row.push({
         id: item._id,
         itemsQty: item.cart.length,
@@ -454,80 +470,225 @@ const TrackOrder = () => {
   );
 };
 
+const updatePasswordSchema = yup.object({
+  oldPassword: yup.string().required("Old password is required"),
+  newPassword: yup
+    .string()
+    .required("New password is required")
+    .min(6, "New password must contain atleast 6 Characters"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("newPassword"), null], "New Passwords must match"),
+});
+
 const ChangePassword = () => {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  // const [oldPassword, setOldPassword] = useState("");
+  // const [newPassword, setNewPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const [visible3, setVisible3] = useState(false);
+  const [errorer, setErrorer] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSucessMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const passwordChangeHandler = async (e) => {
-    e.preventDefault();
-
-    await axios
-      .put(
-        `${server}/user/update-user-password`,
-        { oldPassword, newPassword, confirmPassword },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        toast.success(res.data.success);
-        setOldPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
-  };
+  const formik = useFormik({
+    initialValues: {
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+    validationSchema: updatePasswordSchema,
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      const oldPassword = values.oldPassword;
+      const newPassword = values.newPassword;
+      const confirmPassword = values.confirmPassword;
+      await axios
+        .put(
+          `${server}/user/update-user-password`,
+          { oldPassword, newPassword, confirmPassword },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success(res.data.message);
+          resetForm();
+          setSucessMessage(res.data.message);
+          setSuccess(true);
+          setErrorer(false);
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+          setLoading(false);
+          setErrorer(true);
+          setSuccess(false);
+          setErrorMessage(err.response.data.message);
+        });
+      setLoading(false);
+    },
+  });
   return (
-    <div className="w-full px-5">
-      <h1 className="block text-[25px] text-center font-[600] text-[#000000ba] pb-2">
-        Change Password
-      </h1>
-      <div className="w-full">
-        <form
-          aria-required
-          onSubmit={passwordChangeHandler}
-          className="flex flex-col items-center"
+    <>
+      <section class="bg-gray-50 dark:bg-gray-900">
+        <div
+          class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+          style={{ height: "60vh" }}
         >
-          <div className=" w-[100%] 800px:w-[50%] mt-5">
-            <label className="block pb-2">Enter your old password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
+          <div class="w-full p-6 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700 sm:p-8">
+            <h2 class="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
+              Change Password
+            </h2>
+            {errorer && (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-1 py-1 text-center mb-2 rounded relative"
+                role="alert"
+              >
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            {success && (
+              <div
+                className="bg-green-100 border border-green-400 text-green-700 px-1 py-1 text-center mb-2 rounded relative"
+                role="alert"
+              >
+                <p>{successMessage}</p>
+              </div>
+            )}
+            <form
+              class="mt-4 space-y-4 lg:mt-5 md:space-y-5"
+              action="#"
+              onSubmit={formik.handleSubmit}
+            >
+              <div>
+                <label
+                  for="password"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Old Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={visible ? "text" : "password"}
+                    name="oldPassword"
+                    id="oldPassword"
+                    placeholder="••••••••"
+                    onChange={formik.handleChange("oldPassword")}
+                    onBlur={formik.handleBlur("oldPassword")}
+                    value={formik.values.oldPassword}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <div className="text-red-500 text-xs">
+                    {formik.touched.oldPassword && formik.errors.oldPassword}
+                  </div>
+                  {visible ? (
+                    <AiOutlineEye
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible(false)}
+                    />
+                  ) : (
+                    <AiOutlineEyeInvisible
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible(true)}
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label
+                  for="password"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={visible2 ? "text" : "password"}
+                    name="newPassword"
+                    id="newPassword"
+                    placeholder="••••••••"
+                    onChange={formik.handleChange("newPassword")}
+                    onBlur={formik.handleBlur("newPassword")}
+                    value={formik.values.newPassword}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <div className="text-red-500 text-xs">
+                    {formik.touched.newPassword && formik.errors.newPassword}
+                  </div>
+                  {visible2 ? (
+                    <AiOutlineEye
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible2(false)}
+                    />
+                  ) : (
+                    <AiOutlineEyeInvisible
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible2(true)}
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label
+                  for="confirm-password"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Confirm New password
+                </label>
+                <div className="relative">
+                  <input
+                    type={visible3 ? "text" : "password"}
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    placeholder="••••••••"
+                    onChange={formik.handleChange("confirmPassword")}
+                    onBlur={formik.handleBlur("confirmPassword")}
+                    value={formik.values.confirmPassword}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <div className="text-red-500 text-xs">
+                    {formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword}
+                  </div>
+                  {visible3 ? (
+                    <AiOutlineEye
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible3(false)}
+                    />
+                  ) : (
+                    <AiOutlineEyeInvisible
+                      className="absolute right-2 top-2 cursor-pointer"
+                      size={25}
+                      onClick={() => setVisible3(true)}
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  {loading ? (
+                    <p className="flex">
+                      <Spinner /> Updating...
+                    </p>
+                  ) : (
+                    <p className="">Update</p>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
-          <div className=" w-[100%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your new password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
-          <div className=" w-[100%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your confirm password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <input
-              className={`w-[95%] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
-              required
-              value="Update"
-              type="submit"
-            />
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </section>
+    </>
   );
 };
 

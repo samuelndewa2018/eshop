@@ -126,3 +126,51 @@ input[type="number"] {
 .rightScroll {
   left: 45px !important;
 }
+
+/* terms */
+.policy {
+  background-color: white;
+  padding: 30px;
+}
+.policy ol {
+  list-style-type: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+}
+
+.policy ol > li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 0.6em;
+}
+.policy ol > li > p {
+  font-weight: bold;
+  color: #f0c040;
+  text-decoration: underline;
+}
+
+.policy ol > li:before {
+  content: counters(item, ".") ". ";
+  display: table-cell;
+  padding-right: 0.6em;
+}
+
+.policy li ol > li {
+  margin: 0;
+}
+
+.policy li ol > li:before {
+  content: counters(item, ".") " ";
+}
+.bold {
+  font-weight: bold;
+  text-align: center;
+  color: #f0c040;
+}
+.italic {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #f0c040;
+}
+/* /// */
