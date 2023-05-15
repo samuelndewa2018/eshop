@@ -117,6 +117,7 @@ const Login = () => {
                   <input
                     type={visible ? "text" : "password"}
                     name="password"
+                    placeholder="●●●●●●"
                     autoComplete="current-password"
                     onChange={formik.handleChange("password")}
                     onBlur={formik.handleBlur("password")}
