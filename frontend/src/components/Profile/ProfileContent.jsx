@@ -29,6 +29,7 @@ import * as yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Spinner from "../Spinner";
+import { NumericFormat } from "react-number-format";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -279,7 +280,7 @@ const AllOrders = () => {
       row.push({
         id: item._id,
         itemsQty: item.cart.length,
-        total: "US$ " + item.totalPrice,
+        total: "Ksh " + item.totalPrice,
         status: item.status,
       });
     });

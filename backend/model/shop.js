@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const shopSchema = new mongoose.Schema({
   name: {
@@ -92,6 +93,15 @@ shopSchema.methods.getJwtToken = function () {
 // comapre password
 shopSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+shopSchema.methods.createPasswordResetToken = async function () {
+  const resettoken = crypto.randomBytes(32).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resettoken)
+    .digest("hex");
+  this.resetPasswordTime = Date.now() + 30 * 60 * 1000; // 10 minutes
+  return resettoken;
 };
 
 module.exports = mongoose.model("Shop", shopSchema);

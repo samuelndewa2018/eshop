@@ -47,8 +47,6 @@ const Singup = () => {
     setAvatar(file);
   };
 
-  console.log(checked);
-
   const formik = useFormik({
     initialValues: {
       name: "",

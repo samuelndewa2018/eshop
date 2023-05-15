@@ -20,8 +20,10 @@ import { useEffect } from "react";
 import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
+import { NumericFormat } from "react-number-format";
 
 const ProductCard = ({ data, isEvent }) => {
+  console.log(data);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
@@ -94,23 +96,43 @@ const ProductCard = ({ data, isEvent }) => {
 
           <div className="flex">
             <Ratings rating={data?.ratings} />
+            {data?.sold_out !== 0 && (
+              <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
+                {data?.sold_out} sold
+              </span>
+            )}
           </div>
 
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
               <h5 className={`${styles.productDiscountPrice}`}>
-                Ksh.
-                {data.originalPrice === 0
-                  ? data.originalPrice
-                  : data.discountPrice}
+                {data.originalPrice === 0 ? (
+                  <NumericFormat
+                    value={data.originalPrice}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"Ksh. "}
+                  />
+                ) : (
+                  <NumericFormat
+                    value={data.discountPrice}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"Ksh. "}
+                  />
+                )}
               </h5>
               <h4 className={`${styles.price}`}>
-                {data.originalPrice ? "Ksh." + data.originalPrice : null}
+                {data.originalPrice ? (
+                  <NumericFormat
+                    value={data.originalPrice}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"Ksh. "}
+                  />
+                ) : null}
               </h4>
             </div>
-            <span className="font-[400] text-[17px] text-[#68d284]">
-              {data?.sold_out} sold
-            </span>
           </div>
         </Link>
 

@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { NumericFormat } from "react-number-format";
 
 const Checkout = () => {
   const { user } = useSelector((state) => state.user);
@@ -27,31 +28,37 @@ const Checkout = () => {
   }, []);
 
   const paymentSubmit = () => {
-   if(address1 === "" || address2 === "" || zipCode === null || country === "" || city === ""){
-      toast.error("Please choose your delivery address!")
-   } else{
-    const shippingAddress = {
-      address1,
-      address2,
-      zipCode,
-      country,
-      city,
-    };
+    if (
+      address1 === "" ||
+      address2 === "" ||
+      zipCode === null ||
+      country === "" ||
+      city === ""
+    ) {
+      toast.error("Please choose your delivery address!");
+    } else {
+      const shippingAddress = {
+        address1,
+        address2,
+        zipCode,
+        country,
+        city,
+      };
 
-    const orderData = {
-      cart,
-      totalPrice,
-      subTotalPrice,
-      shipping,
-      discountPrice,
-      shippingAddress,
-      user,
+      const orderData = {
+        cart,
+        totalPrice,
+        subTotalPrice,
+        shipping,
+        discountPrice,
+        shippingAddress,
+        user,
+      };
+
+      // update local storage with the updated orders array
+      localStorage.setItem("latestOrder", JSON.stringify(orderData));
+      navigate("/payment");
     }
-
-    // update local storage with the updated orders array
-    localStorage.setItem("latestOrder", JSON.stringify(orderData));
-    navigate("/payment");
-   }
   };
 
   const subTotalPrice = cart.reduce(
@@ -60,7 +67,8 @@ const Checkout = () => {
   );
 
   // this is shipping cost variable
-  const shipping = subTotalPrice * 0.1;
+  // const shipping = subTotalPrice * 0.1;
+  const shipping = subTotalPrice >= 5000 ? 0 : 250;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,7 +89,9 @@ const Checkout = () => {
             (acc, item) => acc + item.qty * item.discountPrice,
             0
           );
+          // const discountPrice = (eligiblePrice * couponCodeValue) / 100;
           const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+
           setDiscountPrice(discountPrice);
           setCouponCodeData(res.data.couponCode);
           setCouponCode("");
@@ -316,21 +326,51 @@ const CartData = ({
     <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
       <div className="flex justify-between">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
-        <h5 className="text-[18px] font-[600]">${subTotalPrice}</h5>
+        <h5 className="text-[18px] font-[600]">
+          {" "}
+          <NumericFormat
+            value={subTotalPrice.toFixed(2)}
+            displayType={"text"}
+            thousandSeparator={true}
+            prefix={"Ksh. "}
+          />
+        </h5>
       </div>
       <br />
       <div className="flex justify-between">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
-        <h5 className="text-[18px] font-[600]">${shipping.toFixed(2)}</h5>
+        <h5 className="text-[18px] font-[600]">
+          {" "}
+          <NumericFormat
+            value={shipping.toFixed(2)}
+            displayType={"text"}
+            thousandSeparator={true}
+            prefix={"Ksh. "}
+          />
+        </h5>
       </div>
       <br />
       <div className="flex justify-between border-b pb-3">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
         <h5 className="text-[18px] font-[600]">
-          - {discountPercentenge ? "$" + discountPercentenge.toString() : null}
+          {discountPercentenge ? (
+            <NumericFormat
+              value={discountPercentenge.toString()}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix={"- Ksh. "}
+            />
+          ) : null}
         </h5>
       </div>
-      <h5 className="text-[18px] font-[600] text-end pt-3">${totalPrice}</h5>
+      <h5 className="text-[18px] font-[600] text-end pt-3">
+        <NumericFormat
+          value={totalPrice}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"Ksh. "}
+        />
+      </h5>
       <br />
       <form onSubmit={handleSubmit}>
         <input

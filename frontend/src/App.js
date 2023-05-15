@@ -60,11 +60,13 @@ import axios from "axios";
 import { server } from "./server";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import TrialPage from "./TrialPage";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import ShopForgotPassword from "./components/Shop/ShopForgotPassword";
+import ShopResetPassword from "./components/Shop/ShopResetPassword";
+import TrialPage from "./Trial/TrialPage";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -117,7 +119,15 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/login/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/shop-login/forgot-password"
+          element={<ShopForgotPassword />}
+        />
         <Route path="reset-password/:token" element={<ResetPassword />} />
+        <Route
+          path="shop/reset-password/:token"
+          element={<ShopResetPassword />}
+        />
 
         <Route
           path="/checkout"

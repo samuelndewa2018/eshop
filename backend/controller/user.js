@@ -44,7 +44,9 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `http://localhost:3000/activation/${activationToken}`;
+    const activationUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/activation/${activationToken}`;
 
     try {
       await sendMail({
@@ -382,7 +384,9 @@ router.post(
     try {
       const token = await user.createPasswordResetToken();
       await user.save();
-      const resetURL = `Hi, Please follow this link to reset your Password. \nThis link is valid for 10 minutes starting now.\n Click the link below to reset \n http://localhost:3000/reset-password/${token}`;
+      const resetURL = `Hi, Please follow this link to reset your Password. \nThis link is valid for 10 minutes starting now.\n Click the link below to reset \n ${
+        req.protocol
+      }://${req.get("host")}/reset-password/${token}`;
       const data = {
         email: email,
         subject: "Forgot Password Link",

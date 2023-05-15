@@ -16,6 +16,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../../redux/actions/wishlist";
+import { NumericFormat } from "react-number-format";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -110,7 +111,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     Send Message <AiOutlineMessage className="ml-1" />
                   </span>
                 </div>
-                <h5 className="text-[16px] text-[red] mt-5">(50) Sold out</h5>
+                <h5 className="text-[16px] text-[#68d284] mt-5 ml-4">
+                  {data?.sold_out !== 0 && <span>({data?.sold_out}) sold</span>}
+                </h5>
               </div>
 
               <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
@@ -126,10 +129,22 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 </div>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    Ksh. {data.discountPrice}
+                    <NumericFormat
+                      value={data.discountPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Ksh. "}
+                    />
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {"  Ksh. " + data.originalPrice ? data.originalPrice : null}
+                    {data.originalPrice ? (
+                      <NumericFormat
+                        value={data.originalPrice}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"Ksh. "}
+                      />
+                    ) : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">

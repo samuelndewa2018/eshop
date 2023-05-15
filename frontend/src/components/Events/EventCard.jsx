@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
+import { NumericFormat } from "react-number-format";
 
 const EventCard = ({ active, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -40,14 +41,24 @@ const EventCard = ({ active, data }) => {
         <div className="flex py-2 justify-between">
           <div className="flex">
             <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through">
-              {data?.originalPrice}$
+              <NumericFormat
+                value={data?.originalPrice}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"Ksh. "}
+              />
             </h5>
             <h5 className="font-bold text-[20px] text-[#333] font-Roboto">
-              {data?.discountPrice}$
+              <NumericFormat
+                value={data?.discountPrice}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"Ksh. "}
+              />
             </h5>
           </div>
           <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">
-            120 sold
+            {data?.sold_out !== 0 && <span>({data?.sold_out}) sold</span>}
           </span>
         </div>
         <CountDown data={data} />

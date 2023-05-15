@@ -21,8 +21,6 @@ const loginSchema = yup.object({
 
 const Login = () => {
   const navigate = useNavigate();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -62,27 +60,6 @@ const Login = () => {
       setLoading(false);
     },
   });
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   await axios
-  //     .post(
-  //       `${server}/user/login-user`,
-  //       {
-  //         email,
-  //         password,
-  //       },
-  //       { withCredentials: true }
-  //     )
-  //     .then((res) => {
-  //       toast.success("Login Success!");
-  //       navigate("/");
-  //       window.location.reload(true);
-  //     })
-  //     .catch((err) => {
-  //       toast.error(err.response.data.message);
-  //     });
-  // };
 
   return (
     <>
