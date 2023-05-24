@@ -16,11 +16,15 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { RxCross1 } from "react-icons/rx";
 import { NumericFormat } from "react-number-format";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import Spinner from "../Spinner";
 
 const Payment = () => {
   const [orderData, setOrderData] = useState([]);
   const [open, setOpen] = useState(false);
   const { user } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
@@ -181,6 +185,33 @@ const Payment = () => {
         }, 2000);
       });
   };
+  // mpesa.....
+  // const mpesaHandler = async (e) => {
+  //   e.preventDefault();
+
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   };
+
+  //   order.paymentInfo = {
+  //     type: "Mpesa",
+  //   };
+
+  //   await axios
+  //     .post(`${server}/order/create-order`, order, config)
+  //     .then((res) => {
+  //       setOpen(false);
+  //       navigate("/order/success");
+  //       toast.success("Order successful!");
+  //       localStorage.setItem("cartItems", JSON.stringify([]));
+  //       localStorage.setItem("latestOrder", JSON.stringify([]));
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 2000);
+  //     });
+  // };
 
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -194,6 +225,7 @@ const Payment = () => {
             createOrder={createOrder}
             paymentHandler={paymentHandler}
             cashOnDeliveryHandler={cashOnDeliveryHandler}
+            // mpesaHandler={mpesaHandler}
           />
         </div>
         <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
@@ -204,6 +236,13 @@ const Payment = () => {
   );
 };
 
+const mpesaSchema = yup.object({
+  phone: yup
+    .string()
+    .required("Phone Number is required")
+    .min(10, "Phone number should be 10 numbers")
+    .max(10, "Phone number must be 10 numbers"),
+});
 const PaymentInfo = ({
   user,
   open,
@@ -212,12 +251,49 @@ const PaymentInfo = ({
   createOrder,
   paymentHandler,
   cashOnDeliveryHandler,
+  // mpesaHandler,
 }) => {
   const [select, setSelect] = useState(1);
+  // const [phone, phone/] = useState(user && user.phoneNumber);
+  const [orderData1, setOrderData1] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const orderData1 = JSON.parse(localStorage.getItem("latestOrder"));
+    setOrderData1(orderData1);
+  }, []);
+  const formik = useFormik({
+    initialValues: {
+      phone: "",
+    },
+    validationSchema: mpesaSchema,
+    onSubmit: async (values) => {
+      const phone = values.phone;
+      // const amount = 10;
+
+      const amount = Math.round(orderData1.totalPrice);
+
+      await setLoading(true);
+      axios
+        .post(
+          `${server}/mpesa/stk`,
+          { phone, amount },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success(res.data.message);
+          setLoading(false);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+          setLoading(false);
+        });
+    },
+  });
 
   return (
     <div className="w-full 800px:w-[95%] bg-[#fff] rounded-md p-5 pb-8">
       {/* select buttons */}
+      {/* mpesa payment */}
       <div>
         <div className="flex w-full pb-5 border-b mb-2">
           <div
@@ -229,99 +305,44 @@ const PaymentInfo = ({
             ) : null}
           </div>
           <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
-            Pay with Debit/credit card
+            Pay with Mpesa
           </h4>
         </div>
 
-        {/* pay with card */}
+        {/* pay with payement */}
         {select === 1 ? (
-          <div className="w-full flex border-b">
-            <form className="w-full" onSubmit={paymentHandler}>
+          <div className=" w-ful flex border-b">
+            <form className="pt-2" onSubmit={formik.handleSubmit}>
               <div className="w-full flex pb-3">
-                <div className="w-[50%]">
-                  <label className="block pb-2">Name On Card</label>
+                <label className=" w-[50%] pb-2 mt-[11px]">Phone Number</label>
+                <div>
                   <input
-                    required
-                    placeholder={user && user.name}
-                    className={`${styles.input} !w-[95%] text-[#444]`}
-                    value={user && user.name}
+                    placeholder="07✱✱✱✱✱✱✱✱"
+                    className={`${styles.input} p-3 w-[50%] text-[#444]`}
+                    onChange={formik.handleChange("phone")}
+                    onBlur={formik.handleBlur("phone")}
+                    value={formik.values.phone}
                   />
-                </div>
-                <div className="w-[50%]">
-                  <label className="block pb-2">Exp Date</label>
-                  <CardExpiryElement
-                    className={`${styles.input}`}
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: "19px",
-                          lineHeight: 1.5,
-                          color: "#444",
-                        },
-                        empty: {
-                          color: "#3a120a",
-                          backgroundColor: "transparent",
-                          "::placeholder": {
-                            color: "#444",
-                          },
-                        },
-                      },
-                    }}
-                  />
+                  <div className="text-red-500 text-xs">
+                    {formik.touched.phone && formik.errors.phone}
+                  </div>
                 </div>
               </div>
-
-              <div className="w-full flex pb-3">
-                <div className="w-[50%]">
-                  <label className="block pb-2">Card Number</label>
-                  <CardNumberElement
-                    className={`${styles.input} !h-[35px] !w-[95%]`}
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: "19px",
-                          lineHeight: 1.5,
-                          color: "#444",
-                        },
-                        empty: {
-                          color: "#3a120a",
-                          backgroundColor: "transparent",
-                          "::placeholder": {
-                            color: "#444",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </div>
-                <div className="w-[50%]">
-                  <label className="block pb-2">CVV</label>
-                  <CardCvcElement
-                    className={`${styles.input} !h-[35px]`}
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: "19px",
-                          lineHeight: 1.5,
-                          color: "#444",
-                        },
-                        empty: {
-                          color: "#3a120a",
-                          backgroundColor: "transparent",
-                          "::placeholder": {
-                            color: "#444",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </div>
+              <div>
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="group relative w-full flex justify-center mb-4 py-3 px-4 border border-transparent text-[18px] font-[600] rounded-[5px] text-white !bg-[#12b32a] hover:!bg-[#12b32a]"
+                >
+                  {loading ? (
+                    <p className="flex">
+                      <Spinner /> Processing...
+                    </p>
+                  ) : (
+                    <p className="">Pay Now</p>
+                  )}
+                </button>
               </div>
-              <input
-                type="submit"
-                value="Submit"
-                className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
-              />
             </form>
           </div>
         ) : null}
@@ -348,7 +369,7 @@ const PaymentInfo = ({
         {select === 2 ? (
           <div className="w-full flex border-b">
             <div
-              className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+              className={`${styles.button} !bg-[#f0d613] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               onClick={() => setOpen(true)}
             >
               Pay Now
