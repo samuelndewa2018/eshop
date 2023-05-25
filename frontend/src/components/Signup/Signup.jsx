@@ -167,6 +167,7 @@ const Singup = () => {
                   <input
                     type="text"
                     name="text"
+                    placeholder="Your Names"
                     autoComplete="name"
                     onChange={formik.handleChange("name")}
                     onBlur={formik.handleBlur("name")}
@@ -191,6 +192,7 @@ const Singup = () => {
                   <input
                     type="email"
                     name="email"
+                    placeholder="email@example.com"
                     autoComplete="email"
                     onChange={formik.handleChange("email")}
                     onBlur={formik.handleBlur("email")}
@@ -214,6 +216,7 @@ const Singup = () => {
                   <input
                     type={visible ? "text" : "password"}
                     name="password"
+                    placeholder="●●●●●●"
                     autoComplete="current-password"
                     onChange={formik.handleChange("password")}
                     onBlur={formik.handleBlur("password")}

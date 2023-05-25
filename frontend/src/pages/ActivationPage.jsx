@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { server } from "../server";
 import Meta from "../components/Meta";
+import Header from "../components/Layout/Header";
+import Footer from "../components/Layout/Footer";
 
 const ActivationPage = () => {
   const { activation_token } = useParams();
@@ -28,36 +30,41 @@ const ActivationPage = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Meta title="Activation" />
+    <>
+      <Header />
 
-      {error ? (
-        <div>
-          <p>Your token is expired!</p>
-        </div>
-      ) : (
-        <>
+      <div
+        style={{
+          width: "100%",
+          height: "50vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Meta title="Activation" />
+
+        {error ? (
           <div>
-            <p>Your account has been created suceessfully!</p>
-            <br />
-            <Link
-              to="/login"
-              className="group mt-2 relative h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Login Now
-            </Link>
+            <p>Your token is expired!</p>
           </div>
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            <div>
+              <p>Your account has been created suceessfully!</p>
+              <br />
+              <Link
+                to="/login"
+                className="group mt-2 relative h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                Login Now
+              </Link>
+            </div>
+          </>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 };
 

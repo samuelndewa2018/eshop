@@ -95,6 +95,7 @@ const Login = () => {
                   <input
                     type="email"
                     name="email"
+                    placeholder="email@example.com"
                     autoComplete="email"
                     onChange={formik.handleChange("email")}
                     onBlur={formik.handleBlur("email")}

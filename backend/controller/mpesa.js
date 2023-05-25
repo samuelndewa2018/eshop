@@ -80,9 +80,3 @@ exports.stkPush = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Error occurred. Please try again", 500));
   }
 });
-
-// to do list...
-// ==== make mpesa errors dynamic
-//==== data.errorMessage
-// === console.log error
-///==== commented above

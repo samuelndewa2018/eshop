@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import { useEffect } from "react";
+import mpesa from "./mpesa.png";
 import {
   CardNumberElement,
   CardCvcElement,
@@ -185,33 +186,6 @@ const Payment = () => {
         }, 2000);
       });
   };
-  // mpesa.....
-  // const mpesaHandler = async (e) => {
-  //   e.preventDefault();
-
-  //   const config = {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   };
-
-  //   order.paymentInfo = {
-  //     type: "Mpesa",
-  //   };
-
-  //   await axios
-  //     .post(`${server}/order/create-order`, order, config)
-  //     .then((res) => {
-  //       setOpen(false);
-  //       navigate("/order/success");
-  //       toast.success("Order successful!");
-  //       localStorage.setItem("cartItems", JSON.stringify([]));
-  //       localStorage.setItem("latestOrder", JSON.stringify([]));
-  //       setTimeout(() => {
-  //         window.location.reload();
-  //       }, 2000);
-  //     });
-  // };
 
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -251,10 +225,8 @@ const PaymentInfo = ({
   createOrder,
   paymentHandler,
   cashOnDeliveryHandler,
-  // mpesaHandler,
 }) => {
   const [select, setSelect] = useState(1);
-  // const [phone, phone/] = useState(user && user.phoneNumber);
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -270,12 +242,12 @@ const PaymentInfo = ({
 
   const formik = useFormik({
     initialValues: {
-      phone: "",
+      phone: `${user && user.phoneNumber ? user && user.phoneNumber : ""}`,
     },
+
     validationSchema: mpesaSchema,
     onSubmit: async (values) => {
       const phone = values.phone;
-      // const amount = Number(amount1)
       const amount = amount1;
 
       await setLoading(true);
@@ -344,7 +316,14 @@ const PaymentInfo = ({
                 </div>
               )}
             </div>
-            <div className=" w-ful flex border-b">
+            <div className=" w-ful lg:flex sm:block border-b">
+              <div className="items-center">
+                <img
+                  className="w-[125px] h-[100px] m-auto"
+                  src={mpesa}
+                  alt="mpesaImg"
+                />
+              </div>
               <form className="pt-2" onSubmit={formik.handleSubmit}>
                 <div className="w-full flex pb-3">
                   <label className=" w-[50%] pb-2 mt-[11px]">
@@ -366,7 +345,12 @@ const PaymentInfo = ({
                   </label>
                   <div>
                     <input
-                      placeholder="07✱✱✱✱✱✱✱✱"
+                      placeholder={
+                        formik.values.phone === ""
+                          ? "07✱✱✱✱✱✱✱✱"
+                          : formik.values.phone
+                      }
+                      // placeholder="07✱✱✱✱✱✱✱✱"
                       className={`${styles.input} p-3 w-[50%] text-[#444]`}
                       onChange={formik.handleChange("phone")}
                       onBlur={formik.handleBlur("phone")}
