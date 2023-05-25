@@ -63,7 +63,7 @@ exports.stkPush = catchAsyncErrors(async (req, res, next) => {
     // PhoneNumber: `${phoneNo}`,
     PhoneNumber: `254${phone}`,
     CallBackURL: "https://mydomain.com/pat",
-    AccountReference: "HEY CRAIG IT'S SAM MPESA SKT PUSH WORKED",
+    AccountReference: "eShop",
     TransactionDesc: "Lipa na M-PESA",
   };
   try {

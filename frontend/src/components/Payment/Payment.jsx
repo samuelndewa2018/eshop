@@ -255,12 +255,19 @@ const PaymentInfo = ({
 }) => {
   const [select, setSelect] = useState(1);
   // const [phone, phone/] = useState(user && user.phoneNumber);
-  const [orderData1, setOrderData1] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   useEffect(() => {
-    const orderData1 = JSON.parse(localStorage.getItem("latestOrder"));
-    setOrderData1(orderData1);
+    const orderData = JSON.parse(localStorage.getItem("latestOrder"));
+    setOrderData(orderData);
   }, []);
+  const amount1 = Math.round(orderData.totalPrice);
+
   const formik = useFormik({
     initialValues: {
       phone: "",
@@ -268,24 +275,31 @@ const PaymentInfo = ({
     validationSchema: mpesaSchema,
     onSubmit: async (values) => {
       const phone = values.phone;
-      // const amount = 10;
-
-      const amount = Math.round(orderData1.totalPrice);
+      // const amount = Number(amount1)
+      const amount = amount1;
 
       await setLoading(true);
-      axios
+      await axios
         .post(
           `${server}/mpesa/stk`,
           { phone, amount },
           { withCredentials: true }
         )
         .then((res) => {
-          toast.success(res.data.message);
+          toast.success("Stk Pushed to your phone");
           setLoading(false);
+          setSuccess(true);
+          setError(false);
+          setSuccessMessage(
+            "Please put Mpesa PIN in your phone to complete Payment"
+          );
         })
         .catch((error) => {
           toast.error(error.response.data.message);
           setLoading(false);
+          setError(true);
+          setSuccess(false);
+          setErrorMessage(error.response.data.message);
         });
     },
   });
@@ -311,40 +325,78 @@ const PaymentInfo = ({
 
         {/* pay with payement */}
         {select === 1 ? (
-          <div className=" w-ful flex border-b">
-            <form className="pt-2" onSubmit={formik.handleSubmit}>
-              <div className="w-full flex pb-3">
-                <label className=" w-[50%] pb-2 mt-[11px]">Phone Number</label>
-                <div>
-                  <input
-                    placeholder="07✱✱✱✱✱✱✱✱"
-                    className={`${styles.input} p-3 w-[50%] text-[#444]`}
-                    onChange={formik.handleChange("phone")}
-                    onBlur={formik.handleBlur("phone")}
-                    value={formik.values.phone}
-                  />
-                  <div className="text-red-500 text-xs">
-                    {formik.touched.phone && formik.errors.phone}
+          <>
+            <div className="">
+              {error && (
+                <div
+                  className="bg-red-100 border border-red-400 text-red-700 px-1 py-1 text-center mb-2 rounded relative"
+                  role="alert"
+                >
+                  <p>{errorMessage}</p>
+                </div>
+              )}
+              {success && (
+                <div
+                  className="bg-green-100 border border-green-400 text-green-700 px-1 py-1 text-center mb-2 rounded relative"
+                  role="alert"
+                >
+                  <p>{successMessage}</p>
+                </div>
+              )}
+            </div>
+            <div className=" w-ful flex border-b">
+              <form className="pt-2" onSubmit={formik.handleSubmit}>
+                <div className="w-full flex pb-3">
+                  <label className=" w-[50%] pb-2 mt-[11px]">
+                    Total Amount
+                  </label>
+                  <div className="w-[50%] text-[18px] font-[600] pb-2 mt-[11px]">
+                    <NumericFormat
+                      value={amount1}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Ksh. "}
+                    />
                   </div>
                 </div>
-              </div>
-              <div>
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="group relative w-full flex justify-center mb-4 py-3 px-4 border border-transparent text-[18px] font-[600] rounded-[5px] text-white !bg-[#12b32a] hover:!bg-[#12b32a]"
-                >
-                  {loading ? (
-                    <p className="flex">
-                      <Spinner /> Processing...
-                    </p>
-                  ) : (
-                    <p className="">Pay Now</p>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
+
+                <div className="w-full flex pb-3">
+                  <label className=" w-[50%] pb-2 mt-[11px]">
+                    Phone Number
+                  </label>
+                  <div>
+                    <input
+                      placeholder="07✱✱✱✱✱✱✱✱"
+                      className={`${styles.input} p-3 w-[50%] text-[#444]`}
+                      onChange={formik.handleChange("phone")}
+                      onBlur={formik.handleBlur("phone")}
+                      value={formik.values.phone}
+                    />
+                    <div className="text-red-500 text-xs">
+                      {formik.touched.phone && formik.errors.phone}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    disabled={loading || success}
+                    type="submit"
+                    className="group relative w-full flex justify-center mb-4 py-3 px-4 border border-transparent text-[16px] font-[600] rounded-[5px] text-white !bg-[#12b32a] hover:!bg-[#12b32a] disabled:!bg-[#a8deb0] disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <p className="flex">
+                        <Spinner /> Processing...
+                      </p>
+                    ) : (
+                      <p className="">
+                        {success ? "Put PIN on your Phone" : "Pay Now"}
+                      </p>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </>
         ) : null}
       </div>
 
