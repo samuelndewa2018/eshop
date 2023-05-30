@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import { useEffect } from "react";
 import mpesa from "./mpesa.png";
+import mpesa1 from "./mpesa1.png";
 import {
   CardNumberElement,
-  CardCvcElement,
-  CardExpiryElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
@@ -103,63 +102,6 @@ const Payment = () => {
       });
   };
 
-  const paymentData = {
-    amount: Math.round(orderData?.totalPrice * 100),
-  };
-
-  const paymentHandler = async (e) => {
-    e.preventDefault();
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const { data } = await axios.post(
-        `${server}/payment/process`,
-        paymentData,
-        config
-      );
-
-      const client_secret = data.client_secret;
-
-      if (!stripe || !elements) return;
-      const result = await stripe.confirmCardPayment(client_secret, {
-        payment_method: {
-          card: elements.getElement(CardNumberElement),
-        },
-      });
-
-      if (result.error) {
-        toast.error(result.error.message);
-      } else {
-        if (result.paymentIntent.status === "succeeded") {
-          order.paymnentInfo = {
-            id: result.paymentIntent.id,
-            status: result.paymentIntent.status,
-            type: "Credit Card",
-          };
-
-          await axios
-            .post(`${server}/order/create-order`, order, config)
-            .then((res) => {
-              setOpen(false);
-              navigate("/order/success");
-              toast.success("Order successful!");
-              localStorage.setItem("cartItems", JSON.stringify([]));
-              localStorage.setItem("latestOrder", JSON.stringify([]));
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
-            });
-        }
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
   const cashOnDeliveryHandler = async (e) => {
     e.preventDefault();
 
@@ -186,6 +128,32 @@ const Payment = () => {
         }, 2000);
       });
   };
+  const mpesaPaymentHandler = async (e) => {
+    e.preventDefault();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    order.paymentInfo = {
+      type: "Mpesa",
+    };
+
+    await axios
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      });
+  };
 
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -197,9 +165,8 @@ const Payment = () => {
             setOpen={setOpen}
             onApprove={onApprove}
             createOrder={createOrder}
-            paymentHandler={paymentHandler}
             cashOnDeliveryHandler={cashOnDeliveryHandler}
-            // mpesaHandler={mpesaHandler}
+            mpesaPaymentHandler={mpesaPaymentHandler}
           />
         </div>
         <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
@@ -223,8 +190,8 @@ const PaymentInfo = ({
   setOpen,
   onApprove,
   createOrder,
-  paymentHandler,
   cashOnDeliveryHandler,
+  mpesaPaymentHandler,
 }) => {
   const [select, setSelect] = useState(1);
   const [orderData, setOrderData] = useState([]);
@@ -233,6 +200,7 @@ const PaymentInfo = ({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
@@ -273,6 +241,35 @@ const PaymentInfo = ({
           setSuccess(false);
           setErrorMessage(error.response.data.message);
         });
+      setTimeout(async () => {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const order = {
+          cart: orderData?.cart,
+          shippingAddress: orderData?.shippingAddress,
+          user: user && user,
+          totalPrice: orderData?.totalPrice,
+        };
+
+        order.paymentInfo = {
+          type: "Mpesa",
+        };
+        await axios
+          .post(`${server}/order/create-order`, order, config)
+          .then((res) => {
+            setOpen(false);
+            navigate("/order/success");
+            toast.success("Order successful!");
+            localStorage.setItem("cartItems", JSON.stringify([]));
+            localStorage.setItem("latestOrder", JSON.stringify([]));
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
+          });
+      }, 10000);
     },
   });
 
@@ -319,10 +316,15 @@ const PaymentInfo = ({
             <div className=" w-ful lg:flex sm:block border-b">
               <div className="items-center">
                 <img
+                  className="w-[125px] h-[125px] m-auto"
+                  src={mpesa1}
+                  alt="mpesaImg"
+                />
+                {/* <img
                   className="w-[125px] h-[100px] m-auto"
                   src={mpesa}
                   alt="mpesaImg"
-                />
+                /> */}
               </div>
               <form className="pt-2" onSubmit={formik.handleSubmit}>
                 <div className="w-full flex pb-3">
@@ -481,7 +483,7 @@ const CartData = ({ orderData }) => {
         <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
         <h5 className="text-[18px] font-[600]">
           <NumericFormat
-            value={orderData?.subTotalPrice}
+            value={Math.round(orderData?.subTotalPrice).toFixed(2)}
             displayType={"text"}
             thousandSeparator={true}
             prefix={"Ksh. "}
@@ -526,6 +528,8 @@ const CartData = ({ orderData }) => {
         />
       </h5>
       <br />
+      <hr />
+      <hr />
     </div>
   );
 };
