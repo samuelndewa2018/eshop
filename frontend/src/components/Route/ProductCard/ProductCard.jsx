@@ -23,7 +23,6 @@ import Ratings from "../../Products/Ratings";
 import { NumericFormat } from "react-number-format";
 
 const ProductCard = ({ data, isEvent }) => {
-  console.log(data);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);

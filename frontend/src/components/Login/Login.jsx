@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import * as yup from "yup";
 import Spinner from "../Spinner";
 import Header from "../Layout/Header";
 import Footer from "../Layout/Footer";
+import { useLocation } from "react-router-dom";
 
 const loginSchema = yup.object({
   email: yup
@@ -25,6 +26,12 @@ const Login = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  // const redirect = location ? location.split("=")[1] : "/";
+
+  // useEffect(() => {
+  // console.log();
+  // });
 
   const formik = useFormik({
     initialValues: {
@@ -48,7 +55,10 @@ const Login = () => {
         )
         .then((res) => {
           toast.success("Login Success!");
-          navigate("/");
+          // history.push(redirect);
+          navigate(
+            location?.state?.previousUrl ? location.state.previousUrl : "/"
+          );
           window.location.reload(true);
         })
         .catch((err) => {
