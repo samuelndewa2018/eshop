@@ -7,7 +7,11 @@ import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import DropDown from "./DropDown";
@@ -54,7 +58,7 @@ const Header = ({ activeHeading }) => {
   });
 
   return (
-    <>
+    <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
         <div className="flex">
           <p className="hidden text-white lg:block">
@@ -156,11 +160,19 @@ const Header = ({ activeHeading }) => {
               >
                 All Categories
               </button>
-              <IoIosArrowDown
-                size={20}
-                className="absolute right-2 top-4 cursor-pointer"
-                onClick={() => setDropDown(!dropDown)}
-              />
+              {dropDown === false && (
+                <IoIosArrowDown
+                  size={20}
+                  className="absolute right-2 top-4 cursor-pointer"
+                  onClick={() => setDropDown(!dropDown)}
+                />
+              )}
+              {dropDown === true && (
+                <IoIosArrowUp
+                  size={20}
+                  className="absolute right-2 top-4 cursor-pointer"
+                />
+              )}
               {dropDown ? (
                 <DropDown
                   categoriesData={categoriesData}
@@ -277,6 +289,7 @@ const Header = ({ activeHeading }) => {
         {open && (
           <div
             className={`fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0`}
+            // onClick={() => setOpen(false)}
           >
             <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
               <div className="w-full justify-between flex pr-3">
@@ -316,7 +329,7 @@ const Header = ({ activeHeading }) => {
                         <Link to={`/product/${Product_name}`}>
                           <div className="flex items-center">
                             <img
-                              src={i.image_Url[0].url}
+                              src={`${backend_url}${i.images[0]}`}
                               alt=""
                               className="w-[50px] mr-2"
                             />
@@ -331,9 +344,16 @@ const Header = ({ activeHeading }) => {
 
               <Navbar active={activeHeading} />
               <div className={`${styles.button} ml-4 !rounded-[4px]`}>
-                <Link to="/shop-create">
+                <Link to={`${isAuthenticated ? "/profile" : "/login"}`}>
                   <h1 className="text-[#fff] flex items-center">
-                    Become Seller <IoIosArrowForward className="ml-1" />
+                    {isAuthenticated
+                      ? `Hello, ${
+                          user?.name.indexOf(" ") >= 0
+                            ? user?.name.substring(0, user?.name.indexOf(" "))
+                            : user?.name
+                        }`
+                      : "Login/Register"}
+                    {!isAuthenticated && <IoIosArrowForward className="ml-1" />}
                   </h1>
                 </Link>
               </div>
@@ -373,7 +393,7 @@ const Header = ({ activeHeading }) => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

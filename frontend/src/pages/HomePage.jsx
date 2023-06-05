@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Layout/Header";
 import Hero from "../components/Route/Hero/Hero";
 import Categories from "../components/Route/Categories/Categories";
@@ -13,7 +13,6 @@ const HomePage = () => {
   return (
     <div>
       <Meta title="Home" />
-
       <Header activeHeading={1} />
       <Hero />
       <Categories />

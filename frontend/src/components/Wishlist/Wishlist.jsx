@@ -26,7 +26,10 @@ const Wishlist = ({ setOpenWishlist }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
+    <div
+      className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10"
+      onClick={() => setOpenWishlist(false)}
+    >
       <div className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
         {wishlist && wishlist.length === 0 ? (
           <div className="w-full h-screen flex items-center justify-center">
@@ -37,7 +40,16 @@ const Wishlist = ({ setOpenWishlist }) => {
                 onClick={() => setOpenWishlist(false)}
               />
             </div>
-            <h5>Wishlist Items is empty!</h5>
+            <div>
+              <h5>Wishlist Items is empty!</h5>
+              <Link
+                to="/products"
+                onClick={() => setOpenWishlist(false)}
+                className="m-auto w-32 group mt-2 relative h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                Add Wishlist
+              </Link>
+            </div>
           </div>
         ) : (
           <>

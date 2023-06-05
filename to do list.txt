@@ -2,3 +2,4 @@
 //== if your has saved the number useit
 //=== location after login === go back to last position
 //=== product details and card goes beyound products available
+//== confirm before deleting

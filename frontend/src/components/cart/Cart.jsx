@@ -28,7 +28,10 @@ const Cart = ({ setOpenCart }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
+    <div
+      className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10"
+      onClick={() => setOpenCart(false)}
+    >
       <div className="fixed top-0 right-0 h-full w-[80%] 800px:w-[25%] bg-white flex flex-col overflow-y-scroll justify-between shadow-sm">
         {cart && cart.length === 0 ? (
           <div className="w-full h-screen flex items-center justify-center">
@@ -39,7 +42,16 @@ const Cart = ({ setOpenCart }) => {
                 onClick={() => setOpenCart(false)}
               />
             </div>
-            <h5>Cart Items is empty!</h5>
+            <div>
+              <h5>Cart Items is empty!</h5>
+              <Link
+                to="/products"
+                onClick={() => setOpenCart(false)}
+                className="m-auto w-32 group mt-2 relative h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                Shop Now
+              </Link>
+            </div>
           </div>
         ) : (
           <>
