@@ -42,6 +42,12 @@ const ProductDetails = ({ data }) => {
   const incrementCount = () => {
     setCount(count + 1);
   };
+  const maximum = () => {
+    toast.error("Maximun Stock reached");
+  };
+  const minimum = () => {
+    toast.error("Minimun Stock reached");
+  };
 
   const decrementCount = () => {
     if (count > 1) {
@@ -149,6 +155,7 @@ const ProductDetails = ({ data }) => {
               </div>
               <div className="w-full 800px:w-[50%] pt-5">
                 <h1 className={`${styles.productTitle}`}>{data.name}</h1>
+                <p>{data.stock}</p>
                 <div className="disableStyles">
                   <p
                     dangerouslySetInnerHTML={{
@@ -168,6 +175,7 @@ const ProductDetails = ({ data }) => {
                 <div className="flex items-center mt-12 justify-between pr-3">
                   <div>
                     <button
+                      disabled={count === 1}
                       className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
                       onClick={decrementCount}
                     >
@@ -178,7 +186,7 @@ const ProductDetails = ({ data }) => {
                     </span>
                     <button
                       className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                      onClick={incrementCount}
+                      onClick={count < data.stock ? incrementCount : maximum}
                     >
                       +
                     </button>

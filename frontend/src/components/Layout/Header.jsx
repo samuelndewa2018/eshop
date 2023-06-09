@@ -57,6 +57,44 @@ const Header = ({ activeHeading }) => {
     }
   });
 
+  const myClickHandler = (e, props) => {
+    // Here you'll do whatever you want to happen when they click
+    setOpen(props);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+
+  const myClickHandler2 = (e, props) => {
+    // Here you'll do whatever you want to happen when they click
+    setOpenCart(props);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+  const myClickHandler3 = (e, props) => {
+    // Here you'll do whatever you want to happen when they click
+    setOpenWishlist(props);
+    setOpen(false);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
   return (
     <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
@@ -255,7 +293,7 @@ const Header = ({ activeHeading }) => {
             <BiMenuAltLeft
               size={40}
               className="ml-4"
-              onClick={() => setOpen(true)}
+              onClick={(e) => myClickHandler(e, true)}
             />
           </div>
           <div>
@@ -270,7 +308,7 @@ const Header = ({ activeHeading }) => {
           <div>
             <div
               className="relative mr-[20px]"
-              onClick={() => setOpenCart(true)}
+              onClick={(e) => myClickHandler2(e, true)}
             >
               <AiOutlineShoppingCart size={30} />
               <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
@@ -289,14 +327,17 @@ const Header = ({ activeHeading }) => {
         {open && (
           <div
             className={`fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0`}
-            // onClick={() => setOpen(false)}
+            onClick={(e) => myClickHandler(e, false)}
           >
-            <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
+            <div
+              onClick={(e) => myClickHandler(e, true)}
+              className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll"
+            >
               <div className="w-full justify-between flex pr-3">
                 <div>
                   <div
                     className="relative mr-[15px]"
-                    onClick={() => setOpenWishlist(true) || setOpen(false)}
+                    onClick={(e) => myClickHandler3(e, true)}
                   >
                     <AiOutlineHeart size={30} className="mt-5 ml-3" />
                     <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
@@ -307,7 +348,7 @@ const Header = ({ activeHeading }) => {
                 <RxCross1
                   size={30}
                   className="ml-4 mt-5"
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => myClickHandler(e, false)}
                 />
               </div>
 

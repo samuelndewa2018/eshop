@@ -1,5 +1,7 @@
 // to do list...
-//== if your has saved the number useit
-//=== location after login === go back to last position
+
 //=== product details and card goes beyound products available
 //== confirm before deleting
+//== on wishlist page the add to cart product icon is not doing anything
+//== after clicking a searched product in mobile mode it does not go to that ptoduct
+//

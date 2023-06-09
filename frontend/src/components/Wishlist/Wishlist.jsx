@@ -25,26 +25,42 @@ const Wishlist = ({ setOpenWishlist }) => {
     setOpenWishlist(false);
   };
 
+  const myClickHandler = (e, props) => {
+    // Here you'll do whatever you want to happen when they click
+    setOpenWishlist(props);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <div
       className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10"
-      onClick={() => setOpenWishlist(false)}
+      onClick={(e) => myClickHandler(e, false)}
     >
-      <div className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm">
+      <div
+        onClick={(e) => myClickHandler(e, true)}
+        className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm"
+      >
         {wishlist && wishlist.length === 0 ? (
           <div className="w-full h-screen flex items-center justify-center">
             <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
               <RxCross1
                 size={25}
                 className="cursor-pointer"
-                onClick={() => setOpenWishlist(false)}
+                onClick={(e) => myClickHandler(e, false)}
               />
             </div>
             <div>
               <h5>Wishlist Items is empty!</h5>
               <Link
                 to="/products"
-                onClick={() => setOpenWishlist(false)}
+                onClick={(e) => myClickHandler(e, false)}
                 className="m-auto w-32 group mt-2 relative h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
               >
                 Add Wishlist
@@ -58,7 +74,7 @@ const Wishlist = ({ setOpenWishlist }) => {
                 <RxCross1
                   size={25}
                   className="cursor-pointer"
-                  onClick={() => setOpenWishlist(false)}
+                  onClick={(e) => myClickHandler(e, false)}
                 />
               </div>
               {/* Item length */}
