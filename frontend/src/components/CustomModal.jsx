@@ -22,9 +22,9 @@ const CustomModal = ({
         id="popup-modal"
         tabindex="-1"
         onClick={() => setModalOpen(false)}
-        class="fixed top-0 left-0 right-0 z-50 bg-black/[.6] p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full"
+        class="fixed top-0 left-0 right-0 bg-black/[.6] p-4 z-50 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full"
       >
-        <div className="relative w-full max-w-md max-h-full m-auto my-[20px]">
+        <div className="relative mt-[60px] w-full max-w-md max-h-full m-auto my-[20px]">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <button
               type="button"
