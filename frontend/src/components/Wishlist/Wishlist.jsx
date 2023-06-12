@@ -10,6 +10,7 @@ import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { backend_url } from "../../server";
 import { addTocart } from "../../redux/actions/cart";
 import { NumericFormat } from "react-number-format";
+import { toast } from "react-toastify";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -17,12 +18,6 @@ const Wishlist = ({ setOpenWishlist }) => {
 
   const removeFromWishlistHandler = (data) => {
     dispatch(removeFromWishlist(data));
-  };
-
-  const addToCartHandler = (data) => {
-    const newData = { ...data, qty: 1 };
-    dispatch(addTocart(newData));
-    setOpenWishlist(false);
   };
 
   const myClickHandler = (e, props) => {
@@ -36,6 +31,13 @@ const Wishlist = ({ setOpenWishlist }) => {
     if (e.stopPropagation) {
       e.stopPropagation();
     }
+  };
+  const addToCartHandler = (data) => {
+    const newData = { ...data, qty: 1 };
+    dispatch(addTocart(newData));
+    // var e = window.event;
+    // myClickHandler(0, false);
+    toast.success("Item added to cart");
   };
 
   return (
