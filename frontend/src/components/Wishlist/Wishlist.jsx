@@ -12,6 +12,7 @@ import { addTocart } from "../../redux/actions/cart";
 import { NumericFormat } from "react-number-format";
 import { toast } from "react-toastify";
 import CustomModal from "../CustomModal";
+import { AiFillDelete } from "react-icons/ai";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -128,9 +129,11 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
       )}
       <div className="border-b p-4">
         <div className="w-full 800px:flex items-center">
-          <RxCross1
+          <AiFillDelete
             className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2 min-w-[20px]"
             onClick={() => setModalOpen(true)}
+            size={60}
+            color={"rgb(240 11 11 / 86%)"}
           />
           <img
             src={`${backend_url}${data?.images[0]}`}
@@ -151,7 +154,8 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
           </div>
           <div>
             <BsCartPlus
-              size={20}
+              size={30}
+              color="green"
               className="cursor-pointer"
               tile="Add to cart"
               onClick={() => addToCartHandler(data)}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
+import { AiFillDelete } from "react-icons/ai";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import styles from "../../styles/styles";
@@ -208,9 +209,11 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               />
             </h4>
           </div>
-          <RxCross1
+          <AiFillDelete
             className="cursor-pointer min-w-[20px]"
             onClick={() => setModalOpen(true)}
+            size={60}
+            color={"rgb(240 11 11 / 86%)"}
           />
         </div>
       </div>

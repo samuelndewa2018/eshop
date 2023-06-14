@@ -17,6 +17,7 @@
     "country-state-city": "^3.1.4",
     "formik": "^2.2.9",
     "js-cookie": "^3.0.5",
+    "moment": "^2.29.4",
     "postcss": "^8.4.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

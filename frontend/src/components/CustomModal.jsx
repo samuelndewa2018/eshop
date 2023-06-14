@@ -8,23 +8,50 @@ const CustomModal = ({
   closeModel,
   setModalOpen,
 }) => {
-  const trueModel = () => {
+  const trueModel = (e) => {
     setModalOpen(false);
     performAction(true);
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
   };
-  const falseModel = () => {
+  const retainModel = (e) => {
+    setModalOpen(true);
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+  const falseModel = (e) => {
     setModalOpen(false);
     closeModel(true);
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
   };
   return (
     <>
       <div
         id="popup-modal"
         tabindex="-1"
-        onClick={() => setModalOpen(false)}
+        onClick={(e) => falseModel(e)}
         class="fixed top-0 left-0 right-0 bg-black/[.6] p-4 z-50 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full"
       >
-        <div className="relative mt-[60px] w-full max-w-md max-h-full m-auto my-[20px]">
+        <div
+          onClick={(e) => retainModel(e)}
+          className="relative mt-[60px] w-full max-w-md max-h-full m-auto my-[20px]"
+        >
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <button
               type="button"
@@ -69,7 +96,7 @@ const CustomModal = ({
               <button
                 data-modal-hide="popup-modal"
                 type="button"
-                onClick={trueModel}
+                onClick={(e) => trueModel(e)}
                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
               >
                 {ok}

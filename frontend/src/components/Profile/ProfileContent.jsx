@@ -226,7 +226,7 @@ const AllOrders = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Order No.", minWidth: 150, flex: 0.7 },
 
     {
       field: "status",
@@ -277,11 +277,11 @@ const AllOrders = () => {
   ];
 
   const row = [];
-
   orders &&
     orders.forEach((item) => {
       row.push({
         id: item._id,
+        // id: item?._id.replace(/\D/g, "").slice(0, 10),
         itemsQty: item.cart.length,
         total: "Ksh " + item.totalPrice,
         status: item.status,

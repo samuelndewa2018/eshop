@@ -10,6 +10,8 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
+import moment from "moment";
+import { BiPhoneCall } from "react-icons/bi";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -27,6 +29,11 @@ const UserOrderDetails = () => {
   }, [dispatch]);
 
   const data = orders && orders.find((item) => item._id === id);
+
+  const subTotals = data?.cart.reduce(
+    (acc, item) => acc + item.qty * item.discountPrice,
+    0
+  );
 
   const reviewHandler = async (e) => {
     await axios
@@ -52,7 +59,17 @@ const UserOrderDetails = () => {
         toast.error(error);
       });
   };
+  const myClickHandler = (e, props) => {
+    setOpen(props);
 
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
   const refundHandler = async () => {
     await axios
       .put(`${server}/order/order-refund/${id}`, {
@@ -67,199 +84,423 @@ const UserOrderDetails = () => {
       });
   };
 
+  console.log(data);
+
   return (
-    <div className={`py-4 min-h-screen ${styles.section}`}>
-      <div className="w-full flex items-center justify-between">
-        <div className="flex items-center">
-          <BsFillBagFill size={30} color="crimson" />
-          <h1 className="pl-2 text-[25px]">Order Details</h1>
+    <>
+      <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+        <div className="flex justify-start item-start space-y-2 flex-col">
+          <div className="w-full flex items-center justify-between">
+            <div className="flex items-center">
+              <BsFillBagFill size={30} color="crimson" />
+              <h1 className="pl-2 text-[25px]">Order Details</h1>
+            </div>
+          </div>
+          <h1 className="text-[20px] dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
+            Order No: {data?._id.replace(/\D/g, "").slice(0, 10)}
+          </h1>
+          <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
+            <p className="dark:text-gray-400 text-gray-300">Placed on: </p>{" "}
+            {moment(data?.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+          </p>
         </div>
-      </div>
-
-      <div className="w-full flex items-center justify-between pt-6">
-        <h5 className="text-[#00000084]">
-          Order ID: <span>#{data?._id?.slice(0, 8)}</span>
-        </h5>
-        <h5 className="text-[#00000084]">
-          Placed on: <span>{data?.createdAt?.slice(0, 10)}</span>
-        </h5>
-      </div>
-
-      {/* order items */}
-      <br />
-      <br />
-      {data &&
-        data?.cart.map((item, index) => {
-          return (
-            <div className="w-full flex items-start mb-5">
-              <img
-                src={`${backend_url}/${item.images[0]}`}
-                alt=""
-                className="w-[80x] h-[80px]"
-              />
-              <div className="w-full">
-                <h5 className="pl-3 text-[20px]">{item.name}</h5>
-                <h5 className="pl-3 text-[20px] text-[#00000091]">
-                  <NumericFormat
-                    value={item.discountPrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"Ksh. "}
-                    suffix={" "}
-                  />
-                  x {item.qty}
-                </h5>
-              </div>
-              {!item.isReviewed && data?.status === "Delivered" ? (
+        <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
+          <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+            <div className="flex flex-col rounded-md justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+              <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
+                Customer's Cart
+              </p>
+              {data &&
+                data?.cart.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full"
+                    >
+                      <div className="pb-4 md:pb-8 w-full md:w-40">
+                        <img
+                          className="w-full hidden md:block"
+                          src={`${backend_url}/${item.images[0]}`}
+                          alt="dress"
+                        />
+                        <img
+                          className="w-full md:hidden"
+                          src={`${backend_url}/${item.images[0]}`}
+                          alt="dress"
+                        />
+                      </div>
+                      <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
+                        <div className="w-full flex flex-col justify-start items-start space-y-8">
+                          <h3 className="text-[20px] dark:text-white font-semibold leading-6 text-gray-800">
+                            {item.name}
+                          </h3>
+                          <div className="flex justify-start items-start flex-col space-y-2">
+                            {!item.isReviewed &&
+                            data?.status === "Delivered" ? (
+                              <div
+                                className={`${styles.button} text-[#fff]`}
+                                onClick={() =>
+                                  setOpen(true) || setSelectedItem(item)
+                                }
+                              >
+                                Write a review
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="flex justify-between space-x-8 items-start w-full">
+                          <p className="text-base dark:text-white xl:text-lg leading-6">
+                            <NumericFormat
+                              value={item.discountPrice}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              prefix={"Ksh. "}
+                              suffix={" "}
+                            />{" "}
+                            <span className="text-red-300 line-through">
+                              {" "}
+                              <NumericFormat
+                                value={item.originalPrice}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                prefix={"Ksh. "}
+                                suffix={" "}
+                              />
+                            </span>
+                          </p>
+                          <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">
+                            {item.qty}
+                          </p>
+                          <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
+                            <NumericFormat
+                              value={item.discountPrice * item.qty}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                              prefix={"Ksh. "}
+                              suffix={" "}
+                            />
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+            {/* review popup */}
+            {open && (
+              <div
+                onClick={(e) => myClickHandler(e, false)}
+                className="w-full fixed top-0 left-0 h-screen bg-[#0005] z-50 flex items-center justify-center"
+              >
                 <div
-                  className={`${styles.button} text-[#fff]`}
-                  onClick={() => setOpen(true) || setSelectedItem(item)}
+                  onClick={(e) => myClickHandler(e, true)}
+                  className="w-[50%] h-min bg-[#fff] shadow rounded-md p-3"
                 >
-                  Write a review
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
+                  <div className="w-full flex justify-end p-3">
+                    <RxCross1
+                      size={30}
+                      onClick={(e) => myClickHandler(e, false)}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                  <h2 className="text-[30px] font-[500] font-Poppins text-center">
+                    Give a Review
+                  </h2>
+                  <br />
+                  <div className="w-full flex">
+                    <img
+                      src={`${backend_url}/${selectedItem?.images[0]}`}
+                      alt=""
+                      className="w-[80px] h-[80px]"
+                    />
+                    <div>
+                      <div className="pl-3 text-[20px]">
+                        {selectedItem?.name}
+                      </div>
+                      <h4 className="pl-3 text-[20px]">
+                        Ksh.{selectedItem?.discountPrice} x {selectedItem?.qty}
+                      </h4>
+                    </div>
+                  </div>
 
-      {/* review popup */}
-      {open && (
-        <div className="w-full fixed top-0 left-0 h-screen bg-[#0005] z-50 flex items-center justify-center">
-          <div className="w-[50%] h-min bg-[#fff] shadow rounded-md p-3">
-            <div className="w-full flex justify-end p-3">
-              <RxCross1
-                size={30}
-                onClick={() => setOpen(false)}
-                className="cursor-pointer"
-              />
-            </div>
-            <h2 className="text-[30px] font-[500] font-Poppins text-center">
-              Give a Review
-            </h2>
-            <br />
-            <div className="w-full flex">
-              <img
-                src={`${backend_url}/${selectedItem?.images[0]}`}
-                alt=""
-                className="w-[80px] h-[80px]"
-              />
-              <div>
-                <div className="pl-3 text-[20px]">{selectedItem?.name}</div>
-                <h4 className="pl-3 text-[20px]">
-                  US${selectedItem?.discountPrice} x {selectedItem?.qty}
-                </h4>
+                  <br />
+                  <br />
+
+                  {/* ratings */}
+                  <h5 className="pl-3 text-[20px] font-[500]">
+                    Give a Rating <span className="text-red-500">*</span>
+                  </h5>
+                  <div className="flex w-full ml-2 pt-1">
+                    {[1, 2, 3, 4, 5].map((i) =>
+                      rating >= i ? (
+                        <AiFillStar
+                          key={i}
+                          className="mr-1 cursor-pointer"
+                          color="rgb(246,186,0)"
+                          size={25}
+                          onClick={() => setRating(i)}
+                        />
+                      ) : (
+                        <AiOutlineStar
+                          key={i}
+                          className="mr-1 cursor-pointer"
+                          color="rgb(246,186,0)"
+                          size={25}
+                          onClick={() => setRating(i)}
+                        />
+                      )
+                    )}
+                  </div>
+                  <br />
+                  <div className="w-full ml-3">
+                    <label className="block text-[20px] font-[500]">
+                      Write a comment
+                      <span className="ml-1 font-[400] text-[16px] text-[#00000052]">
+                        (optional)
+                      </span>
+                    </label>
+                    <textarea
+                      name="comment"
+                      id=""
+                      cols="20"
+                      rows="5"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="How was your product? write your expresion about it!"
+                      className="mt-2 w-[95%] border p-2 outline-none"
+                    ></textarea>
+                  </div>
+                  <div
+                    className={`${styles.button} text-white text-[20px] ml-3`}
+                    onClick={rating > 1 ? reviewHandler : null}
+                  >
+                    Submit
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* summary */}
+            <div className="flex justify-center rounded-md flex-col md:flex-row items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
+              <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
+                <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
+                  Summary
+                </h3>
+                <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
+                  <div className="flex justify-between w-full">
+                    <p className="text-base dark:text-white leading-4 text-gray-800">
+                      Subtotal
+                    </p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
+                      <NumericFormat
+                        value={subTotals}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"Ksh. "}
+                      />
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center w-full">
+                    <p className="text-base dark:text-white leading-4 text-gray-800">
+                      Discount{" "}
+                      <span className="bg-gray-200 p-1 text-xs font-medium dark:bg-white dark:text-gray-800 leading-3 text-gray-800">
+                        exclusive
+                      </span>
+                    </p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
+                      <NumericFormat
+                        value={
+                          data?.totalPrice -
+                          Math.round(subTotals * 0.1) -
+                          subTotals
+                        }
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"Ksh. "}
+                      />
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center w-full">
+                    <p className="text-base dark:text-white leading-4 text-gray-800">
+                      Shipping
+                    </p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
+                      <NumericFormat
+                        value={Math.round(subTotals * 0.1)}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"Ksh. "}
+                      />
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">
+                    Total
+                  </p>
+                  <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
+                    <NumericFormat
+                      value={data?.totalPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Ksh. "}
+                    />
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
+                <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
+                  Shipping
+                </h3>
+                <div className="flex justify-between items-start w-full">
+                  <div className="flex justify-center items-center space-x-4">
+                    <div className="w-8 h-8">
+                      <img
+                        className="w-full h-full"
+                        alt="logo"
+                        src="https://i.ibb.co/L8KSdNQ/image-3.png"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-start items-center">
+                      <p className="text-lg leading-6 dark:text-white font-semibold text-gray-800">
+                        Normal Delivery
+                        <br />
+                        <span className="font-normal">
+                          Delivery within 24 Hours
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-semibold leading-6 dark:text-white text-gray-800">
+                    <NumericFormat
+                      value={Math.round(subTotals * 0.1)}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Ksh. "}
+                    />{" "}
+                  </p>
+                </div>
+                <div className="w-full flex justify-center items-center">
+                  <button className="hover:bg-black rounded-md dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white">
+                    Send Us Message
+                  </button>
+                </div>
               </div>
             </div>
-
-            <br />
-            <br />
-
-            {/* ratings */}
-            <h5 className="pl-3 text-[20px] font-[500]">
-              Give a Rating <span className="text-red-500">*</span>
-            </h5>
-            <div className="flex w-full ml-2 pt-1">
-              {[1, 2, 3, 4, 5].map((i) =>
-                rating >= i ? (
-                  <AiFillStar
-                    key={i}
-                    className="mr-1 cursor-pointer"
-                    color="rgb(246,186,0)"
-                    size={25}
-                    onClick={() => setRating(i)}
+          </div>
+          <div className="bg-gray-50 dark:bg-gray-800 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col">
+            <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
+              Customer
+            </h3>
+            <div className="flex flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0">
+              <div className="flex flex-col justify-start items-start flex-shrink-0">
+                <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
+                  <img
+                    src={data?.user.avatar}
+                    alt="avatar"
+                    className="rounded-full"
                   />
-                ) : (
-                  <AiOutlineStar
-                    key={i}
-                    className="mr-1 cursor-pointer"
-                    color="rgb(246,186,0)"
-                    size={25}
-                    onClick={() => setRating(i)}
-                  />
-                )
-              )}
-            </div>
-            <br />
-            <div className="w-full ml-3">
-              <label className="block text-[20px] font-[500]">
-                Write a comment
-                <span className="ml-1 font-[400] text-[16px] text-[#00000052]">
-                  (optional)
-                </span>
-              </label>
-              <textarea
-                name="comment"
-                id=""
-                cols="20"
-                rows="5"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="How was your product? write your expresion about it!"
-                className="mt-2 w-[95%] border p-2 outline-none"
-              ></textarea>
-            </div>
-            <div
-              className={`${styles.button} text-white text-[20px] ml-3`}
-              onClick={rating > 1 ? reviewHandler : null}
-            >
-              Submit
+                  <div className="flex justify-start items-start flex-col space-y-2">
+                    <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
+                      {data?.user.name}
+                    </p>
+                    <p className="text-sm dark:text-gray-300 leading-5 text-gray-600">
+                      Thanks-for-Shopping-with-Us!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="">
+                  <div className="block">
+                    <div className="flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 pt-4 w-full">
+                      <img
+                        className="dark:hidden"
+                        src="https://tuk-cdn.s3.amazonaws.com/can-uploader/order-summary-3-svg1.svg"
+                        alt="email"
+                      />
+                      <img
+                        className="hidden dark:block"
+                        src="https://tuk-cdn.s3.amazonaws.com/can-uploader/order-summary-3-svg1dark.svg"
+                        alt="email"
+                      />
+                      <p className="cursor-pointer text-sm leading-5 ">
+                        {data?.user.email}
+                      </p>
+                    </div>
+                    <div className="flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 pb-4 border-b border-gray-200 w-full">
+                      <BiPhoneCall size={25} className="dark:hidden" />
+                      <BiPhoneCall size={25} className="hidden dark:block" />
+
+                      <p className="cursor-pointer text-sm leading-5 ">
+                        {data?.user.phoneNumber}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
+                <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-4 md:space-y-0 md:flex-row items-center md:items-start">
+                  <div className="flex justify-center md:justify-start items-center md:items-start flex-col xl:mt-8">
+                    <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
+                      Shipping Address
+                    </p>
+                    <p className="w-48 mt-5 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      {data?.shippingAddress.address1}
+                    </p>
+                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      {data?.shippingAddress.address2}
+                    </p>
+                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      {data?.shippingAddress.country}
+                    </p>
+                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      {data?.shippingAddress.city}
+                    </p>
+                  </div>
+                  <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
+                    <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
+                      Payment Info:{" "}
+                    </p>
+                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      Status:{" "}
+                      {data?.paymentInfo?.status
+                        ? data?.paymentInfo?.status
+                        : "Not Paid"}{" "}
+                      <br />
+                      Mode:{" "}
+                      {data?.paymentInfo?.type
+                        ? data?.paymentInfo?.type
+                        : "Processing"}{" "}
+                    </p>
+                  </div>
+                  <div className="flex justify-center md:justify-start items-center md:items-start flex-col">
+                    <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
+                      Request a refund
+                    </p>
+                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                      {data?.status === "Delivered" ? (
+                        <div
+                          className={`${styles.button} text-white`}
+                          onClick={refundHandler}
+                        >
+                          Request a Refund
+                        </div>
+                      ) : (
+                        <p>Refunds only available after delivery</p>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex w-full mt-2 justify-center items-center md:justify-start md:items-start">
+                  <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 rounded-md font-medium w-96 2xl:w-full text-base leading-4 text-gray-800">
+                    Asante! Karibu Tena!
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      )}
-
-      <div className="border-t w-full text-right">
-        <h5 className="pt-3 text-[18px]">
-          Total Price:{" "}
-          <strong>
-            {" "}
-            <NumericFormat
-              value={data?.totalPrice}
-              displayType={"text"}
-              thousandSeparator={true}
-              prefix={"Ksh. "}
-            />
-          </strong>
-        </h5>
       </div>
-      <br />
-      <br />
-      <div className="w-full 800px:flex items-center">
-        <div className="w-full 800px:w-[60%]">
-          <h4 className="pt-3 text-[20px] font-[600]">Shipping Address:</h4>
-          <h4 className="pt-3 text-[20px]">
-            {data?.shippingAddress.address1 +
-              " " +
-              data?.shippingAddress.address2}
-          </h4>
-          <h4 className=" text-[20px]">{data?.shippingAddress.country}</h4>
-          <h4 className=" text-[20px]">{data?.shippingAddress.city}</h4>
-          <h4 className=" text-[20px]">{data?.user?.phoneNumber}</h4>
-        </div>
-        <div className="w-full 800px:w-[40%]">
-          <h4 className="pt-3 text-[20px]">Payment Info:</h4>
-          <h4>
-            Status:{" "}
-            {data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}
-          </h4>
-          <br />
-          {data?.status === "Delivered" && (
-            <div
-              className={`${styles.button} text-white`}
-              onClick={refundHandler}
-            >
-              Give a Refund
-            </div>
-          )}
-        </div>
-      </div>
-      <br />
-      <Link to="/">
-        <div className={`${styles.button} text-white`}>Send Message</div>
-      </Link>
-      <br />
-      <br />
-    </div>
+    </>
   );
 };
 
