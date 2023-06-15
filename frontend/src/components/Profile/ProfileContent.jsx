@@ -38,6 +38,8 @@ const ProfileContent = ({ active }) => {
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
+  const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -88,7 +90,8 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full">
             <div className="">
               <img
-                src={`${backend_url}${user?.avatar}`}
+                src={imgSrc}
+                onError={() => setImgSrc(`${backend_url}defaultavatar.png`)}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />

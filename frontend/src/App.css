@@ -174,3 +174,47 @@ input[type="number"] {
   color: #f0c040;
 }
 /* /// */
+
+/* bouncing arrow */
+.arrow {
+  position: relative;
+  bottom: -2rem;
+  left: 50%;
+  margin-left: -20px;
+  width: 40px;
+  height: 40px;
+
+  /**
+   * Dark Arrow Down
+   */
+  background-size: contain;
+}
+
+.bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-30px);
+  }
+  60% {
+    transform: translateX(-15px);
+  }
+}
+
+.avatarimg:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  background-image: url("");
+}

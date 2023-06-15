@@ -95,6 +95,8 @@ const Header = ({ activeHeading }) => {
       e.stopPropagation();
     }
   };
+  const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
+
   return (
     <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
@@ -257,7 +259,10 @@ const Header = ({ activeHeading }) => {
                 {isAuthenticated ? (
                   <Link to="/profile">
                     <img
-                      src={`${backend_url}${user?.avatar}`}
+                      src={imgSrc}
+                      onError={() =>
+                        setImgSrc(`${backend_url}defaultavatar.png`)
+                      }
                       className="w-[35px] h-[35px] rounded-full"
                       alt=""
                     />
@@ -407,7 +412,10 @@ const Header = ({ activeHeading }) => {
                   <div>
                     <Link to="/profile">
                       <img
-                        src={`${backend_url}${user.avatar}`}
+                        src={imgSrc}
+                        onError={() =>
+                          setImgSrc(`${backend_url}defaultavatar.png`)
+                        }
                         alt=""
                         className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88]"
                       />

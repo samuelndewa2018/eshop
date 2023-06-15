@@ -67,6 +67,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ShopForgotPassword from "./components/Shop/ShopForgotPassword";
 import ShopResetPassword from "./components/Shop/ShopResetPassword";
 import TrialPage from "./Trial/TrialPage";
+import Loader from "./components/Layout/Loader";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -190,7 +191,10 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
+        {/* to be removed in production */}
         <Route path="/trial" element={<TrialPage />} />
+        {/* /// */}
+
         <Route
           path="/dashboard"
           element={

@@ -15,8 +15,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", express.static(path.join(__dirname, "./tmp")));
-// app.use("/", express.static(path.join(__dirname, "./uploads")));
+// app.use("/", express.static(path.join(__dirname, "./tmp")));
+app.use("/", express.static(path.join(__dirname, "../uploads")));
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });

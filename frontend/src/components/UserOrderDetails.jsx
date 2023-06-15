@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { BiPhoneCall } from "react-icons/bi";
+import Typed from "react-typed";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -29,6 +30,8 @@ const UserOrderDetails = () => {
   }, [dispatch]);
 
   const data = orders && orders.find((item) => item._id === id);
+
+  console.log(data?.user.avatar);
 
   const subTotals = data?.cart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
@@ -84,7 +87,7 @@ const UserOrderDetails = () => {
       });
   };
 
-  console.log(data);
+  const [imgSrc, setImgSrc] = useState(`${backend_url}${data?.user.avatar}`);
 
   return (
     <>
@@ -308,11 +311,11 @@ const UserOrderDetails = () => {
                     </p>
                     <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
                       <NumericFormat
-                        value={
+                        value={Math.round(
                           data?.totalPrice -
-                          Math.round(subTotals * 0.1) -
-                          subTotals
-                        }
+                            Math.round(subTotals * 0.1) -
+                            subTotals
+                        )}
                         displayType={"text"}
                         thousandSeparator={true}
                         prefix={"Ksh. "}
@@ -339,7 +342,7 @@ const UserOrderDetails = () => {
                   </p>
                   <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
                     <NumericFormat
-                      value={data?.totalPrice}
+                      value={Math.round(data?.totalPrice)}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Ksh. "}
@@ -395,9 +398,10 @@ const UserOrderDetails = () => {
               <div className="flex flex-col justify-start items-start flex-shrink-0">
                 <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
                   <img
-                    src={data?.user.avatar}
-                    alt="avatar"
-                    className="rounded-full"
+                    src={imgSrc}
+                    onError={() => setImgSrc(`${backend_url}defaultavatar.png`)}
+                    className="w-[60px] h-[60px] rounded-full avatarimg"
+                    alt=""
                   />
                   <div className="flex justify-start items-start flex-col space-y-2">
                     <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
@@ -491,8 +495,14 @@ const UserOrderDetails = () => {
                   </div>
                 </div>
                 <div className="flex w-full mt-2 justify-center items-center md:justify-start md:items-start">
-                  <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 rounded-md font-medium w-96 2xl:w-full text-base leading-4 text-gray-800">
-                    Asante! Karibu Tena!
+                  <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-gray-200 outline-none ring-2 ring-offset-2 ring-gray-800 border border-gray-800 rounded-md font-medium w-96 2xl:w-full text-base leading-4 text-gray-800">
+                    <Typed
+                      className="text-black"
+                      strings={["Asante Sana! Karibu Tena! 🥰"]}
+                      typeSpeed={40}
+                      backSpeed={50}
+                      loop
+                    />
                   </button>
                 </div>
               </div>
