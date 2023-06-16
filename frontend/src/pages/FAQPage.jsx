@@ -9,7 +9,7 @@ const FAQPage = () => {
     <div>
       <Meta title="FAQs" />
 
-      <Header activeHeading={6} />
+      <Header activeHeading={7} />
       <Faq />
       <Footer />
     </div>

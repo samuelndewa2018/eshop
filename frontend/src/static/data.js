@@ -13,6 +13,10 @@ export const navItems = [
     url: "/products",
   },
   {
+    title: "Compare Products",
+    url: "/compare-products",
+  },
+  {
     title: "Events",
     url: "/events",
   },

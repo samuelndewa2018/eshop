@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/styles";
 import { getAllOrdersOfUser } from "../redux/actions/order";
@@ -16,7 +16,7 @@ import Typed from "react-typed";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
@@ -24,6 +24,7 @@ const UserOrderDetails = () => {
   const [rating, setRating] = useState(1);
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
@@ -88,6 +89,28 @@ const UserOrderDetails = () => {
   };
 
   const [imgSrc, setImgSrc] = useState(`${backend_url}${data?.user.avatar}`);
+
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
+  };
 
   return (
     <>
@@ -383,9 +406,12 @@ const UserOrderDetails = () => {
                   </p>
                 </div>
                 <div className="w-full flex justify-center items-center">
-                  <button className="hover:bg-black rounded-md dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white">
+                  <Link
+                    to="/contact"
+                    className="hover:bg-black rounded-md text-center dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white"
+                  >
                     Send Us Message
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

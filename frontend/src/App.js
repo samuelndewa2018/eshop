@@ -68,6 +68,7 @@ import ShopForgotPassword from "./components/Shop/ShopForgotPassword";
 import ShopResetPassword from "./components/Shop/ShopResetPassword";
 import TrialPage from "./Trial/TrialPage";
 import Loader from "./components/Layout/Loader";
+import CompareProducts from "./pages/CompareProducts";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -116,6 +117,7 @@ const App = () => {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
+        <Route path="/compare-products" element={<CompareProducts />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQPage />} />

@@ -70,7 +70,7 @@ const Contact = () => {
     <>
       <Meta title="Contact Us" />
       <div>
-        <Header activeHeading={5} />
+        <Header activeHeading={6} />
         <div className="m-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl ...">
           <h3 className="my-4 text-center text-3xl">Contact Us</h3>
           {error && (

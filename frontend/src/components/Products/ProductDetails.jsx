@@ -5,6 +5,8 @@ import {
   AiOutlineMessage,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import Typed from "react-typed";
+import { FiCopy } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -118,6 +120,17 @@ const ProductDetails = ({ data }) => {
     }
   };
 
+  const copyToClipboard = (text) => {
+    console.log("text", text);
+    var textField = document.createElement("textarea");
+    textField.innerText = text;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand("copy");
+    textField.remove();
+    toast.info("Link copied to clipboard");
+  };
+
   return (
     <div className="bg-white">
       {data ? (
@@ -153,13 +166,21 @@ const ProductDetails = ({ data }) => {
                   ></div>
                 </div>
               </div>
-              <div className="w-full 800px:w-[50%] pt-5">
+              <div className="w-full 800px:w-[50%] pt-5 ml-2">
                 <h1 className={`${styles.productTitle}`}>{data.name}</h1>
                 <p>{data.stock}</p>
                 <div className="disableStyles">
-                  <p
+                  {/* <p
                     dangerouslySetInnerHTML={{
                       __html: data.description,
+                    }}
+                  ></p> */}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        data.description.length > 450
+                          ? data.description.slice(0, 450) + "..."
+                          : data.description,
                     }}
                   ></p>
                 </div>
@@ -245,6 +266,25 @@ const ProductDetails = ({ data }) => {
                       Send Message <AiOutlineMessage className="ml-1" />
                     </span>
                   </div>
+                </div>
+                <div className="flex gap-10 items-center my-3">
+                  <h3 className="product-heading">Product Link :</h3>
+                  <a
+                    href="javascript:void(0);"
+                    onClick={() => {
+                      copyToClipboard(window.location.href);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <FiCopy size={25} className="fs-5 me-2" />
+                      <Typed
+                        strings={["Click Here To Copy The Product Link"]}
+                        typeSpeed={40}
+                        backSpeed={50}
+                        loop
+                      />
+                    </div>
+                  </a>
                 </div>
               </div>
             </div>

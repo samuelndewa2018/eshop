@@ -18,13 +18,16 @@ import {
 } from "../../../redux/actions/wishlist";
 import { useEffect } from "react";
 import { addTocart } from "../../../redux/actions/cart";
+import { addTocompare } from "../../../redux/actions/compare";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 import { NumericFormat } from "react-number-format";
+import { TbArrowsShuffle2 } from "react-icons/tb";
 
 const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
+  const { compare } = useSelector((state) => state.compare);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -59,6 +62,17 @@ const ProductCard = ({ data, isEvent }) => {
         dispatch(addTocart(cartData));
         toast.success("Item added to cart successfully!");
       }
+    }
+  };
+
+  const addToCompareHandler = (id) => {
+    const isItemExists = compare && compare.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Product already in comparelist!");
+    } else {
+      const compareData = { ...data, qty: 1 };
+      dispatch(addTocompare(compareData));
+      toast.success("Product added to comparelist!");
     }
   };
 
@@ -161,6 +175,7 @@ const ProductCard = ({ data, isEvent }) => {
             color="#333"
             title="Quick view"
           />
+
           <AiOutlineShoppingCart
             size={25}
             className="cursor-pointer absolute right-2 top-24"
@@ -168,6 +183,14 @@ const ProductCard = ({ data, isEvent }) => {
             color="#444"
             title="Add to cart"
           />
+          <TbArrowsShuffle2
+            size={25}
+            className="cursor-pointer absolute right-2 top-36"
+            onClick={() => addToCompareHandler(data._id)}
+            color="#444"
+            title="Add to compare"
+          />
+
           {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
         </div>
       </div>

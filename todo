@@ -1,9 +1,12 @@
-// to do list...
+// TODO LIST...
 
-//=== product details and card goes beyound products available
-//== confirm before deleting
-//== on wishlist page the add to cart product icon is not doing anything
-//== after clicking a searched product in mobile mode it does not go to that ptoduct
+//== on wishlist page the add to cart product icon is NOT clossing the page
+//== after clicking a searched product in mobile mode it does not go to that ptoduct --- goes with slag not id(params)
 //=== address not displaying propery
 //== cant update avatar
+//== logout overload by order tables z-index issues
+//== sorting the products
+//==compare products page
+//== send email on order request 
+//== style emails
 
