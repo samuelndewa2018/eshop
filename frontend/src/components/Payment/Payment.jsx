@@ -19,6 +19,7 @@ const Payment = () => {
 
   const [orderData, setOrderData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [loading1, setLoading1] = useState(false);
 
   const navigate = useNavigate();
 
@@ -97,7 +98,7 @@ const Payment = () => {
 
   const cashOnDeliveryHandler = async (e) => {
     e.preventDefault();
-
+    setLoading1(true);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -107,19 +108,28 @@ const Payment = () => {
     order.paymentInfo = {
       type: "Cash On Delivery",
     };
+    try {
+      await axios
+        .post(`${server}/order/create-order`, order, config)
 
-    await axios
-      .post(`${server}/order/create-order`, order, config)
-      .then((res) => {
-        setOpen(false);
-        navigate("/order/success");
-        toast.success("Order successful!");
-        localStorage.setItem("cartItems", JSON.stringify([]));
-        localStorage.setItem("latestOrder", JSON.stringify([]));
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      });
+        .then(async (res, next) => {
+          setOpen(false);
+          navigate("/order/success");
+          toast.success("Order successful!");
+          localStorage.setItem("cartItems", JSON.stringify([]));
+          localStorage.setItem("latestOrder", JSON.stringify([]));
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+          // await axios.post(`${server}/order/send-order-email`, order, config);
+        });
+      setLoading1(false);
+    } catch (error) {
+      console.log(error);
+      setLoading1(false);
+    }
+
+    setLoading1(false);
   };
   const mpesaPaymentHandler = async (e) => {
     e.preventDefault();
@@ -160,6 +170,7 @@ const Payment = () => {
             onApprove={onApprove}
             createOrder={createOrder}
             cashOnDeliveryHandler={cashOnDeliveryHandler}
+            loading1={loading1}
             mpesaPaymentHandler={mpesaPaymentHandler}
           />
         </div>
@@ -187,6 +198,7 @@ const PaymentInfo = ({
   createOrder,
   paymentHandler,
   cashOnDeliveryHandler,
+  loading1,
 }) => {
   const [select, setSelect] = useState(1);
   const [orderData, setOrderData] = useState([]);
@@ -522,7 +534,8 @@ const PaymentInfo = ({
             <form className="w-full" onSubmit={cashOnDeliveryHandler}>
               <input
                 type="submit"
-                value="Confirm"
+                disabled={loading1}
+                value={loading1 ? "loading..." : "Confirm"}
                 className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               />
             </form>

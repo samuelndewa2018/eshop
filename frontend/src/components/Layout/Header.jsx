@@ -37,6 +37,11 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const statements = useSelector((state) => state.allStatements);
+  // console.log(statements);
+
+  // console.log(statements.allStatements?.promotionName);
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -96,21 +101,31 @@ const Header = ({ activeHeading }) => {
     }
   };
   const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
+  const typed1 = statements?.allStatements[0]?.typingName1
+    ? statements?.allStatements[0]?.typingName1
+    : "Please Call/Text/WhatApp on 0712 012 113 to order.";
+
+  const typed2 = statements?.allStatements[0]?.typingName2
+    ? statements?.allStatements[0]?.typingName2
+    : "Free Delivery On Goods Above Ksh. 5,000...........";
+
+  const typed3 = statements?.allStatements[0]?.typingName3
+    ? statements?.allStatements[0]?.typingName3
+    : "Get Coupons On Every Successfully Purchase........";
 
   return (
     <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
         <div className="flex">
           <p className="hidden text-white lg:block">
-            Free Shipping Over Ksh. 5,000 & Free Return
+            {/* Free Shipping Over Ksh. 5,000 & Free Return */}
+            {statements?.allStatements[0]?.promotionName
+              ? statements?.allStatements[0]?.promotionName
+              : "Free Shipping Over Ksh. 5,000 & Free Return"}
           </p>
           <Typed
             className="text-white lg:ml-20 sm:ml-0"
-            strings={[
-              "Please Call/Text/WhatApp on 0712 012 113 to order.",
-              "Free Delivery On Goods Above Ksh. 5,000...........",
-              "Get Coupons On Every Successfully Purchase........",
-            ]}
+            strings={[`${typed1}`, `${typed2}`, `${typed3}`]}
             typeSpeed={40}
             backSpeed={50}
             loop
@@ -370,9 +385,9 @@ const Header = ({ activeHeading }) => {
                     {searchData.map((i) => {
                       const d = i.name;
 
-                      const Product_name = d.replace(/\s+/g, "-");
+                      // const Product_name = d.replace(/\s+/g, "-");
                       return (
-                        <Link to={`/product/${Product_name}`}>
+                        <Link to={`/product/${i._id}`}>
                           <div className="flex items-center">
                             <img
                               src={`${backend_url}${i.images[0]}`}

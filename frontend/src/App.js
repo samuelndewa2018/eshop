@@ -69,6 +69,7 @@ import ShopResetPassword from "./components/Shop/ShopResetPassword";
 import TrialPage from "./Trial/TrialPage";
 import Loader from "./components/Layout/Loader";
 import CompareProducts from "./pages/CompareProducts";
+import { getAllStatements } from "./redux/actions/statements";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -78,6 +79,7 @@ const App = () => {
     setStripeApiKey(data.stripeApikey);
   }
   useEffect(() => {
+    Store.dispatch(getAllStatements());
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());

@@ -179,18 +179,21 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               <HiOutlineMinus size={16} color="#7d879c" />
             </div>
           </div>
+
           <img
             src={`${backend_url}${data?.images[0]}`}
             alt=""
             className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
           />
           <div className="pl-[5px]">
-            {/* <h1>{data.name}</h1> */}
-            <h1>
-              {data.name.length > 40
-                ? data.name.slice(0, 40) + "..."
-                : data.name}
-            </h1>
+            <Link to="/">
+              {/* <h1>{data.name}</h1> */}
+              <h1>
+                {data.name.length > 40
+                  ? data.name.slice(0, 40) + "..."
+                  : data.name}
+              </h1>
+            </Link>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
               <NumericFormat
                 value={data.discountPrice}
@@ -209,6 +212,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               />
             </h4>
           </div>
+
           <AiFillDelete
             className="cursor-pointer min-w-[20px]"
             onClick={() => setModalOpen(true)}

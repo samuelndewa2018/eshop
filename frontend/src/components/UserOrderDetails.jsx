@@ -32,8 +32,6 @@ const UserOrderDetails = () => {
 
   const data = orders && orders.find((item) => item._id === id);
 
-  console.log(data?.user.avatar);
-
   const subTotals = data?.cart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
     0

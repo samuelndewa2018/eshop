@@ -17,9 +17,12 @@ import {
   removeFromWishlist,
 } from "../../../redux/actions/wishlist";
 import { NumericFormat } from "react-number-format";
+import { TbArrowsShuffle2 } from "react-icons/tb";
+import { addTocompare } from "../../../redux/actions/compare";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
+  const { compare } = useSelector((state) => state.compare);
   const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
@@ -79,6 +82,16 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     }
     if (e.stopPropagation) {
       e.stopPropagation();
+    }
+  };
+  const addToCompareHandler = (id) => {
+    const isItemExists = compare && compare.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Product already in comparelist!");
+    } else {
+      const compareData = { ...data, qty: 1 };
+      dispatch(addTocompare(compareData));
+      toast.success("Product added to comparelist!");
     }
   };
   return (
@@ -200,13 +213,23 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     )}
                   </div>
                 </div>
-                <div
-                  className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
-                  onClick={() => addToCartHandler(data._id)}
-                >
-                  <span className="text-[#fff] flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
+                <div className="flex gap-4">
+                  <div
+                    className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
+                    onClick={() => addToCartHandler(data._id)}
+                  >
+                    <span className="text-[#fff] flex items-center">
+                      Add to cart <AiOutlineShoppingCart className="ml-1" />
+                    </span>
+                  </div>
+                  <div
+                    className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
+                    onClick={() => addToCompareHandler(data._id)}
+                  >
+                    <span className="text-white flex items-center">
+                      Add to compare <TbArrowsShuffle2 className="ml-1" />
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

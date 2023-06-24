@@ -20,14 +20,6 @@ export const navItems = [
     title: "Events",
     url: "/events",
   },
-  {
-    title: "Contact Us",
-    url: "/contact",
-  },
-  {
-    title: "FAQ",
-    url: "/faq",
-  },
 ];
 
 // branding data
@@ -35,7 +27,7 @@ export const brandingData = [
   {
     id: 1,
     title: "Free Shipping",
-    Description: "From all orders over 100$",
+    Description: "From all orders over Ksh. 1200",
     icon: (
       <svg
         width="36"
@@ -640,12 +632,15 @@ export const footercompanyLinks = [
 export const footerSupportLinks = [
   {
     name: "FAQ",
+    link: "/faq",
+  },
+
+  {
+    name: "Contact Us",
+    link: "/contact",
   },
   {
     name: "Reviews",
-  },
-  {
-    name: "Contact Us",
   },
   {
     name: "Shipping",

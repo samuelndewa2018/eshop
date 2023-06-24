@@ -20,11 +20,14 @@ import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
+import { TbArrowsShuffle2 } from "react-icons/tb";
+import { addTocompare } from "../../redux/actions/compare";
 
 const ProductDetails = ({ data }) => {
   console.log(data);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
+  const { compare } = useSelector((state) => state.compare);
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { products } = useSelector((state) => state.products);
   const [count, setCount] = useState(1);
@@ -119,7 +122,16 @@ const ProductDetails = ({ data }) => {
       toast.error("Please login to create a conversation");
     }
   };
-
+  const addToCompareHandler = (id) => {
+    const isItemExists = compare && compare.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Product already in comparelist!");
+    } else {
+      const compareData = { ...data, qty: 1 };
+      dispatch(addTocompare(compareData));
+      toast.success("Product added to comparelist!");
+    }
+  };
   const copyToClipboard = (text) => {
     console.log("text", text);
     var textField = document.createElement("textarea");
@@ -232,13 +244,23 @@ const ProductDetails = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div
-                  className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
-                  onClick={() => addToCartHandler(data._id)}
-                >
-                  <span className="text-white flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
+                <div className="flex gap-4">
+                  <div
+                    className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
+                    onClick={() => addToCartHandler(data._id)}
+                  >
+                    <span className="text-white flex items-center">
+                      Add to cart <AiOutlineShoppingCart className="ml-1" />
+                    </span>
+                  </div>
+                  <div
+                    className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
+                    onClick={() => addToCompareHandler(data._id)}
+                  >
+                    <span className="text-white flex items-center">
+                      Add to compare <TbArrowsShuffle2 className="ml-1" />
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center pt-8">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
