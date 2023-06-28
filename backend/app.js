@@ -43,6 +43,8 @@ const message = require("./controller/message");
 const withdraw = require("./controller/withdraw");
 const mpesaRoutes = require("./routes/mpesa");
 const statementsRoutes = require("./controller/statements");
+const category = require("./controller/categories");
+const carousel = require("./controller/carousel");
 
 app.use("/api/v2/user", user);
 app.use("/api/v2/conversation", conversation);
@@ -56,6 +58,8 @@ app.use("/api/v2/payment", payment);
 app.use("/api/v2/withdraw", withdraw);
 app.use("/api/v2/mpesa", mpesaRoutes);
 app.use("/api/v2/statements", statementsRoutes);
+app.use("/api/v2/category", category);
+app.use("/api/v2/carousel", carousel);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);

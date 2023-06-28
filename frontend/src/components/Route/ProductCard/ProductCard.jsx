@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import {
   AiFillHeart,
-  AiFillStar,
   AiOutlineEye,
   AiOutlineHeart,
   AiOutlineShoppingCart,
-  AiOutlineStar,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { backend_url } from "../../../server";
@@ -23,6 +21,7 @@ import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 import { NumericFormat } from "react-number-format";
 import { TbArrowsShuffle2 } from "react-icons/tb";
+import { IoIosShareAlt } from "react-icons/io";
 
 const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -74,6 +73,32 @@ const ProductCard = ({ data, isEvent }) => {
       dispatch(addTocompare(compareData));
       toast.success("Product added to comparelist!");
     }
+  };
+
+  const shareToSocialMedia = (value) => {
+    // Check if the navigator supports the share API
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Product Link",
+          text: "Check out this product!",
+          url: value,
+        })
+        .then(() => {
+          console.log("Product link shared successfully!");
+        })
+        .catch((error) => {
+          console.error("Error sharing product link:", error);
+        });
+    } else {
+      // Fallback to copying the link to clipboard
+      copyToClipboard(value);
+    }
+  };
+
+  const copyToClipboard = (value) => {
+    navigator.clipboard.writeText(value);
+    toast.info("Product link copied to clipboard!");
   };
 
   return (
@@ -183,12 +208,31 @@ const ProductCard = ({ data, isEvent }) => {
             color="#444"
             title="Add to cart"
           />
+          <IoIosShareAlt
+            size={25}
+            className="cursor-pointer absolute right-2 top-36
+            "
+            // onClick={() => {
+            //   copyToClipboard(window.location.href);
+            // }}
+            onClick={() =>
+              shareToSocialMedia(
+                `${
+                  isEvent === true
+                    ? `/product/${data._id}?isEvent=true`
+                    : `/product/${data._id}`
+                }`
+              )
+            }
+            color="#444"
+            title="Share"
+          />
           <TbArrowsShuffle2
             size={25}
-            className="cursor-pointer absolute right-2 top-36"
+            className="cursor-pointer absolute right-2 top-48"
             onClick={() => addToCompareHandler(data._id)}
             color="#444"
-            title="Add to compare"
+            title="Compare Products"
           />
 
           {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}

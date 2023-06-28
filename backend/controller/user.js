@@ -1278,7 +1278,7 @@ router.post(
       const data = {
         email: email,
         subject: "Forgot Password Link",
-        message: resetURL,
+        html: resetURL,
       };
       sendMail(data);
       res.json(token);

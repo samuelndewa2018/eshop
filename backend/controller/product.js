@@ -187,4 +187,46 @@ router.get(
     }
   })
 );
+
+// update seller info
+router.put(
+  "/update-product/:id",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const {
+        name,
+        description,
+        tags,
+        originalPrice,
+        discountPrice,
+        stock,
+        variations,
+      } = req.body;
+
+      const productId = req.params.id;
+
+      const productData = await Product.findById(productId);
+      if (!productData) {
+        return next(new ErrorHandler("Product not found", 400));
+      }
+      productData.name = name;
+      productData.description = description;
+      productData.tags = tags;
+      productData.originalPrice = originalPrice;
+      productData.discountPrice = discountPrice;
+      productData.stock = stock;
+      productData.variations = variations;
+
+      await productData.save();
+
+      res.status(201).json({
+        success: true,
+        product: productData,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

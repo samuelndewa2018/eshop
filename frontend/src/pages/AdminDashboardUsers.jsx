@@ -1,6 +1,6 @@
 import React from "react";
 import AdminHeader from "../components/Layout/AdminHeader";
-import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
+import AdminSideBar from "../components/Admin/Layout/AdminSidebar";
 import AllUsers from "../components/Admin/AllUsers";
 import Meta from "../components/Meta";
 

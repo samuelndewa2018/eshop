@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import AdminHeader from "../components/Layout/AdminHeader";
-import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
+import AdminSideBar from "../components/Admin/Layout/AdminSidebar";
 import { DataGrid } from "@material-ui/data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";

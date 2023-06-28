@@ -1,42 +1,45 @@
 const express = require("express");
-const router = express.Router();
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Statements = require("../model/Statements");
+const router = express.Router();
 
-// create new order
-router.post(
-  "/create-statement",
-  catchAsyncErrors(async (req, res, next) => {
-    try {
-      const statements = await Statements.create({
-        statements: "Welcome to eShop",
-      });
-
-      res.status(201).json({
-        success: true,
-        statements,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  })
-);
-
-// get all satements
-router.get(
-  "/get-all-statements",
-  catchAsyncErrors(async (req, res, next) => {
-    try {
-      const statements = await Statements.find().sort({ createdAt: -1 });
-
-      res.status(201).json({
-        success: true,
-        statements,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error, 400));
-    }
-  })
-);
+// Get all statements
+router.get("/get-statements", async (req, res) => {
+  try {
+    const statements = await Statements.find();
+    res.json(statements);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve statements." });
+  }
+});
+// Create a new statements
+router.post("/create-statements", async (req, res) => {
+  try {
+    const newStatement = new Statements(req.body);
+    const savedStatement = await newStatement.save();
+    res.status(201).json(savedStatement);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to create statement." });
+  }
+});
+router.post("/update-statements", async (req, res) => {
+  try {
+    const updatedStatement = await Statements.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(updatedStatement);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update statement." });
+  }
+});
+router.post("/delete-statements", async (req, res) => {
+  try {
+    await Statements.findByIdAndDelete(req.params.id);
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to delete statement." });
+  }
+});
 
 module.exports = router;

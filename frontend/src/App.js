@@ -69,6 +69,9 @@ import ShopResetPassword from "./components/Shop/ShopResetPassword";
 import TrialPage from "./Trial/TrialPage";
 import Loader from "./components/Layout/Loader";
 import CompareProducts from "./pages/CompareProducts";
+import AdminCategories from "./pages/AdminCategories";
+import CreateCarouselPage from "./components/Admin/CreateCarousel";
+import CreateStatements from "./components/Admin/CreateStatements";
 import { getAllStatements } from "./redux/actions/statements";
 
 const App = () => {
@@ -133,7 +136,30 @@ const App = () => {
           path="shop/reset-password/:token"
           element={<ShopResetPassword />}
         />
-
+        <Route
+          path="/admin-carousel"
+          element={
+            <ProtectedAdminRoute>
+              <CreateCarouselPage />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-statements"
+          element={
+            <ProtectedAdminRoute>
+              <CreateStatements />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedAdminRoute>
+              <AdminCategories />
+            </ProtectedAdminRoute>
+          }
+        />
         <Route
           path="/checkout"
           element={

@@ -1,6 +1,6 @@
 import React from "react";
 import { FiShoppingBag } from "react-icons/fi";
-import {GrWorkshop} from "react-icons/gr";
+import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
 import { CiMoneyBill, CiSettings } from "react-icons/ci";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { BsHandbag } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { AiOutlineSetting } from "react-icons/ai";
+import { BiCategoryAlt } from "react-icons/bi";
 
 const AdminSideBar = ({ active }) => {
   return (
@@ -79,10 +80,7 @@ const AdminSideBar = ({ active }) => {
 
       <div className="w-full flex items-center p-4">
         <Link to="/admin-products" className="w-full flex items-center">
-          <BsHandbag
-            size={30}
-            color={`${active === 5 ? "crimson" : "#555"}`}
-          />
+          <BsHandbag size={30} color={`${active === 5 ? "crimson" : "#555"}`} />
           <h5
             className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
               active === 5 ? "text-[crimson]" : "text-[#555]"
@@ -109,13 +107,8 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
 
-
-
       <div className="w-full flex items-center p-4">
-        <Link
-          to="/admin-withdraw-request"
-          className="w-full flex items-center"
-        >
+        <Link to="/admin-withdraw-request" className="w-full flex items-center">
           <CiMoneyBill
             size={30}
             color={`${active === 7 ? "crimson" : "#555"}`}
@@ -131,10 +124,7 @@ const AdminSideBar = ({ active }) => {
       </div>
 
       <div className="w-full flex items-center p-4">
-        <Link
-          to="/profile"
-          className="w-full flex items-center"
-        >
+        <Link to="/profile" className="w-full flex items-center">
           <AiOutlineSetting
             size={30}
             color={`${active === 8 ? "crimson" : "#555"}`}
@@ -148,7 +138,21 @@ const AdminSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
-
+      <div className="w-full flex items-center p-4">
+        <Link to="/categories" className="w-full flex items-center">
+          <BiCategoryAlt
+            size={30}
+            color={`${active === 10 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 10 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Category
+          </h5>
+        </Link>
+      </div>
     </div>
   );
 };

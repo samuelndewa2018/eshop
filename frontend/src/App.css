@@ -25,6 +25,19 @@
   font-weight: bold !important;
   color: #75787c !important;
 }
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* Adjust the desired height */
+  width: 100%; /* Adjust the desired width */
+}
+
+.carousel-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
 @tailwind components;
 @tailwind utilities;
 
