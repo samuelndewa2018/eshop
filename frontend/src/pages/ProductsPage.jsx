@@ -8,6 +8,7 @@ import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 import Meta from "../components/Meta";
 import { categoriesData } from "../static/data";
+import { Select, Option } from "@material-tailwind/react";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -80,14 +81,28 @@ const ProductsPage = () => {
               className="flex justify-start
              mb-4"
             >
-              <label className="mr-2">Sort By:</label>
-              <select value={sortBy} onChange={handleSortChange}>
-                <option value="">Select</option>
-                <option value="priceLowToHigh">Price: Low to High</option>
-                <option value="priceHighToLow">Price: High to Low</option>
-                <option value="ratingHighToLow">Rating: High to Low</option>
-                <option value="salesHighToLow">Sales: High to Low</option>
-              </select>
+              <label
+              // className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Sort By:
+              </label>
+              <Select
+                value={sortBy}
+                onChange={handleSortChange}
+                label="Select Version"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                {/* <select
+                
+               
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              > */}
+                <Option value="">Select</Option>
+                <Option value="priceLowToHigh">Price: Low to High</Option>
+                <Option value="priceHighToLow">Price: High to Low</Option>
+                <Option value="ratingHighToLow">Rating: High to Low</Option>
+                <Option value="salesHighToLow">Sales: High to Low</Option>
+              </Select>
             </div>
 
             {/* Category selection */}
