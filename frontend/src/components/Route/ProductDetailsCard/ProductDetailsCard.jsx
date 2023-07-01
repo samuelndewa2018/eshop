@@ -122,7 +122,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     <img
                       src={`${backend_url}${data?.shop?.avatar}`}
                       alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
+                      // className="w-[50px] h-[50px] rounded-full mr-2"
+                      className="h-[100px] w-[100px] object-cover mr-3 mt-3"
                     />
                     <div>
                       <h3 className={`${styles.shop_name}`}>

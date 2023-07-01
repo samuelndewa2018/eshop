@@ -103,7 +103,7 @@ const ProductCard = ({ data, isEvent }) => {
 
   return (
     <>
-      <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
+      <div className="w-full h-full bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
         <Link
           to={`${
@@ -129,48 +129,46 @@ const ProductCard = ({ data, isEvent }) => {
           }`}
         >
           <h4 className="pb-3 font-[500]">
-            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
+            {data.name.length > 25 ? data.name.slice(0, 25) + "..." : data.name}
           </h4>
 
           <div className="flex">
             <Ratings rating={data?.ratings} />
+          </div>
+          <div className="flex items-center justify-end">
             {data?.sold_out !== 0 && (
               <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
                 {data?.sold_out} sold
               </span>
             )}
           </div>
-
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
               <h5 className={`${styles.productDiscountPrice}`}>
-                {data.originalPrice === 0 ? (
-                  <NumericFormat
-                    value={data.originalPrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"Ksh. "}
-                  />
-                ) : (
-                  <NumericFormat
-                    value={data.discountPrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"Ksh. "}
-                  />
-                )}
+                <NumericFormat
+                  value={
+                    data.originalPrice === 0
+                      ? data.originalPrice
+                      : data.discountPrice
+                  }
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"Ksh "}
+                />
               </h5>
-              <h4 className={`${styles.price}`}>
-                {data.originalPrice ? (
-                  <NumericFormat
-                    value={data.originalPrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"Ksh. "}
-                  />
-                ) : null}
-              </h4>
+              <h5 className={`${styles.price}`}>
+                {"Ksh " + data.originalPrice ? data.originalPrice : null}
+              </h5>
             </div>
+          </div>
+
+          <div className="absolute top-2 left-2">
+            <span
+              className="bg-blue-500 text-white py-1 px-2 text-xs rounded-full"
+              style={{ transform: "rotate(45deg)" }}
+            >
+              {data.condition}
+            </span>
           </div>
         </Link>
 

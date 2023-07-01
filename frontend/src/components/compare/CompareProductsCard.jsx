@@ -115,16 +115,16 @@ const ProductCard = ({ data, isEvent }) => {
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
           <hr />
-          <div className="flex gap-4 my-2">
+          <div className="lg:flex sm:block gap-4 my-2">
             <p className="text-[#4b5563]">Ratings:</p>
             <div className="flex">
               <Ratings rating={data?.ratings} />
             </div>
           </div>
+          <hr />
           <div className="py-2 flex items-center justify-between">
             <div className="block">
-              <hr />
-              <div className="flex gap-4 my-2">
+              <div className="lg:flex sm:block gap-4 my-2">
                 <p className="text-[#4b5563]">Price Now:</p>
                 <h5 className={`${styles.productDiscountPrice}`}>
                   {data.originalPrice === 0 ? (
@@ -144,8 +144,7 @@ const ProductCard = ({ data, isEvent }) => {
                   )}
                 </h5>
               </div>
-              <hr />
-              <div className="flex gap-4 my-2 ">
+              <div className="lg:flex sm:block gap-4 my-2 ">
                 <p className="text-[#4b5563]">Price Was:</p>
                 <h4 className="text-red-400 line-through">
                   {data.originalPrice ? (
@@ -160,22 +159,22 @@ const ProductCard = ({ data, isEvent }) => {
               </div>
             </div>
           </div>
-          <hr />
-          <div className="flex gap-5 my-2">
+          <hr className="w-full" />
+          <div className="lg:flex sm:block gap-5 my-2">
             <p className="text-[#4b5563]">Total sales:</p>
             <p>
-              {data.sold_out === 0 ? "No Sales" : `${data.sold_out} products`}
+              {data.sold_out === 0 ? "No Sales" : `${data.sold_out} product(s)`}
             </p>
           </div>
-          <hr />
-          <div className="flex gap-5 my-2">
+          <hr className="w-full" />
+          <div className="lg:flex sm:block gap-5 my-2">
             <p className="text-[#4b5563]">Stock:</p>
             <p>
               {data.stock === 0 ? "Out of Stock" : `${data.stock} remaining`}
             </p>
           </div>
           <hr />
-          <div className="flex gap-4 my-2">
+          <div className="lg:flex sm:block gap-4 my-2">
             <p className="text-[#4b5563] ">Category:</p>
             <p>{data.category}</p>
           </div>

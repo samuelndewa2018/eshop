@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema({
   },
   condition: {
     type: String,
-    required: [true, "Please enter your product condition!"],
+    required: false,
   },
   images: [
     {

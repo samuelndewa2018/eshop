@@ -314,9 +314,9 @@ router.post(
                                   <table>
                                     <thead>
                                       <tr>
-                                        <td><strong>Product(s)</strong></td>
-                                        <td><strong>Quantity</strong></td>
-                                        <td><strong align="right">Price</strong></td>
+                                      <td style="padding-right: 20px;"><strong>Product(s)</strong></td>
+                                      <td style="padding-right: 10px;"><strong>Quantity</strong></td>
+                                      <td "text-align: right;"><strong align="right">Price</strong></td>
                                       </tr>
                                     </thead>
           
@@ -791,9 +791,9 @@ router.post(
                                   <table>
                                     <thead>
                                       <tr>
-                                        <td><strong>Product(s)</strong></td>
-                                        <td><strong>Quantity</strong></td>
-                                        <td><strong align="right">Price</strong></td>
+                                      <td style="padding-right: 20px;"><strong>Product(s)</strong></td>
+                                      <td style="padding-right: 10px;"><strong>Quantity</strong></td>
+                                      <td style="text-align: right;"><strong>Price</strong></td>
                                       </tr>
                                     </thead>
           
