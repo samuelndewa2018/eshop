@@ -27,11 +27,6 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  // const redirect = location ? location.split("=")[1] : "/";
-
-  // useEffect(() => {
-  // console.log();
-  // });
 
   const formik = useFormik({
     initialValues: {

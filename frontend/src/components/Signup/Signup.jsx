@@ -29,9 +29,6 @@ const signupSchema = yup.object({
 });
 
 const Singup = () => {
-  // const [email, setEmail] = useState("");
-  // const [name, setName] = useState("");
-  // const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -90,32 +87,6 @@ const Singup = () => {
     },
   });
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   await setLoading(true);
-  //   const config = { headers: { "Content-Type": "multipart/form-data" } };
-
-  //   const newForm = new FormData();
-
-  //   newForm.append("file", avatar);
-  //   newForm.append("name", name);
-  //   newForm.append("email", email);
-  //   newForm.append("password", password);
-  //   axios
-  //     .post(`${server}/user/create-user`, newForm, config)
-  //     .then((res) => {
-  //       toast.success(res.data.message);
-  //       setName("");
-  //       setEmail("");
-  //       setPassword("");
-  //       setAvatar();
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       toast.error(error.response.data.message);
-  //       setLoading(false);
-  //     });
-  // };
   const Checkbox = () => {
     var checkBox = document.getElementById("link-checkbox");
     if (checkBox.checked === true) {

@@ -34,14 +34,18 @@ const Categories = () => {
         </div>
       </div>
 
-      <div className="scrollDivScroll">
-        <MdChevronLeft className="rightScroll" onClick={slideLeft} size={40} />
+      <div className="">
         <div
-          className={`${styles.section} bg-white p-6 rounded-lg mb-12`}
+          className={`${styles.section} relative bg-white lg:p-6 sm:p-2 rounded-lg lg:mb-12 sm:mb-3`}
           id="categories"
         >
+          <MdChevronLeft
+            className="absolute z-10 top-[37%] rounded-full left-[-11px] bg-[#f9f4f4]"
+            onClick={slideLeft}
+            size={35}
+          />
           <div
-            className="categoryCard"
+            className="overflow-x-auto flex space-x-4 border-0"
             id="slider"
             style={{ scrollBehavior: "smooth" }}
           >
@@ -52,22 +56,26 @@ const Categories = () => {
                 };
                 return (
                   <div
-                    className="categoryCardDetails"
+                    className="border mb-2 p-3 min-w-[127px] rounded-md"
                     key={i.id}
                     onClick={() => handleSubmit(i)}
                   >
-                    <h5>{i.title}</h5>
+                    <p className="text-sm">{i.title}</p>
                     <img
                       src={i.image_Url}
-                      className="w-[120px] object-cover"
+                      className="lg:w-[170px] sm:w-[100px] object-cover lg:h-[100px] sm:h-[50px]"
                       alt=""
                     />
                   </div>
                 );
               })}
           </div>
+          <MdChevronRight
+            className="absolute z-10 top-[37%] rounded-full right-[-11px] bg-[#f9f4f4]"
+            onClick={slideRight}
+            size={35}
+          />
         </div>
-        <MdChevronRight className="leftScroll" onClick={slideRight} size={40} />
       </div>
     </>
   );

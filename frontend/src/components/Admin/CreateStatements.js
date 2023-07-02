@@ -4,8 +4,12 @@ import { server } from "../../server";
 
 const StatementsPage = () => {
   const [statements, setStatements] = useState([]);
-  const [newStatement, setNewStatement] = useState("");
-  const [typingNames, setTypingNames] = useState([]);
+  const [promotionName, setPromotionName] = useState("");
+  const [typingName1, setTypingName1] = useState("");
+  const [typingName2, setTypingName2] = useState("");
+  const [typingName3, setTypingName3] = useState("");
+  const [promotionImage, setPromotionImage] = useState("");
+  const [promotionDetails, setPromotionDetails] = useState("");
 
   useEffect(() => {
     getStatements();
@@ -19,18 +23,25 @@ const StatementsPage = () => {
       console.error("Failed to fetch statements:", error);
     }
   };
+  const sortedNewProducts = statements.sort((a, b) => {
+    return a.createdAt - b.createdAt;
+  });
+  console.log(sortedNewProducts);
 
   const createStatement = async () => {
     try {
       const response = await axios.post(
         `${server}/statements/create-statements`,
         {
-          promotionName: newStatement,
-          typingNames: typingNames,
+          promotionName: promotionName,
+          typingName1: typingName1,
+          typingName2: typingName2,
+          typingName3: typingName3,
+          promotionImage: promotionImage,
+          promotionDetails: promotionDetails,
         }
       );
       setStatements([...statements, response.data]);
-      setNewStatement("");
     } catch (error) {
       console.error("Failed to create statement:", error);
     }
@@ -48,28 +59,57 @@ const StatementsPage = () => {
   return (
     <div>
       <h1>Statements</h1>
-      <div>
+      <div className="gap-10">
+        <label>promotionName</label>
         <input
           type="text"
-          value={newStatement}
-          onChange={(e) => setNewStatement(e.target.value)}
+          value={promotionName}
+          onChange={(e) => setPromotionName(e.target.value)}
         />
         <br />
-        hi
+        <label>typingName1</label>
         <input
           type="text"
-          value={typingNames}
-          onChange={(e) => setTypingNames(e.target.value)}
+          value={typingName1}
+          onChange={(e) => setTypingName1(e.target.value)}
+        />
+        <br />
+        <label>typingName2</label>
+        <input
+          type="text"
+          value={typingName2}
+          onChange={(e) => setTypingName2(e.target.value)}
+        />
+        <br />
+        <label>typingName3</label>
+        <input
+          type="text"
+          value={typingName3}
+          onChange={(e) => setTypingName3(e.target.value)}
+        />
+        <br />
+        <label>promotionImage</label>
+        <input
+          type="text"
+          value={promotionImage}
+          onChange={(e) => setPromotionImage(e.target.value)}
+        />
+        <br />
+        <label>promotionDetails</label>
+        <input
+          type="text"
+          value={promotionDetails}
+          onChange={(e) => setPromotionDetails(e.target.value)}
         />
         <button onClick={createStatement}>Add Statement</button>
       </div>
       <ul>
-        {statements.map((statement) => (
-          <li key={statement._id}>
-            {statement.promotionName}
-            <button onClick={() => deleteStatement(statement._id)}>
+        {sortedNewProducts && sortedNewProducts.slice(0, 1).map((i) => (
+          <li key={i}>
+            {i.promotionName}
+            {/* <button onClick={() => deleteStatement(i._id)}>
               Delete
-            </button>
+            </button> */}
           </li>
         ))}
       </ul>
@@ -78,112 +118,3 @@ const StatementsPage = () => {
 };
 
 export default StatementsPage;
-
-// import React, { useState } from "react";
-// import axios from "axios";
-
-// const StatementsPage = () => {
-//   const [name, setName] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [variations, setVariations] = useState([]);
-
-//   const handleVariationChange = (index, field, value) => {
-//     const updatedVariations = [...variations];
-//     updatedVariations[index][field] = value;
-//     setVariations(updatedVariations);
-//   };
-
-//   const handleAddVariation = () => {
-//     setVariations([...variations, { name: "", price: 0, color: "", size: "" }]);
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const response = await axios.post("/api/products", {
-//         name,
-//         description,
-//         variations,
-//       });
-//       console.log(response.data);
-//     } catch (error) {
-//       console.error("Error:", error.response.data);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>Create Product</h1>
-//       <form onSubmit={handleSubmit}>
-//         <label htmlFor="name">Name:</label>
-//         <input
-//           type="text"
-//           id="name"
-//           value={name}
-//           onChange={(e) => setName(e.target.value)}
-//         />
-
-//         <label htmlFor="description">Description:</label>
-//         <textarea
-//           id="description"
-//           value={description}
-//           onChange={(e) => setDescription(e.target.value)}
-//         ></textarea>
-
-//         <h3>Variations:</h3>
-//         {variations.map((variation, index) => (
-//           <div key={index}>
-//             <label htmlFor="variationName">Name:</label>
-//             <input
-//               type="text"
-//               id="variationName"
-//               value={variation.name}
-//               onChange={(e) =>
-//                 handleVariationChange(index, "name", e.target.value)
-//               }
-//             />
-
-//             <label htmlFor="variationPrice">Price:</label>
-//             <input
-//               type="number"
-//               id="variationPrice"
-//               value={variation.price}
-//               onChange={(e) =>
-//                 handleVariationChange(index, "price", e.target.value)
-//               }
-//             />
-
-//             <label htmlFor="variationColor">Color:</label>
-//             <input
-//               type="text"
-//               id="variationColor"
-//               value={variation.color}
-//               onChange={(e) =>
-//                 handleVariationChange(index, "color", e.target.value)
-//               }
-//             />
-
-//             <label htmlFor="variationSize">Size:</label>
-//             <input
-//               type="text"
-//               id="variationSize"
-//               value={variation.size}
-//               onChange={(e) =>
-//                 handleVariationChange(index, "size", e.target.value)
-//               }
-//             />
-//           </div>
-//         ))}
-
-//         <button type="button" onClick={handleAddVariation}>
-//           Add Variation
-//         </button>
-
-//         <button type="submit">Create Product</button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default StatementsPage;

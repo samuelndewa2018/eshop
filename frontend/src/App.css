@@ -73,71 +73,22 @@ select {
   top: -9%;
   cursor: pointer;
 }
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+
+/* sroll bar styling */
+::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
+/* Customize scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 3px;
 }
-.categoryCard::-webkit-scrollbar {
-  display: none;
-}
-.categoryCard {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.categoryCard {
-  border-radius: 5px;
-  display: flex;
-  flex-direction: row !important;
-  justify-content: flex-start;
-  margin: 0 !important;
-  max-width: 100%;
-  overflow: auto;
-  position: relative;
-  white-space: nowrap;
-  width: 100vw !important;
-  position: relative !important;
-}
-.scrollDivScroll {
-  position: relative;
-}
-.categoryCardDetails {
-  display: block;
-  border: 1px solid #c4bebe;
-  margin: 0 12px;
-  padding: 5px;
-  border-radius: 5px;
-}
-.categoryCardDetails h5 {
-  width: 180px;
-}
-.categoryCardDetails img {
-  width: 167px;
-  height: 100px;
-}
-/* scroll styling */
-.rightScroll,
-.leftScroll {
-  position: absolute !important;
-  z-index: 9;
-  top: 37%;
-  border: 1px solid #eee;
-  border-radius: 50%;
-  background: #eee;
-  color: #000;
-  cursor: pointer;
-}
-.leftScroll {
-  right: 45px !important;
-}
-.rightScroll {
-  left: 45px !important;
+
+/* Minimize scrollbar size */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
 /* terms */

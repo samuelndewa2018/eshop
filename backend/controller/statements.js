@@ -11,6 +11,7 @@ router.get("/get-statements", async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve statements." });
   }
 });
+
 // Create a new statements
 router.post("/create-statements", async (req, res) => {
   try {
@@ -21,6 +22,7 @@ router.post("/create-statements", async (req, res) => {
     res.status(400).json({ error: "Failed to create statement." });
   }
 });
+// update statements
 router.post("/update-statements", async (req, res) => {
   try {
     const updatedStatement = await Statements.findByIdAndUpdate(
@@ -33,6 +35,8 @@ router.post("/update-statements", async (req, res) => {
     res.status(400).json({ error: "Failed to update statement." });
   }
 });
+
+// delete statements
 router.post("/delete-statements", async (req, res) => {
   try {
     await Statements.findByIdAndDelete(req.params.id);

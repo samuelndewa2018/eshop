@@ -19,14 +19,16 @@ const BestDeals = () => {
         <div className={`${styles.heading}`}>
           <h1>Best Deals</h1>
         </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0">
-          {" "}
-          {data && data.length !== 0 && (
-            <>
-              {data &&
-                data.map((i, index) => <ProductCard data={i} key={index} />)}
-            </>
-          )}
+        <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
+          {data &&
+            data.map((i, index) => (
+              <div
+                className="flex-none w-[250px] h-full min-w-[200px]"
+                key={index}
+              >
+                <ProductCard data={i} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

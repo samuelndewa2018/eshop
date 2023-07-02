@@ -1,18 +1,25 @@
 const mongoose = require("mongoose");
 
-const typingNamesSchema = new mongoose.Schema({
-  type: String,
-  color: String,
-  // Add more fields as per your requirements
-});
-
 const statementsSchema = new mongoose.Schema({
   promotionName: {
     type: String,
-    required: true,
     default: "Welcome to eShop",
   },
-  typingNames: [typingNamesSchema],
+  typingName1: {
+    type: String,
+  },
+  typingName2: {
+    type: String,
+  },
+  typingName3: {
+    type: String,
+  },
+  promotionImage: {
+    type: String,
+  },
+  promotionDetails: {
+    type: String, 
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

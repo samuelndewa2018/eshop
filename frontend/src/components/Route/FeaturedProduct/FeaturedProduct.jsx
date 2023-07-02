@@ -12,19 +12,29 @@ const FeaturedProduct = () => {
         <div className={`${styles.heading}`}>
           <h1>Featured Products</h1>
         </div>
-        <div className="grid grid-cols-2 gap-[20px]  md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0">
+        <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
           {" "}
           {allProducts && allProducts.length !== 0 && (
             <>
               {allProducts &&
                 allProducts.map((i, index) => (
-                  <ProductCard data={i} key={index} />
+                  <div className="h-full w-full">
+                    <ProductCard data={i} key={index} />
+                  </div>
                 ))}
             </>
           )}
         </div>
       </div>
     </div>
+    //    <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
+    //    {data &&
+    //      data.map((i, index) => (
+    //        <div className="flex-none w-[250px] h-[400px]" key={index}>
+    //          <ProductCard data={i} />
+    //        </div>
+    //      ))}
+    //  </div>
   );
 };
 

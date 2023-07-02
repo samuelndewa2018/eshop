@@ -46,7 +46,6 @@ const Hero = () => {
     return a.createdAt - b.createdAt;
   });
 
-  console.log(sortedBestSellingProducts);
 
   return (
     <>

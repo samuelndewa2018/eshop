@@ -290,8 +290,8 @@ const ProductDetails = ({ data }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex gap-10 items-center my-3">
-                  <h3 className="product-heading">Product Link :</h3>
+                <div className="flex items-center my-3 text-sm">
+                  <h3 className="product-heading mr-1">Product Link:</h3>
                   <a
                     href="javascript:void(0);"
                     onClick={() => {
@@ -340,7 +340,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px]  sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(1)}
           >
@@ -353,7 +353,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px]  sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(2)}
           >
@@ -366,7 +366,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px] sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(3)}
           >
@@ -380,7 +380,7 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p
-            className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line disableStyles"
+            className="py-2 lg:text-[18px]  sm:text-[12px] leading-8 pb-10 whitespace-pre-line disableStyles"
             dangerouslySetInnerHTML={{
               __html: data.description,
             }}
