@@ -103,7 +103,7 @@ const ProductCard = ({ data, isEvent }) => {
 
   return (
     <>
-      <div className="mb-1 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
+      <div className="mb-1 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer min-w-[200px]">
         <div className="flex justify-end"></div>
         <Link
           to={`${
@@ -129,14 +129,18 @@ const ProductCard = ({ data, isEvent }) => {
           }`}
         >
           <h4 className="pb-3 font-[500]">
-            {data.name.length > 25 ? data.name.slice(0, 25) + "..." : data.name}
+            {data.name.length > 24 ? data.name.slice(0, 24) + "..." : data.name}
           </h4>
 
           <div className="flex">
             <Ratings rating={data?.ratings} />
           </div>
           <div className="flex items-center justify-end">
-            {data?.sold_out !== 0 && (
+            {data?.sold_out === 0 ? (
+              <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
+                New Product
+              </span>
+            ) : (
               <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
                 {data?.sold_out} sold
               </span>

@@ -10,7 +10,7 @@ import {
   footercompanyLinks,
   footerProductLinks,
   footerSupportLinks,
-} from "../../static/data";
+} from "../../static/data"; 
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";

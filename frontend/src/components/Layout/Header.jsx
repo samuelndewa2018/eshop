@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
@@ -17,13 +17,15 @@ import { CgProfile } from "react-icons/cg";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
 import Typed from "react-typed";
+import axios from "axios";
 
 const Header = ({ activeHeading }) => {
+  const { statements } = useSelector((state) => state.statements);
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { isSeller } = useSelector((state) => state.seller);
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -37,10 +39,10 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const statements = useSelector((state) => state.allStatements);
-  // console.log(statements);
-
-  // console.log(statements.allStatements?.promotionName);
+  const promotionName = statements?.map((i) => i.promotionName);
+  const typingName1 = statements?.map((i) => i.typingName1);
+  const typingName2 = statements?.map((i) => i.typingName2);
+  const typingName3 = statements?.map((i) => i.typingName3);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -101,31 +103,15 @@ const Header = ({ activeHeading }) => {
     }
   };
   const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
-  const typed1 = statements?.allStatements[0]?.typingName1
-    ? statements?.allStatements[0]?.typingName1
-    : "Please Call/Text/WhatApp on 0712 012 113 to order.";
-
-  const typed2 = statements?.allStatements[0]?.typingName2
-    ? statements?.allStatements[0]?.typingName2
-    : "Free Delivery On Goods Above Ksh. 5,000...........";
-
-  const typed3 = statements?.allStatements[0]?.typingName3
-    ? statements?.allStatements[0]?.typingName3
-    : "Get Coupons On Every Successfully Purchase........";
 
   return (
     <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
         <div className="flex">
-          <p className="hidden text-white lg:block">
-            {/* Free Shipping Over Ksh. 5,000 & Free Return */}
-            {statements?.allStatements[0]?.promotionName
-              ? statements?.allStatements[0]?.promotionName
-              : "Free Shipping Over Ksh. 5,000 & Free Return"}
-          </p>
+          <p className="hidden text-white lg:block">{promotionName}</p>
           <Typed
             className="text-white lg:ml-20 sm:ml-0"
-            strings={[`${typed1}`, `${typed2}`, `${typed3}`]}
+            strings={[`${typingName1}`, `${typingName2}`, `${typingName3}`]}
             typeSpeed={40}
             backSpeed={50}
             loop

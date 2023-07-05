@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import styles from "../../../styles/styles";
 import ProductCard from "../ProductCard/ProductCard";
@@ -12,7 +12,7 @@ const FeaturedProduct = () => {
         <div className={`${styles.heading}`}>
           <h1>Featured Products</h1>
         </div>
-        <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
+        <div className="overflow-x-auto flex space-x-4 mb-2 lg:mb-12 border-0">
           {" "}
           {allProducts && allProducts.length !== 0 && (
             <>

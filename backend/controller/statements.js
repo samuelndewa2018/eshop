@@ -6,43 +6,33 @@ const router = express.Router();
 router.get("/get-statements", async (req, res) => {
   try {
     const statements = await Statements.find();
-    res.json(statements);
+    res.status(200).json({
+      success: true,
+      statements,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve statements." });
   }
 });
 
-// Create a new statements
+// Replace the first statement
 router.post("/create-statements", async (req, res) => {
+  const replacementStatement = req.body;
+
   try {
-    const newStatement = new Statements(req.body);
-    const savedStatement = await newStatement.save();
-    res.status(201).json(savedStatement);
-  } catch (error) {
-    res.status(400).json({ error: "Failed to create statement." });
-  }
-});
-// update statements
-router.post("/update-statements", async (req, res) => {
-  try {
-    const updatedStatement = await Statements.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const replacedStatement = await Statements.findOneAndReplace(
+      {},
+      replacementStatement,
       { new: true }
     );
-    res.json(updatedStatement);
-  } catch (error) {
-    res.status(400).json({ error: "Failed to update statement." });
-  }
-});
 
-// delete statements
-router.post("/delete-statements", async (req, res) => {
-  try {
-    await Statements.findByIdAndDelete(req.params.id);
-    res.sendStatus(204);
+    if (replacedStatement) {
+      res.json(replacedStatement);
+    } else {
+      res.status(404).json({ error: "No statement found." });
+    }
   } catch (error) {
-    res.status(400).json({ error: "Failed to delete statement." });
+    res.status(400).json({ error: "Failed to replace statement." });
   }
 });
 
