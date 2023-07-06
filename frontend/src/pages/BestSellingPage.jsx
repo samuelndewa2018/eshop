@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
@@ -7,11 +7,31 @@ import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 import Meta from "../components/Meta";
 import { categoriesData } from "../static/data";
+import axios from "axios";
+import { server } from "../server";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const { allProducts, isLoading } = useSelector((state) => state.products);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetchCategoryData();
+  }, []);
+
+  const fetchCategoryData = async () => {
+    try {
+      const response = await axios.get(`${server}/category/categories`);
+      const data = await response.data;
+      dispatch({ type: "SET_CATEGORIES", payload: data });
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  const categoriesData = useSelector((state) => state.categories);
 
   useEffect(() => {
     const allProductsData = allProducts ? [...allProducts] : [];
@@ -39,7 +59,7 @@ const BestSellingPage = () => {
     <>
       <Meta title="Best Selling" />
 
-      {isLoading ? (
+      {isLoading || categoriesData === null ? (
         <Loader />
       ) : (
         <div>
@@ -68,8 +88,8 @@ const BestSellingPage = () => {
                     <option value="">All</option>
                     {categoriesData &&
                       categoriesData.map((i) => (
-                        <option value={i.title} key={i.title}>
-                          {i.title}
+                        <option value={i.name} key={i.name}>
+                          {i.name}
                         </option>
                       ))}
                   </select>

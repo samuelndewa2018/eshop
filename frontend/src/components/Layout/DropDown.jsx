@@ -1,25 +1,62 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styles from "../../styles/styles";
+import { backend_url, server } from "../../server";
 
-const DropDown = ({ categoriesData, setDropDown }) => {
+const DropDown = ({ setDropDown }) => {
   const navigate = useNavigate();
-  const submitHandle = (i) => {
-    navigate(`/products?category=${i.title}`);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const response = await axios.get(`${server}/category/categories`);
+        setCategoriesData(response.data);
+      } catch (error) {
+        console.error("Error fetching categoriesData:", error);
+      }
+    };
+
+    fetchCategoriesData();
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropDown(false);
+      }
+    };
+
+    window.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [setDropDown]);
+
+  const submitHandle = (category) => {
+    navigate(`/products?category=${category.title}`);
     setDropDown(false);
     window.location.reload();
   };
+
   return (
-    <div className="pb-4 w-[270px] bg-[#fff] absolute z-30 rounded-b-md shadow-sm">
-      {categoriesData &&
-        categoriesData.map((i, index) => (
+    <div
+      className="pb-4 w-[270px] bg-[#fff] absolute z-30 rounded-b-md shadow-sm"
+      ref={dropdownRef}
+    >
+      {categoriesData
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((category, index) => (
           <div
             key={index}
             className={`${styles.noramlFlex}`}
-            onClick={() => submitHandle(i)}
+            onClick={() => submitHandle(category)}
           >
             <img
-              src={i.image_Url}
+              src={`${backend_url}${category?.image}`}
               style={{
                 width: "25px",
                 height: "25px",
@@ -29,11 +66,10 @@ const DropDown = ({ categoriesData, setDropDown }) => {
               }}
               alt=""
             />
-            <h3 className="m-3 cursor-pointer select-none">{i.title}</h3>
+            <h3 className="m-3 cursor-pointer select-none">{category.name}</h3>
           </div>
         ))}
     </div>
   );
 };
-
 export default DropDown;

@@ -33,6 +33,7 @@ const Header = ({ activeHeading }) => {
   const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
   const [openCart, setOpenCart] = useState(false);
@@ -102,6 +103,20 @@ const Header = ({ activeHeading }) => {
       e.stopPropagation();
     }
   };
+
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const response = await axios.get(`${server}/category/categories`);
+        setCategoriesData(response.data);
+      } catch (error) {
+        console.error("Error fetching categoriesData:", error);
+      }
+    };
+
+    fetchCategoriesData();
+  }, []);
+
   const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
 
   return (
@@ -261,6 +276,7 @@ const Header = ({ activeHeading }) => {
                   <Link to="/profile">
                     <img
                       src={imgSrc}
+                      // src={`${backend_url}${user?.avatar}`}
                       onError={() =>
                         setImgSrc(`${backend_url}defaultavatar.png`)
                       }

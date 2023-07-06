@@ -70,9 +70,13 @@ import TrialPage from "./Trial/TrialPage";
 import Loader from "./components/Layout/Loader";
 import CompareProducts from "./pages/CompareProducts";
 import AdminCategories from "./pages/AdminCategories";
-import CreateCarouselPage from "./components/Admin/CreateCarousel";
+// import CreateCarouselPage from "./components/Admin/CreateCarousel";
 import CreateStatements from "./components/Admin/CreateStatements";
 import { getAllStatements } from "./redux/actions/statements";
+import AdminCarousel from "./pages/AdminCarousel";
+import ShopUpdateProduct from "./pages/Shop/ShopUpdateProduct";
+import EditProduct from "./components/Shop/UpdateProduct";
+import StatementsPage from "./components/Admin/CreateStatements";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -140,7 +144,23 @@ const App = () => {
           path="/admin-carousel"
           element={
             <ProtectedAdminRoute>
-              <CreateCarouselPage />
+              <AdminCarousel />
+            </ProtectedAdminRoute>
+          }
+        />
+        {/* <Route
+          path="/admin-statements"
+          element={
+            <ProtectedAdminRoute>
+              <CreateStatements />
+            </ProtectedAdminRoute>
+          }
+        /> */}
+        <Route
+          path="/categories"
+          element={
+            <ProtectedAdminRoute>
+              <AdminCategories />
             </ProtectedAdminRoute>
           }
         />
@@ -148,16 +168,24 @@ const App = () => {
           path="/admin-statements"
           element={
             <ProtectedAdminRoute>
-              <CreateStatements />
+              <StatementsPage />
             </ProtectedAdminRoute>
           }
         />
         <Route
-          path="/categories"
+          path="/edit-product/:productId"
           element={
-            <ProtectedAdminRoute>
-              <AdminCategories />
-            </ProtectedAdminRoute>
+            <SellerProtectedRoute>
+              <EditProduct />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-update-product"
+          element={
+            <SellerProtectedRoute>
+              <ShopUpdateProduct />
+            </SellerProtectedRoute>
           }
         />
         <Route

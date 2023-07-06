@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect } from "react";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -60,11 +60,32 @@ const AllProducts = () => {
       type: "number",
       sortable: false,
       renderCell: (params) => {
+        const productId = params.row.id;
         return (
           <>
-            <Link to={`/product/${params.id}`}>
+            <Link to={`/product/${productId}`}>
               <Button>
                 <AiOutlineEye size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+    {
+      field: "Edit",
+      flex: 0.8,
+      minWidth: 120,
+      headerName: "",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        const productId = params.row.id;
+        return (
+          <>
+            <Link to={`/edit-product/${productId}`}>
+              <Button>
+                <AiOutlineEdit size={20} />
               </Button>
             </Link>
           </>
@@ -90,18 +111,13 @@ const AllProducts = () => {
     },
   ];
 
-  const row = [];
-
-  products &&
-    products.forEach((item) => {
-      row.push({
-        id: item._id,
-        name: item.name,
-        price: "US$ " + item.discountPrice,
-        Stock: item.stock,
-        sold: item?.sold_out,
-      });
-    });
+  const rows = products?.map((item) => ({
+    id: item._id,
+    name: item.name,
+    price: "Ksh " + item.discountPrice,
+    Stock: item.stock,
+    sold: item?.sold_out,
+  }));
 
   return (
     <>
@@ -110,7 +126,7 @@ const AllProducts = () => {
       ) : (
         <div className="w-full mx-8 pt-1 mt-10 bg-white">
           <DataGrid
-            rows={row}
+            rows={rows}
             columns={columns}
             pageSize={10}
             disableSelectionOnClick

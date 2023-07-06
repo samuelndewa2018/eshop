@@ -628,6 +628,26 @@ export const footercompanyLinks = [
     name: "Events",
   },
 ];
+// conditions data
+
+export const conditionsData = [
+  {
+    id: 1,
+    title: "Brand New",
+  },
+  {
+    id: 2,
+    title: "Slightly Used",
+  },
+  {
+    id: 3,
+    title: "Refurbished",
+  },
+  {
+    id: 4,
+    title: "Thrifted",
+  },
+];
 
 export const footerSupportLinks = [
   {

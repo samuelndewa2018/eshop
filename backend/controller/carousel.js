@@ -29,4 +29,17 @@ router.post("/carousel", async (req, res) => {
   }
 });
 
+router.delete("/carousel/:itemId", async (req, res) => {
+  const itemId = req.params.itemId;
+
+  try {
+    // Find the carousel item by ID and remove it
+    await Carousel.findByIdAndRemove(itemId);
+
+    res.status(200).json({ message: "Carousel item deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete carousel item" });
+  }
+});
+
 module.exports = router;

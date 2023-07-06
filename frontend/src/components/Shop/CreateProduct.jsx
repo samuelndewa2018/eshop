@@ -9,6 +9,8 @@ import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import axios from "axios";
+import { server } from "../../server";
 
 const createProductSchema = yup.object({
   name: yup.string().required("Name is required"),
@@ -27,6 +29,7 @@ const CreateProduct = () => {
   const dispatch = useDispatch();
 
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]); // state for storing categories
   // const [name, setName] = useState("");
   // const [description, setDescription] = useState("");
   // const [category, setCategory] = useState("");
@@ -45,7 +48,19 @@ const CreateProduct = () => {
       window.location.reload();
     }
   }, [dispatch, error, success]);
+  useEffect(() => {
+    // Fetch categories from the backend when the component mounts
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${server}/category/categories`); // Replace "/api/categories" with the actual API endpoint for retrieving categories
+        setCategories(response.data); // Update the categories state with the fetched data
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
 
+    fetchCategories();
+  }, []);
   const handleImageChange = (e) => {
     e.preventDefault();
 
@@ -177,13 +192,12 @@ const CreateProduct = () => {
             onBlur={formik.handleBlur("category")}
             value={formik.values.category}
           >
-            <option value="Choose a category">Choose a category</option>
-            {categoriesData &&
-              categoriesData.map((i) => (
-                <option value={i.title} key={i.title}>
-                  {i.title}
-                </option>
-              ))}
+            <option value="">Select category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
           </select>
           <div className="text-red-500">
             {formik.touched.category && formik.errors.category}

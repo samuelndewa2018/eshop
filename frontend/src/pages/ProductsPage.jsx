@@ -7,18 +7,34 @@ import Loader from "../components/Layout/Loader";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 import Meta from "../components/Meta";
-import { categoriesData } from "../static/data";
+import { server } from "../server";
+import axios from "axios";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
   const { allProducts, isLoading } = useSelector((state) => state.products);
   const [data, setData] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [sortBy, setSortBy] = useState(""); // State for sorting option
   const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
 
   useEffect(() => {
-    if (categoryData === null) {
+    // Fetch categoriesData from the server
+    fetchCategoriesData();
+  }, []);
+
+  const fetchCategoriesData = async () => {
+    try {
+      const response = await axios.get(`${server}/category/categories`);
+      setCategoriesData(response.data);
+    } catch (error) {
+      console.error("Error fetching categoriesData:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (categoriesData === null) {
       const d = allProducts;
       setData(d);
     } else {
@@ -26,7 +42,7 @@ const ProductsPage = () => {
         allProducts && allProducts.filter((i) => i.category === categoryData);
       setData(d);
     }
-  }, [allProducts, categoryData]);
+  }, [allProducts, categoryData, categoriesData]);
 
   // Function to handle sorting option change and category selection
   const handleSortChange = (e) => {
@@ -112,17 +128,16 @@ const ProductsPage = () => {
                 </svg>
                 Sort By Category
               </button>
-              {categoriesData &&
-                categoriesData.map((i) => (
-                  <button
-                    key={i.title}
-                    onClick={(value) => handleCategoryChange((value = i.title))}
-                    type="button"
-                    className="text-start w-full px-4 py-2 text-sm border-b border-gray-200 rounded-t-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
-                  >
-                    {i.title}
-                  </button>
-                ))}
+              {categoriesData.map((category) => (
+                <button
+                  key={category._id}
+                  onClick={() => handleCategoryChange(category.name)}
+                  type="button"
+                  className="relative inline-flex items-center w-full px-4 py-2 text-sm font-medium border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
+                >
+                  {category.name}
+                </button>
+              ))}
               <button
                 onClick={(value) => handleCategoryChange((value = ""))}
                 className="relative inline-flex items-center w-full px-4 py-2 text-sm font-medium border-b border-gray-200 rounded-t-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
@@ -184,8 +199,8 @@ const ProductsPage = () => {
                       <option value="">All</option>
                       {categoriesData &&
                         categoriesData.map((i) => (
-                          <option value={i.title} key={i.title}>
-                            {i.title}
+                          <option value={i.name} key={i.name}>
+                            {i.name}
                           </option>
                         ))}
                     </select>

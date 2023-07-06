@@ -35,6 +35,7 @@ router.post("/create-category", upload, (req, res) => {
 
 router.get("/categories", (req, res) => {
   Category.find()
+    .select("name image subCategories") // Select only necessary fields
     .then((categories) => {
       res.json(categories);
     })
@@ -43,17 +44,58 @@ router.get("/categories", (req, res) => {
     });
 });
 
-router.put("/categories/:id", upload, (req, res) => {
+router.put("/categories/:id", (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : "";
+  upload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      // A multer error occurred during file upload
+      return res.status(400).json({ error: "File upload error" });
+    } else if (err) {
+      // An unknown error occurred
+      return res.status(500).json({ error: "Internal server error" });
+    }
 
-  Category.findByIdAndUpdate(id, { name, image }, { new: true })
-    .then((updatedCategory) => {
-      res.json(updatedCategory);
+    // File upload was successful
+    const image = req.file ? `${req.file.filename}` : "";
+
+    Category.findByIdAndUpdate(id, { name, image }, { new: true })
+      .then((updatedCategory) => {
+        res.json(updatedCategory);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "Failed to update the category" });
+      });
+  });
+});
+
+router.post("/create-subcategory/:categoryId", (req, res) => {
+  const categoryId = req.params.categoryId;
+  const { subCategoryName } = req.body;
+
+  Category.findById(categoryId)
+    .then((category) => {
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+
+      const newSubCategory = {
+        name: subCategoryName,
+      };
+
+      category.subCategories.push(newSubCategory);
+
+      category
+        .save()
+        .then((updatedCategory) => {
+          res.json(updatedCategory);
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Failed to create sub-category" });
+        });
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to update the category" });
+      res.status(500).json({ error: "Failed to create sub-category" });
     });
 });
 
