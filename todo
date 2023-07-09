@@ -1,10 +1,14 @@
 // TODO LIST...
 
 //== on wishlist page the add to cart product icon is NOT clossing the page
-//== after clicking a searched product in mobile mode it does not go to that ptoduct --- goes with slag not id(params)
 //=== address not displaying propery
 //== cant update avatar
-//== logout overload by order tables z-index issues
-//== sorting the products
-//== style emails
 
+//==edit product pages not going with previous data
+//==categories not deleting
+//==imprement category on home page to be dynamic
+// === confirm delete product not complete
+// == products by default not leadering all products
+//==choose category refreshes the page
+//== carousel list seller
+//== preorder if its out of stock

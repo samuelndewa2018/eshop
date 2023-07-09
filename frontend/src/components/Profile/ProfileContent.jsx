@@ -34,6 +34,7 @@ import CustomModal from "../CustomModal";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
+  console.log("user", user);
   const [name, setName] = useState(user && user.name);
   const [email, setEmail] = useState(user && user.email);
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
@@ -230,8 +231,13 @@ const AllOrders = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Order No.", minWidth: 150, flex: 0.7 },
-
+    { field: "no", headerName: "Order No.", minWidth: 130, flex: 0.7 },
+    {
+      field: "createdAt",
+      headerName: "Order Date",
+      minWidth: 130,
+      flex: 0.7,
+    },
     {
       field: "status",
       headerName: "Status",
@@ -244,25 +250,29 @@ const AllOrders = () => {
       },
     },
     {
-      field: "itemsQty",
-      headerName: "Items Qty",
-      type: "number",
+      field: "items",
+      headerName: "Items",
       minWidth: 130,
       flex: 0.7,
+    },
+    {
+      field: "itemsQty",
+      headerName: "Items Qty",
+      maxWidth: 50,
+      flex: 0.5,
     },
 
     {
       field: "total",
       headerName: "Total",
-      type: "number",
       minWidth: 130,
-      flex: 0.8,
+      flex: 0.7,
     },
 
     {
-      field: " ",
-      flex: 1,
-      minWidth: 150,
+      field: "See Order",
+      flex: 0.7,
+      minWidth: 130,
       headerName: "",
       type: "number",
       sortable: false,
@@ -285,23 +295,31 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        // id: item?._id.replace(/\D/g, "").slice(0, 10),
-        itemsQty: item.cart.length,
+        no: item?._id.replace(/\D/g, "").slice(0, 10),
+        createdAt: item?.createdAt.slice(0, 10),
+        items: item?.cart.map((i) => i.name),
+        itemsQty: item?.cart.length,
         total: "Ksh " + item.totalPrice,
         status: item.status,
       });
+      console.log(item?.cart.map((i) => i.name));
     });
 
   return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
-    </div>
+    <>
+      <h3 className="text-[22px] font-Poppins pb-2 ml-2">
+        {user.name}'s Orders
+      </h3>
+      <div className="ml-1 bg-white rounded">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+        />
+      </div>
+    </>
   );
 };
 

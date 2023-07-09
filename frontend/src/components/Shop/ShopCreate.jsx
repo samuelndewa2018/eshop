@@ -110,7 +110,7 @@ const ShopCreate = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 m-1 rounded">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Register as a seller
@@ -167,9 +167,9 @@ const ShopCreate = () => {
                 </label>
                 <div className="mt-1">
                   <input
-                    type="number"
+                    type="phonenumber"
                     name="phone-number"
-                    required
+                    // required
                     onChange={formik.handleChange("phoneNumber")}
                     onBlur={formik.handleBlur("phoneNumber")}
                     value={formik.values.phoneNumber}
@@ -193,7 +193,7 @@ const ShopCreate = () => {
                     type="email"
                     name="email"
                     autoComplete="email"
-                    required
+                    // required
                     onChange={formik.handleChange("email")}
                     onBlur={formik.handleBlur("email")}
                     value={formik.values.email}
@@ -216,7 +216,7 @@ const ShopCreate = () => {
                   <input
                     type="address"
                     name="address"
-                    required
+                    // required
                     onChange={formik.handleChange("address")}
                     onBlur={formik.handleBlur("address")}
                     value={formik.values.address}
@@ -239,7 +239,7 @@ const ShopCreate = () => {
                   <input
                     type="number"
                     name="zipcode"
-                    required
+                    // required
                     onChange={formik.handleChange("zipCode")}
                     onBlur={formik.handleBlur("zipCode")}
                     value={formik.values.zipCode}
@@ -263,7 +263,7 @@ const ShopCreate = () => {
                     type={visible ? "text" : "password"}
                     name="password"
                     autoComplete="current-password"
-                    required
+                    // required
                     onChange={formik.handleChange("password")}
                     onBlur={formik.handleBlur("password")}
                     value={formik.values.password}
@@ -309,7 +309,7 @@ const ShopCreate = () => {
                     htmlFor="file-input"
                     className="ml-5 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                   >
-                    <span>Upload a file (required)</span>
+                    <span>Upload shop logo (required)</span>
                     <input
                       type="file"
                       name="avatar"

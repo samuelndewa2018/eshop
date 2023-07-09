@@ -1,16 +1,18 @@
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
+import CustomModal from "../CustomModal";
 
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -102,7 +104,17 @@ const AllProducts = () => {
       renderCell: (params) => {
         return (
           <>
-            <Button onClick={() => handleDelete(params.id)}>
+            {modalOpen && (
+              <CustomModal
+                message={"Are you sure you want to delete this product?"}
+                ok={" Yes, I'm sure"}
+                cancel={"No, cancel"}
+                setModalOpen={setModalOpen}
+                performAction={() => handleDelete(params._id)}
+                closeModel={() => setModalOpen(false)}
+              />
+            )}
+            <Button onClick={() => setModalOpen(true)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>

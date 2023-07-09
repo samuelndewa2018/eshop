@@ -33,6 +33,7 @@ router.post("/create-statements", async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ error: "Failed to replace statement." });
+    console.log(error);
   }
 });
 

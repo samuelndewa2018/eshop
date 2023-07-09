@@ -126,7 +126,11 @@ const Header = ({ activeHeading }) => {
           <p className="hidden text-white lg:block">{promotionName}</p>
           <Typed
             className="text-white lg:ml-20 sm:ml-0"
-            strings={[`${typingName1}`, `${typingName2}`, `${typingName3}`]}
+            strings={[
+              `${typingName1 === undefined ? "Welcome to eShop" : typingName1}`,
+              `${typingName2 === undefined ? "Welcome to eShop" : typingName2}`,
+              `${typingName3 === undefined ? "Welcome to eShop" : typingName3}`,
+            ]}
             typeSpeed={40}
             backSpeed={50}
             loop
@@ -201,7 +205,7 @@ const Header = ({ activeHeading }) => {
       </div>
       <div
         className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+          active === true ? "shadow-sm fixed top-0 left-0 z-20" : null
         } transition hidden 800px:flex items-center justify-between w-full bg-[#3321c8] h-[70px]`}
       >
         <div

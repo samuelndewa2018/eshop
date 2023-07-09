@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, res, cb) {
-    cb(null, "uploads/");
+    cb(null, "../uploads/");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -99,7 +99,7 @@ router.post("/create-subcategory/:categoryId", (req, res) => {
     });
 });
 
-router.delete("/categories-del/:id", (req, res) => {
+router.delete("/delete-category/:id", (req, res) => {
   const { id } = req.params;
 
   Category.findByIdAndDelete(id)

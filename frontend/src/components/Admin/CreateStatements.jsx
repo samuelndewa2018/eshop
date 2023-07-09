@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { server } from "../../server";
 import { useSelector } from "react-redux";
+import Spinner from "../Spinner";
 
 const StatementsPage = () => {
   // const [statements, setStatements] = useState([]);
@@ -11,23 +12,12 @@ const StatementsPage = () => {
   const [typingName3, setTypingName3] = useState("");
   const [promotionImage, setPromotionImage] = useState("");
   const [promotionDetails, setPromotionDetails] = useState("");
-
-  // useEffect(() => {
-  //   getStatements();
-  // }, []);
-
-  // const getStatements = async () => {
-  //   try {
-  //     const response = await axios.get(`${server}/statements/get-statements`);
-  //     setStatements(response.data);
-  //   } catch (error) {
-  //     console.error("Failed to fetch statements:", error);
-  //   }
-  // };
+  const [loading, setLoading] = useState(false);
 
   const { statements } = useSelector((state) => state.statements);
 
   const createStatement = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${server}/statements/create-statements`,
@@ -40,10 +30,13 @@ const StatementsPage = () => {
           promotionDetails: promotionDetails,
         }
       );
+      setLoading(false);
       // setStatements([...statements, response.data]);
     } catch (error) {
       console.error("Failed to create statement:", error);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -54,6 +47,7 @@ const StatementsPage = () => {
           <label className="block mb-2">Promotion Name</label>
           <input
             type="text"
+            // value={statements && statements.map((i) => i.promotionName)}
             value={promotionName}
             onChange={(e) => setPromotionName(e.target.value)}
             className="w-full border border-gray-300 rounded py-2 px-3"
@@ -105,12 +99,23 @@ const StatementsPage = () => {
           />
         </div>
       </div>
-      <button
-        onClick={createStatement}
-        className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Add Statement
-      </button>
+
+      <div>
+        <button
+          disabled={loading}
+          onClick={createStatement}
+          type="submit"
+          className="mt-3 w-[250px] h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+        >
+          {loading ? (
+            <p className="flex">
+              <Spinner /> Updating...
+            </p>
+          ) : (
+            <p className="">Update Statement</p>
+          )}
+        </button>
+      </div>
       <div class="container mx-auto p-8">
         <h1 class="text-3xl font-bold mb-4">Current Statements</h1>
         <ul class="grid gap-6">

@@ -14,10 +14,12 @@ const Hero = () => {
   const [carouselData, setCarouselData] = useState([]);
   const [bestSelling, setBestSelling] = useState([]);
   const [featuredProduct, setFeaturedProduct] = useState([]);
-
+  const [sellers, setSellers] = useState([]);
+  console.log(sellers);
   useEffect(() => {
     fetchData();
     fetchData2();
+    getSellers();
   }, []);
 
   const fetchData = async () => {
@@ -39,6 +41,18 @@ const Hero = () => {
     } catch (error) {
       console.error("Error fetching carousel data:", error);
     }
+  };
+
+  //getting sellers
+  const getSellers = async () => {
+    axios
+      .get(`${server}/shop/get-all-sellers`)
+      .then((res) => {
+        setSellers(res.data.sellers);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const sortedBestSellingProducts = bestSelling.sort((a, b) => {
@@ -114,8 +128,8 @@ const Hero = () => {
                           className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
                           style={{ transform: "rotate(45deg)" }}
                         >
-                          {i.name.length > 10
-                            ? i.name.slice(0, 10) + "..."
+                          {i.name.length > 14
+                            ? i.name.slice(0, 14) + "..."
                             : i.name}
                         </span>
                       </div>
@@ -152,8 +166,8 @@ const Hero = () => {
                           className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
                           style={{ transform: "rotate(45deg)" }}
                         >
-                          {i.name.length > 10
-                            ? i.name.slice(0, 10) + "..."
+                          {i.name.length > 14
+                            ? i.name.slice(0, 14) + "..."
                             : i.name}
                         </span>
                       </div>
@@ -192,8 +206,8 @@ const Hero = () => {
                           className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
                           style={{ transform: "rotate(45deg)" }}
                         >
-                          {i.promotionDetails.length > 10
-                            ? i.promotionDetails.slice(0, 10) + "..."
+                          {i.promotionDetails.length > 14
+                            ? i.promotionDetails.slice(0, 14) + "..."
                             : i.promotionDetails}
                         </span>
                       </div>
@@ -203,35 +217,58 @@ const Hero = () => {
             </div>
           </div>
           <div className="rounded flex justify-center lg:grid lg:grid-cols-2 gap-2 mt-3 ml-2">
-            <div className="flex max-h-[120px]">
-              {sortedNewProducts &&
-                sortedNewProducts.slice(0, 1).map((i) => {
-                  return (
-                    <Link
-                      to={`/product/${i._id}`}
-                      className="rounded relative overflow-hidden shadow-lg flex flex-row w-36 h-36 lg:w-full lg:h-full"
-                    >
-                      <img
-                        className="w-36 h-36 lg:w-full lg:h-full object-cover"
-                        src={`${backend_url}${i.images && i.images[0]}`}
-                        alt="Sunset in the mountains"
-                      />
-                      <div className="px-6 py-4 flex-1 flex flex-col">
-                        <div className="font-bold text-sm mb-2">{i.name}</div>
-                      </div>
-                      <div className="absolute bottom-1 left-2 sm:hidden">
-                        <span
-                          className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
-                          style={{ transform: "rotate(45deg)" }}
-                        >
-                          {i.name.length > 10
-                            ? i.name.slice(0, 10) + "..."
-                            : i.name}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
+            <div className="flex max-h-[120px] relative">
+              <div>
+                <div className="absolute top-1 left-2 z-10">
+                  <span
+                    className="bg-blue-500 text-white py-1 px-2 text-xs rounded-full"
+                    style={{ transform: "rotate(45deg)" }}
+                  >
+                    best shops
+                  </span>
+                </div>
+                <Carousel
+                  autoPlay={true}
+                  infiniteLoop={true}
+                  showStatus={false}
+                  showThumbs={false}
+                  interval={5000}
+                  stopOnHover={true}
+                  className="rounded relative overflow-hidden shadow-lg flex flex-row w-36 h-36 lg:w-full lg:h-full"
+                >
+                  {sellers &&
+                    sellers.map((i) => (
+                      <Link key={i} to={`/shop/preview/${i._id}`}>
+                        {/* {sellers.map((i) => ( */}
+                        <div className="relative flex">
+                          <img
+                            className="w-36 h-36 lg:w-full lg:h-full object-cover lg:max-h-[120px] lg:max-w-[150px]"
+                            src={`${backend_url}${i.avatar && i.avatar}`}
+                            alt="Sunset in the mountains"
+                          />
+                          <div className="px-6 py-4 flex-1 flex flex-col">
+                            <div className="font-bold text-sm mb-2">
+                              {i.name}
+                              <br />
+                              {i.address}
+                            </div>
+                          </div>
+                          <br />
+                        </div>
+                        <div className="absolute bottom-1 left-2 sm:hidden">
+                          <span
+                            className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
+                            style={{ transform: "rotate(45deg)" }}
+                          >
+                            {i.name.length > 14
+                              ? i.name.slice(0, 14) + "..."
+                              : i.name}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                </Carousel>
+              </div>
             </div>
             <div className="flex max-h-[120px]">
               {sortedNewProducts &&
@@ -254,8 +291,8 @@ const Hero = () => {
                           className="bg-zinc-400 text-white py-1 px-2 text-xs rounded-full"
                           style={{ transform: "rotate(45deg)" }}
                         >
-                          {i.name.length > 10
-                            ? i.name.slice(0, 10) + "..."
+                          {i.name.length > 14
+                            ? i.name.slice(0, 14) + "..."
                             : i.name}
                         </span>
                       </div>
