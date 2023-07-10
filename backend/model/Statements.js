@@ -25,6 +25,10 @@ const statementsSchema = new mongoose.Schema({
     type: String,
     default: "Welcome to eShop",
   },
+  productId: {
+    type: String,
+    default: "",
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

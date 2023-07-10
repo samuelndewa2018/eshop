@@ -105,7 +105,7 @@ const Hero = () => {
                   return (
                     <Link
                       to={`/product/${i._id}`}
-                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-full"
+                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-[350px]"
                     >
                       <div className="absolute top-1 left-2">
                         <span
@@ -116,7 +116,7 @@ const Hero = () => {
                         </span>
                       </div>
                       <img
-                        className="w-36 h-36 lg:w-full lg:h-full object-cover"
+                        className="w-36 h-36 lg:w-full lg:h-[245px] object-cover"
                         src={`${backend_url}${i.images && i.images[0]}`}
                         alt="Sunset in the mountains"
                       />
@@ -143,7 +143,7 @@ const Hero = () => {
                   return (
                     <Link
                       to={`/product/${i._id}`}
-                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-full"
+                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-[350px]"
                     >
                       <div className="absolute top-1 left-2">
                         <span
@@ -154,7 +154,7 @@ const Hero = () => {
                         </span>
                       </div>
                       <img
-                        className="w-36 h-36 lg:w-full lg:h-full object-cover"
+                        className="w-36 h-36 lg:w-full lg:h-[245px] object-cover"
                         src={`${backend_url}${i.images && i.images[0]}`}
                         alt="Sunset in the mountains"
                       />
@@ -180,8 +180,8 @@ const Hero = () => {
                 statements.map((i) => {
                   return (
                     <Link
-                      to={`/products`}
-                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-full"
+                      to={`/product/${i.productId}`}
+                      className="rounded relative overflow-hidden shadow-lg flex flex-col w-36 h-36 lg:w-full lg:h-[350px]"
                     >
                       <div className="absolute top-1 left-2">
                         <span
@@ -192,7 +192,7 @@ const Hero = () => {
                         </span>
                       </div>
                       <img
-                        className="w-36 h-36 lg:w-full lg:h-full object-cover"
+                        className="w-36 h-36 lg:w-full lg:h-[245px] object-cover"
                         src={i.promotionImage}
                         alt="Sunset in the mountains"
                       />

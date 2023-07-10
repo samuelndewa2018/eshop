@@ -28,6 +28,7 @@
     "node-datetime": "^2.1.2",
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
+    "request": "^2.88.2",
     "stripe": "^12.3.0"
   }
 }

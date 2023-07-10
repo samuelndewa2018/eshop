@@ -1,163 +1,292 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { server } from "../../server";
-import { useSelector } from "react-redux";
-import Spinner from "../Spinner";
+import CustomModal from "../CustomModal";
 
 const StatementsPage = () => {
-  // const [statements, setStatements] = useState([]);
-  const [promotionName, setPromotionName] = useState("");
-  const [typingName1, setTypingName1] = useState("");
-  const [typingName2, setTypingName2] = useState("");
-  const [typingName3, setTypingName3] = useState("");
-  const [promotionImage, setPromotionImage] = useState("");
-  const [promotionDetails, setPromotionDetails] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [statements, setStatements] = useState([]);
+  const [formData, setFormData] = useState({
+    promotionName: "",
+    typingName1: "",
+    typingName2: "",
+    typingName3: "",
+    promotionImage: "",
+    promotionDetails: "",
+    productId: "",
+  });
+  const [selectedStatement, setSelectedStatement] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { statements } = useSelector((state) => state.statements);
+  useEffect(() => {
+    fetchStatements();
+  }, []);
 
-  const createStatement = async () => {
-    setLoading(true);
+  const fetchStatements = async () => {
     try {
-      const response = await axios.post(
-        `${server}/statements/create-statements`,
-        {
-          promotionName: promotionName,
-          typingName1: typingName1,
-          typingName2: typingName2,
-          typingName3: typingName3,
-          promotionImage: promotionImage,
-          promotionDetails: promotionDetails,
-        }
-      );
-      setLoading(false);
-      // setStatements([...statements, response.data]);
+      const response = await axios.get(`${server}/statements/get-statements`);
+      const { success, statements } = response.data;
+
+      if (success) {
+        setStatements(statements);
+      } else {
+        console.error("Failed to fetch statements");
+      }
     } catch (error) {
-      console.error("Failed to create statement:", error);
-      setLoading(false);
+      console.error("An error occurred:", error);
     }
-    setLoading(false);
+  };
+
+  const handleChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      let response;
+
+      if (selectedStatement) {
+        response = await axios.put(
+          `${server}/statements/update-statement/${selectedStatement._id}`,
+          formData
+        );
+      } else {
+        response = await axios.post(
+          `${server}/statements/create-statements`,
+          formData
+        );
+      }
+
+      const { success, statement } = response.data;
+
+      if (success) {
+        setStatements((prevStatements) => {
+          if (selectedStatement) {
+            const index = prevStatements.findIndex(
+              (s) => s._id === selectedStatement._id
+            );
+            const updatedStatements = [...prevStatements];
+            updatedStatements[index] = statement;
+            return updatedStatements;
+          } else {
+            return [...prevStatements, statement];
+          }
+        });
+
+        setFormData({
+          promotionName: "",
+          typingName1: "",
+          typingName2: "",
+          typingName3: "",
+          promotionImage: "",
+          promotionDetails: "",
+          productId: "",
+        });
+        setSelectedStatement(null);
+      } else {
+        console.error("Failed to save statement");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  const handleEdit = (statement) => {
+    setSelectedStatement(statement);
+    setFormData({
+      promotionName: statement.promotionName,
+      typingName1: statement.typingName1,
+      typingName2: statement.typingName2,
+      typingName3: statement.typingName3,
+      promotionImage: statement.promotionImage,
+      promotionDetails: statement.promotionDetails,
+      productId: statement.productId,
+    });
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(
+        `${server}/statements/delete-statement/${id}`
+      );
+      const { success } = response.data;
+
+      if (success) {
+        setStatements((prevStatements) =>
+          prevStatements.filter((statement) => statement._id !== id)
+        );
+      } else {
+        console.error("Failed to delete statement");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-4">Create Statements</h1>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block mb-2">Promotion Name</label>
-          <input
-            type="text"
-            // value={statements && statements.map((i) => i.promotionName)}
-            value={promotionName}
-            onChange={(e) => setPromotionName(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
+    <div className="container mx-auto px-4">
+      <h1 className="text-2xl font-bold mb-4">Manage Statements</h1>
+
+      <form onSubmit={handleSubmit} className="mb-4">
+        <h2 className="text-xl font-semibold mb-2">Create Statement</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="promotionName" className="block font-medium mb-1">
+              Promotion Name
+            </label>
+            <input
+              type="text"
+              id="promotionName"
+              name="promotionName"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.promotionName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="typingName1" className="block font-medium mb-1">
+              Typing Name 1
+            </label>
+            <input
+              type="text"
+              id="typingName1"
+              name="typingName1"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.typingName1}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="typingName2" className="block font-medium mb-1">
+              Typing Name 2
+            </label>
+            <input
+              type="text"
+              id="typingName2"
+              name="typingName2"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.typingName2}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="typingName3" className="block font-medium mb-1">
+              Typing Name 3
+            </label>
+            <input
+              type="text"
+              id="typingName3"
+              name="typingName3"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.typingName3}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="promotionImage" className="block font-medium mb-1">
+              Promotion Image
+            </label>
+            <input
+              type="text"
+              id="promotionImage"
+              name="promotionImage"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.promotionImage}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="promotionImage" className="block font-medium mb-1">
+              Product Id
+            </label>
+            <input
+              type="text"
+              id="productId"
+              name="productId"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.productId}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="promotionDetails"
+              className="block font-medium mb-1"
+            >
+              Promotion Details
+            </label>
+            <textarea
+              id="promotionDetails"
+              name="promotionDetails"
+              className="border border-gray-300 rounded px-4 py-2 w-full"
+              value={formData.promotionDetails}
+              onChange={handleChange}
+              required
+            ></textarea>
+          </div>
         </div>
-        <div>
-          <label className="block mb-2">Typing Name 1</label>
-          <input
-            type="text"
-            value={typingName1}
-            onChange={(e) => setTypingName1(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Typing Name 2</label>
-          <input
-            type="text"
-            value={typingName2}
-            onChange={(e) => setTypingName2(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Typing Name 3</label>
-          <input
-            type="text"
-            value={typingName3}
-            onChange={(e) => setTypingName3(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Promotion Image</label>
-          <input
-            type="text"
-            value={promotionImage}
-            onChange={(e) => setPromotionImage(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Promotion Details</label>
-          <input
-            type="text"
-            value={promotionDetails}
-            onChange={(e) => setPromotionDetails(e.target.value)}
-            className="w-full border border-gray-300 rounded py-2 px-3"
-          />
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white rounded px-4 py-2 mt-4"
+        >
+          {selectedStatement ? "Update Statement" : "Create Statement"}
+        </button>
+      </form>
 
       <div>
-        <button
-          disabled={loading}
-          onClick={createStatement}
-          type="submit"
-          className="mt-3 w-[250px] h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-        >
-          {loading ? (
-            <p className="flex">
-              <Spinner /> Updating...
-            </p>
-          ) : (
-            <p className="">Update Statement</p>
-          )}
-        </button>
-      </div>
-      <div class="container mx-auto p-8">
-        <h1 class="text-3xl font-bold mb-4">Current Statements</h1>
-        <ul class="grid gap-6">
-          {statements &&
-            statements.map((statement) => (
-              <li key={statement._id} class="bg-white shadow-md rounded-md">
-                <div class="grid grid-cols-2 gap-4 p-6">
-                  <div>
-                    <p class="font-bold">Promotion Name:</p>
-                    <p>{statement.promotionName}</p>
-                  </div>
-                  <div class="col-span-2">
-                    <p class="font-bold">Typing Name 1:</p>
-                    <p>{statement.typingName1}</p>
-                  </div>
-                  <div class="col-span-2">
-                    <p class="font-bold">Typing Name 2:</p>
-                    <p>{statement.typingName2}</p>
-                  </div>
-                  <div class="col-span-2">
-                    <p class="font-bold">Typing Name 3:</p>
-                    <p>{statement.typingName3}</p>
-                  </div>
-                  <div class="col-span-2">
-                    <p class="font-bold">promotion Image Url:</p>
-                    <p>{statement.promotionImage}</p>
-                  </div>
-                  <div class="col-span-2">
-                    <p class="font-bold">Promotion Details:</p>
-                    <p>{statement.promotionDetails}</p>
-                  </div>
-                  <div class="col-span-2 sm:col-span-1">
-                    <img
-                      class="w-full h-auto m-2"
-                      src={statement.promotionImage}
-                      alt="Promotion Image1"
-                    />
-                  </div>
-                </div>
-              </li>
+        <h2 className="text-xl font-semibold mb-2">Statements List</h2>
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th className="py-2">Promotion Name</th>
+              <th className="py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {statements.map((statement) => (
+              <>
+                {" "}
+                {modalOpen && (
+                  <CustomModal
+                    message={"Are you sure you want to delete this statement?"}
+                    ok={" Yes, I'm sure"}
+                    cancel={"No, cancel"}
+                    setModalOpen={setModalOpen}
+                    performAction={() => handleDelete(statement._id)}
+                    closeModel={() => setModalOpen(false)}
+                  />
+                )}
+                <tr key={statement._id}>
+                  <td>{statement.promotionName}</td>
+                  <td>
+                    <button
+                      onClick={() => handleEdit(statement)}
+                      className="bg-green-500 text-white rounded px-2 py-1 mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setModalOpen(true)}
+                      className="bg-red-500 text-white rounded px-2 py-1"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </>
             ))}
-        </ul>
+          </tbody>
+        </table>
       </div>
     </div>
   );

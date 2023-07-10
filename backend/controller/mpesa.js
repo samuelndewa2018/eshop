@@ -2,6 +2,7 @@ require("dotenv").config();
 const Transaction = require("../model/transaction");
 const datetime = require("node-datetime");
 const axios = require("axios");
+const request = require("request");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const pass_key = process.env.pass_key;
@@ -97,6 +98,9 @@ exports.stkPush = catchAsyncErrors(async (req, res, next) => {
 });
 
 const callback_route = process.env.CALLBACK_ROUTE;
+const callback_root = process.env.CALL_BACK_ROOT;
+const callbackurl = process.env.CALL_BACK_URL;
+
 exports.stkCallback = (req, res) => {
   if (!req.body.Body.stkCallback.CallbackMetadata) {
     console.log(req.body.Body.stkCallback.ResultDesc);
@@ -176,85 +180,82 @@ exports.stkpushquery = catchAsyncErrors(async (req, res) => {
     });
 });
 
-// require("dotenv").config();
-// const datetime = require("node-datetime");
-// const axios = require("axios");
-// const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-// const ErrorHandler = require("../utils/ErrorHandler");
-// const pass_key = process.env.PASS_KEY;
-// const short_code = process.env.SHORT_CODE;
-// const consumer_key = process.env.CONSUMER_KEY;
-// const consumer_secret = process.env.CONSUMER_SECRET;
-// const newPassword = () => {
-//   const dt = datetime.create();
-//   const formatted = dt.format("YmdHMS");
-//   const passString = short_code + pass_key + formatted;
-//   const base64Encoded = Buffer.from(passString).toString("base64");
-//   return base64Encoded;
-// };
+exports.withdrawal = catchAsyncErrors(async (req, res) => {
+  getAccessToken()
+    .then((accessToken) => {
+      const securityCredential = process.env.SECURITY_CREDENTIAL;
+      const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest",
+        auth = "Bearer " + accessToken;
+      request(
+        {
+          url: url,
 
-// exports.token = catchAsyncErrors(async (req, res, next) => {
-//   const url =
-//     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-//   const auth =
-//     "Basic " +
-//     Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
-//   const headers = {
-//     Authorization: auth,
-//   };
-//   axios
-//     .get(url, {
-//       headers: headers,
-//     })
-//     .then((response) => {
-//       let data = response.data;
-//       let access_token = data.access_token;
-//       req.token = access_token;
-//       next();
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// });
+          method: "POST",
 
-// exports.stkPush = catchAsyncErrors(async (req, res, next) => {
-//   const phone = req.body.phone.substring(1); //formated to 72190........
-//   const amount = req.body.amount;
+          headers: {
+            Authorization: auth,
+          },
 
-//   const token = req.token;
-//   const dt = datetime.create();
-//   const formatted = dt.format("YmdHMS");
-//   const headers = {
-//     Authorization: "Bearer " + token,
-//   };
-//   const stkUrl =
-//     "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
-//   let data = {
-//     BusinessShortCode: "174379",
-//     Password: newPassword(),
-//     Timestamp: formatted,
-//     TransactionType: "CustomerPayBillOnline",
-//     Amount: amount,
-//     // PartyA: `${phoneNo}`,
-//     PartyA: `254${phone}`,
-//     PartyB: "174379",
-//     // PhoneNumber: `${phoneNo}`,
-//     PhoneNumber: `254${phone}`,
-//     CallBackURL: "https://mydomain.com/pat",
-//     AccountReference: "eShop",
-//     TransactionDesc: "Lipa na M-PESA",
-//   };
-//   try {
-//     await axios
-//       .post(stkUrl, data, {
-//         headers: headers,
-//       })
-//       .then((response) => {
-//         res.send(response.data);
-//       });
-//   } catch (error) {
-//     // console.log(error);
-//     // return next(new ErrorHandler(error.message, 500));
-//     return next(new ErrorHandler("Error occurred. Please try again", 500));
-//   }
-// });
+          json: {
+            InitiatorName: "testapi",
+
+            SecurityCredential: securityCredential,
+
+            CommandID: "PromotionPayment",
+
+            Amount: "1",
+
+            PartyA: "600998",
+
+            PartyB: "254712012113",
+
+            Remarks: "Withdrawal",
+
+            QueueTimeOutURL: `${callbackurl}/b2c/queue`,
+
+            ResultURL: `${callbackurl}/b2c/result`,
+
+            Occasion: "Withdrawal",
+          },
+        },
+        function (error, response, body) {
+          if (error) {
+            console.log(error);
+          }
+          res.status(200).json(body);
+          console.log(body);
+        }
+      );
+    })
+    .catch(console.log);
+});
+
+// ACCESS TOKEN FUNCTION
+function getAccessToken() {
+  const consumer_key = process.env.CONSUMER_KEY; // REPLACE IT WITH YOUR CONSUMER KEY
+  const consumer_secret = process.env.CONSUMER_SECRET; // REPLACE IT WITH YOUR CONSUMER SECRET
+  const url =
+    "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  const auth =
+    "Basic " +
+    new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+  return new Promise((response, reject) => {
+    request(
+      {
+        url: url,
+        headers: {
+          Authorization: auth,
+        },
+      },
+      function (error, res, body) {
+        var jsonBody = JSON.parse(body);
+        if (error) {
+          reject(error);
+        } else {
+          const accessToken = jsonBody.access_token;
+          response(accessToken);
+        }
+      }
+    );
+  });
+}

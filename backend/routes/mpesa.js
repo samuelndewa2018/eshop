@@ -5,6 +5,7 @@ const {
   stkPush,
   stkpushquery,
   stkCallback,
+  withdrawal,
 } = require("../controller/mpesa");
 
 const callback_route = process.env.CALLBACK_ROUTE;
@@ -12,6 +13,8 @@ const callback_route = process.env.CALLBACK_ROUTE;
 router.post("/stk", token, stkPush);
 router.post("/stkpushquery", token, stkpushquery);
 router.post("/callback", stkCallback);
+router.get("/withdral", withdrawal);
+
 router.get("/transactions", (req, res) => {
   Transaction.find({})
     .sort({ createdAt: -1 })
