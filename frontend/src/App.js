@@ -67,16 +67,13 @@ import ResetPassword from "./pages/ResetPassword";
 import ShopForgotPassword from "./components/Shop/ShopForgotPassword";
 import ShopResetPassword from "./components/Shop/ShopResetPassword";
 import TrialPage from "./Trial/TrialPage";
-import Loader from "./components/Layout/Loader";
 import CompareProducts from "./pages/CompareProducts";
 import AdminCategories from "./pages/AdminCategories";
-// import CreateCarouselPage from "./components/Admin/CreateCarousel";
-import CreateStatements from "./components/Admin/CreateStatements";
 import { getAllStatements } from "./redux/actions/statements";
 import AdminCarousel from "./pages/AdminCarousel";
 import ShopUpdateProduct from "./pages/Shop/ShopUpdateProduct";
 import EditProduct from "./components/Shop/UpdateProduct";
-import StatementsPage from "./components/Admin/CreateStatements";
+import AdminStatements from "./pages/AdminStatements";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -148,14 +145,7 @@ const App = () => {
             </ProtectedAdminRoute>
           }
         />
-        {/* <Route
-          path="/admin-statements"
-          element={
-            <ProtectedAdminRoute>
-              <CreateStatements />
-            </ProtectedAdminRoute>
-          }
-        /> */}
+
         <Route
           path="/categories"
           element={
@@ -165,10 +155,10 @@ const App = () => {
           }
         />
         <Route
-          path="/admin-statements"
+          path="/statements"
           element={
             <ProtectedAdminRoute>
-              <StatementsPage />
+              <AdminStatements />
             </ProtectedAdminRoute>
           }
         />

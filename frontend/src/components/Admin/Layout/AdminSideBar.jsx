@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { BsHandbag } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
-import { AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineSetting, AiOutlineScan } from "react-icons/ai";
 import { BiCategoryAlt } from "react-icons/bi";
 
 const AdminSideBar = ({ active }) => {
   return (
-    <div className="w-full h-[90vh] bg-white shadow-sm overflow-y-scroll sticky top-0 left-0 z-10">
+    <div className="w-full h-full bg-white shadow-sm overflow-y-scroll sticky top-0 left-0 z-10">
       {/* single item */}
       <div className="w-full flex items-center p-4">
         <Link to="/admin/dashboard" className="w-full flex items-center">
@@ -153,6 +153,21 @@ const AdminSideBar = ({ active }) => {
             }`}
           >
             Category
+          </h5>
+        </Link>
+      </div>
+      <div className="w-full flex items-center p-4">
+        <Link to="/statements" className="w-full flex items-center">
+          <AiOutlineScan
+            size={30}
+            color={`${active === 11 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 11 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Statements
           </h5>
         </Link>
       </div>

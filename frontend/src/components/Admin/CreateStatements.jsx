@@ -3,7 +3,7 @@ import axios from "axios";
 import { server } from "../../server";
 import CustomModal from "../CustomModal";
 
-const StatementsPage = () => {
+const CreateStatements = () => {
   const [statements, setStatements] = useState([]);
   const [formData, setFormData] = useState({
     promotionName: "",
@@ -128,7 +128,7 @@ const StatementsPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container m-4 px-4">
       <h1 className="text-2xl font-bold mb-4">Manage Statements</h1>
 
       <form onSubmit={handleSubmit} className="mb-4">
@@ -307,4 +307,4 @@ const StatementsPage = () => {
   );
 };
 
-export default StatementsPage;
+export default CreateStatements;
