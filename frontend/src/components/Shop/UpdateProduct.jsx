@@ -123,20 +123,6 @@ const EditProduct = () => {
         <div className="w-[80px] 800px:w-[330px]">
           <DashboardSideBar active={5} />
         </div>
-
-        <div className="my-4">
-          <label className="text-lg font-bold">Product Description</label>
-          <ReactQuill
-            name="description"
-            onChange={(value) => formik.setFieldValue("description", value)}
-            value={formik.values.description}
-            className="mt-2"
-          />
-          {formik.touched.description && formik.errors.description && (
-            <div className="text-red-500">{formik.errors.description}</div>
-          )}
-        </div>
-
         <div className="w-[90%] 800px:w-[50%] bg-white shadow mx-auto rounded p-6">
           <h1 className="text-2xl font-bold ">Edit Product</h1>
           <form onSubmit={formik.handleSubmit}>
@@ -151,9 +137,7 @@ const EditProduct = () => {
                 id="name"
                 name="name"
                 type="text"
-                className={`mt-1 block w-full ${
-                  formik.errors.name ? "border-red-500" : "border-gray-300"
-                }`}
+                className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Enter product name"
                 {...formik.getFieldProps("name")}
               />
@@ -347,138 +331,3 @@ const EditProduct = () => {
 };
 
 export default EditProduct;
-
-//   return (
-//     <div>
-//       <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Name</label>
-//           <input
-//             type="text"
-//             name="name"
-//             onChange={formik.handleChange}
-//             value={formik.values.name}
-//             className="w-full border border-gray-300 p-2 rounded-md"
-//             placeholder="Enter product name..."
-//           />
-//           {formik.touched.name && formik.errors.name && (
-//             <div className="text-red-500">{formik.errors.name}</div>
-//           )}
-//         </div>
-
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Description</label>
-//           <ReactQuill
-//             name="description"
-//             onChange={(value) => formik.setFieldValue("description", value)}
-//             value={formik.values.description}
-//             className="mt-2"
-//           />
-//           {formik.touched.description && formik.errors.description && (
-//             <div className="text-red-500">{formik.errors.description}</div>
-//           )}
-//         </div>
-
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Category</label>
-//           <input
-//             type="text"
-//             name="category"
-//             onChange={formik.handleChange}
-//             value={formik.values.category}
-//             className="w-full border border-gray-300 p-2 rounded-md"
-//             placeholder="Enter product category..."
-//           />
-//           {formik.touched.category && formik.errors.category && (
-//             <div className="text-red-500">{formik.errors.category}</div>
-//           )}
-//         </div>
-
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Tags</label>
-//           <input
-//             type="text"
-//             name="tags"
-//             onChange={formik.handleChange}
-//             value={formik.values.tags}
-//             className="w-full border border-gray-300 p-2 rounded-md"
-//             placeholder="Enter product tags..."
-//           />
-//           {formik.touched.tags && formik.errors.tags && (
-//             <div className="text-red-500">{formik.errors.tags}</div>
-//           )}
-//         </div>
-
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Images</label>
-//           <input
-//             type="file"
-//             name="images"
-//             onChange={handleImageChange}
-//             multiple
-//             className="mt-2"
-//           />
-//         </div>
-
-//         <div className="my-4">
-//           <label className="text-lg font-bold">Product Variations</label>
-//           {variations.map((variation, index) => (
-//             <div key={index} className="my-2">
-//               <div className="flex items-center">
-//                 <input
-//                   type="text"
-//                   name={`variations[${index}][name]`}
-//                   value={variation.name}
-//                   onChange={(e) =>
-//                     handleVariationChange(index, "name", e.target.value)
-//                   }
-//                   className="w-24 border border-gray-300 p-2 rounded-md mr-4"
-//                   placeholder="Name"
-//                 />
-//                 <input
-//                   type="text"
-//                   name={`variations[${index}][price]`}
-//                   value={variation.price}
-//                   onChange={(e) =>
-//                     handleVariationChange(index, "price", e.target.value)
-//                   }
-//                   className="w-24 border border-gray-300 p-2 rounded-md mr-4"
-//                   placeholder="Price"
-//                 />
-//                 <input
-//                   type="text"
-//                   name={`variations[${index}][stock]`}
-//                   value={variation.stock}
-//                   onChange={(e) =>
-//                     handleVariationChange(index, "stock", e.target.value)
-//                   }
-//                   className="w-24 border border-gray-300 p-2 rounded-md mr-4"
-//                   placeholder="Stock"
-//                 />
-//                 <AiOutlinePlusCircle
-//                   onClick={handleAddVariation}
-//                   className="text-2xl text-green-500 cursor-pointer"
-//                 />
-//                 {index !== 0 && (
-//                   <AiOutlineMinusCircle
-//                     onClick={() => handleRemoveVariation(index)}
-//                     className="text-2xl text-red-500 cursor-pointer ml-2"
-//                   />
-//                 )}
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-
-//         <button
-//           type="submit"
-//           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-//         >
-//           Update Product
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default UpdateProduct;

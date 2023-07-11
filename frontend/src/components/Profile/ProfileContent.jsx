@@ -28,6 +28,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { HiUserRemove } from "react-icons/hi";
 import Spinner from "../Spinner";
 import { NumericFormat } from "react-number-format";
 import CustomModal from "../CustomModal";
@@ -40,7 +41,8 @@ const ProfileContent = ({ active }) => {
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
-  const [imgSrc, setImgSrc] = useState(`${backend_url}${user?.avatar}`);
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -83,33 +85,74 @@ const ProfileContent = ({ active }) => {
         toast.error(error);
       });
   };
+  const removeImage = async (e) => {
+    await axios
+      .put(
+        `${server}/user/remove-avatar`,
+        {},
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        dispatch(loadUser());
+        toast.success("avatar removed successfully!");
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
+  };
 
   return (
     <div className="w-full">
       {/* profile */}
       {active === 1 && (
         <>
+          {modalOpen && (
+            <CustomModal
+              message={"Are you sure you want to remove this image?"}
+              ok={" Yes, I'm sure"}
+              cancel={"No, cancel"}
+              setModalOpen={setModalOpen}
+              performAction={(e) => removeImage(e)}
+              closeModel={() => setModalOpen(false)}
+            />
+          )}
           <div className="flex justify-center w-full">
             <div className="">
               <img
-                src={imgSrc}
-                onError={() => setImgSrc(`${backend_url}defaultavatar.png`)}
+                src={`${backend_url}${user?.avatar}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />
-              <div className="flex mx-5">
-                <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer bottom-[2px] right-[2px]">
-                  <input
-                    type="file"
-                    id="image"
-                    className="hidden"
-                    onChange={handleImage}
-                  />
-                  <label htmlFor="image">
-                    <AiOutlineCamera />
-                  </label>
+              <div className="flex">
+                <div className="flex mx-5">
+                  <div
+                    onClick={(e) => handleImage(e)}
+                    className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer bottom-[2px] right-[2px]"
+                  >
+                    <input
+                      type="file"
+                      id="image"
+                      className="hidden"
+                      onChange={handleImage}
+                    />
+                    <label htmlFor="image">
+                      <AiOutlineCamera size={18} className="text-gray-600" />
+                    </label>
+                  </div>
                 </div>
-                <p>change image</p>
+                <div className="flex mx-5">
+                  <div
+                    onClick={() => setModalOpen(true)}
+                    className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer bottom-[2px] right-[2px]"
+                  >
+                    <HiUserRemove size={18} className="text-gray-600" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

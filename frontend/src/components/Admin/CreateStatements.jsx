@@ -247,9 +247,9 @@ const StatementsPage = () => {
         <h2 className="text-xl font-semibold mb-2">Statements List</h2>
         <table className="min-w-full">
           <thead>
-            <tr>
-              <th className="py-2">Promotion Name</th>
-              <th className="py-2">Actions</th>
+            <tr className="font-bold">
+              <td className="py-2">Promotion Name</td>
+              <td className="py-2">Actions</td>
             </tr>
           </thead>
           <tbody>
@@ -283,6 +283,21 @@ const StatementsPage = () => {
                     </button>
                   </td>
                 </tr>
+                <div className="flex">
+                  <img
+                    src={statement.promotionImage}
+                    alt="imgalt"
+                    className="w-36 h-36"
+                  />
+                  <div>
+                    <li>{statement.promotionName}</li>
+                    <li>{statement.typingName1}</li>
+                    <li>{statement.typingName2}</li>
+                    <li>{statement.typingName3}</li>
+                    <li>{statement.promotionDetails}</li>
+                    <li>{statement.productId}</li>
+                  </div>
+                </div>
               </>
             ))}
           </tbody>

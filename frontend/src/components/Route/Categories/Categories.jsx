@@ -1,14 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { brandingData, categoriesData } from "../../../static/data";
 import styles from "../../../styles/styles";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import axios from "axios";
+import { backend_url, server } from "../../../server";
 
 const Categories = () => {
   const navigate = useNavigate();
   const [hideLeftArrow, setHideLeftArrow] = useState(true);
   const [hideRightArrow, setHideRightArrow] = useState(false);
   const sliderRef = useRef(null);
+
+  const [categoriesData, setCategoriesData] = useState([]);
+
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const response = await axios.get(`${server}/category/categories`);
+        setCategoriesData(response.data);
+      } catch (error) {
+        console.error("Error fetching categoriesData:", error);
+      }
+    };
+
+    fetchCategoriesData();
+  }, []);
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -18,6 +34,11 @@ const Categories = () => {
       slider.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const submitHandle = (category) => {
+    navigate(`/products?category=${category.name}`);
+    // window.location.reload();
+  };
 
   const handleScroll = () => {
     const slider = sliderRef.current;
@@ -71,20 +92,22 @@ const Categories = () => {
             style={{ scrollBehavior: "smooth" }}
           >
             {categoriesData &&
-              categoriesData.map((category) => (
-                <div
-                  className="border mb-2 p-3 min-w-[127px] rounded-md"
-                  key={category.id}
-                  onClick={() => handleSubmit(category)}
-                >
-                  <p className="text-sm">{category.title}</p>
-                  <img
-                    src={category.image_Url}
-                    className="lg:w-[170px] sm:w-[100px] object-cover lg:h-[100px] sm:h-[50px]"
-                    alt=""
-                  />
-                </div>
-              ))}
+              categoriesData
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((category, index) => (
+                  <div
+                    className="border mb-2 p-3 min-w-[127px] rounded-md"
+                    key={index}
+                    onClick={() => submitHandle(category)}
+                  >
+                    <p className="text-sm">{category.name}</p>
+                    <img
+                      src={`${backend_url}${category?.image}`}
+                      className="lg:w-[170px] sm:w-[100px] object-cover lg:h-[100px] sm:h-[50px]"
+                      alt=""
+                    />
+                  </div>
+                ))}
           </div>
 
           {!hideRightArrow && (

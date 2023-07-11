@@ -21,7 +21,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     if (userEmail) {
       const filename = req?.file?.filename
         ? req.file.filename
-        : "defaultavatar";
+        : "defaultavatar.png";
       const filePath = `uploads/${filename}`;
       fs.unlink(filePath, (err) => {
         if (err) {
@@ -32,7 +32,9 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       return next(new ErrorHandler("User already exists", 400));
     }
 
-    const filename = req?.file?.filename ? req.file.filename : "defaultavatar";
+    const filename = req?.file?.filename
+      ? req.file.filename
+      : "defaultavatar.png";
     const fileUrl = path.join(filename);
 
     const user = {
@@ -1175,9 +1177,10 @@ router.put(
     try {
       const existsUser = await User.findById(req.user.id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
-
-      fs.unlinkSync(existAvatarPath);
+      const existAvatarPath = `../uploads/${existsUser.avatar}`;
+      if (existAvatarPath !== "../uploads/defaultavatar.png") {
+        fs.unlinkSync(existAvatarPath);
+      }
 
       const fileUrl = path.join(req.file.filename);
 
@@ -1195,6 +1198,29 @@ router.put(
   })
 );
 
+// remove user avater
+router.put(
+  "/remove-avatar",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const existsUser = await User.findById(req.user.id);
+      const existAvatarPath = `../uploads/${existsUser.avatar}`;
+      if (existAvatarPath !== "../uploads/defaultavatar.png") {
+        fs.unlinkSync(existAvatarPath);
+      }
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        avatar: "defaultavatar.png",
+      });
+      res.status(201).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 // update user addresses
 router.put(
   "/update-user-addresses",
