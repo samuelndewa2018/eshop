@@ -1,9 +1,7 @@
 import React from "react";
 import DashboardHeader from "../../components/Shop/Layout/DashboardHeader";
-import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar";
-import UpdateProduct from "../../components/Shop/UpdateProduct";
-import AllProducts from "../../components/Shop/AllProducts";
-import EditProduct from "../../components/Shop/UpdateProduct";
+import EditProduct from "../../components/Admin/UpdateProduct";
+import AdminSideBar from "../../components/Admin/Layout/AdminSidebar";
 
 const ShopUpdateProduct = () => {
   return (
@@ -11,7 +9,7 @@ const ShopUpdateProduct = () => {
       <DashboardHeader />
       <div className="flex items-center justify-between w-full">
         <div className="w-[80px] 800px:w-[330px]">
-          <DashboardSideBar active={5} />
+          <AdminSideBar active={6} />
         </div>
         <div className="w-full justify-center flex">
           <EditProduct />

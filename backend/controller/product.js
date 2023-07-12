@@ -57,10 +57,33 @@ router.get(
   })
 );
 
+//get single product
+router.get(
+  "/get-product/:id",
+  // isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+
+      const productData = await Product.findById(productId);
+      if (!productData) {
+        return next(new ErrorHandler("Product not found", 404));
+      }
+
+      res.status(200).json({
+        success: true,
+        product: productData,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 // delete product of a shop
 router.delete(
   "/delete-shop-product/:id",
-  isSeller,
+  isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
@@ -191,7 +214,7 @@ router.get(
 // update seller info
 router.put(
   "/update-product/:id",
-  isSeller,
+  // isAdmin,
   catchAsyncErrors(async (req, res, next) => {
     try {
       const {
@@ -216,7 +239,7 @@ router.put(
       productData.originalPrice = originalPrice;
       productData.discountPrice = discountPrice;
       productData.stock = stock;
-      productData.variations = variations;
+      // productData.variations = variations;
 
       await productData.save();
 
@@ -225,6 +248,7 @@ router.put(
         product: productData,
       });
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })

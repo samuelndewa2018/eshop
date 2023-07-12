@@ -13,6 +13,10 @@ const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen2, setModalOpen2] = useState(false);
+  const [id, setId] = useState("");
+
+  const [id2, setId2] = useState("");
 
   const dispatch = useDispatch();
 
@@ -20,11 +24,24 @@ const AllProducts = () => {
     dispatch(getAllProductsShop(seller._id));
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id));
-    window.location.reload();
+  const setOperations = async (productId) => {
+    setModalOpen(true);
+    setId(productId);
+    console.log("1st id", id);
   };
 
+  const sendDeleteMessage = () => {
+    console.log("2nd id", id);
+  };
+
+  const setOperations2 = async (productId) => {
+    setModalOpen2(true);
+    setId2(productId);
+    console.log("1st id", id2);
+  };
+  const consoleId2 = () => {
+    console.log("2nd id", id2);
+  };
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
     {
@@ -85,11 +102,12 @@ const AllProducts = () => {
         const productId = params.row.id;
         return (
           <>
-            <Link to={`/edit-product/${productId}`}>
-              <Button>
-                <AiOutlineEdit size={20} />
-              </Button>
-            </Link>
+            <Button>
+              <AiOutlineEdit
+                onClick={() => setOperations2(productId)}
+                size={20}
+              />
+            </Button>
           </>
         );
       },
@@ -102,19 +120,10 @@ const AllProducts = () => {
       type: "number",
       sortable: false,
       renderCell: (params) => {
+        const productId = params.row.id;
         return (
           <>
-            {modalOpen && (
-              <CustomModal
-                message={"Are you sure you want to delete this product?"}
-                ok={" Yes, I'm sure"}
-                cancel={"No, cancel"}
-                setModalOpen={setModalOpen}
-                performAction={() => handleDelete(params._id)}
-                closeModel={() => setModalOpen(false)}
-              />
-            )}
-            <Button onClick={() => setModalOpen(true)}>
+            <Button onClick={() => setOperations(productId)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -137,6 +146,30 @@ const AllProducts = () => {
         <Loader />
       ) : (
         <div className="w-full mx-8 pt-1 mt-10 bg-white">
+          {modalOpen && (
+            <CustomModal
+              message={"Request this product be Delete?"}
+              ok={" Yes, Please"}
+              cancel={"No, cancel"}
+              setModalOpen={setModalOpen}
+              performAction={() => {
+                sendDeleteMessage();
+              }}
+              closeModel={() => setModalOpen(false)}
+            />
+          )}
+          {modalOpen2 && (
+            <CustomModal
+              message={"Request this product be edited?"}
+              ok={" Yes, Please"}
+              cancel={"No, cancel"}
+              setModalOpen={setModalOpen}
+              performAction={() => {
+                consoleId2();
+              }}
+              closeModel={() => setModalOpen2(false)}
+            />
+          )}
           <DataGrid
             rows={rows}
             columns={columns}

@@ -15,3 +15,4 @@
 
 //=== if create 2 products consecutively... it does not capture created at
 //== can each shop receive its products order only
+//===update product not protected as admin

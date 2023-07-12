@@ -112,7 +112,9 @@ export const getProduct = (productId) => async (dispatch) => {
       type: "getProductRequest",
     });
 
-    const { data } = await axios.get(`${server}/product/${productId}`);
+    const { data } = await axios.get(
+      `${server}/product/get-product/${productId}`
+    );
     dispatch({
       type: "getProductSuccess",
       payload: data.product,

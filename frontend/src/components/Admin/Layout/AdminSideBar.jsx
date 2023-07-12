@@ -90,6 +90,18 @@ const AdminSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
+      {/* <div className="w-full flex items-center p-4">
+        <Link to="/admin-products" className="w-full flex items-center">
+          <BsHandbag size={30} color={`${active === 6 ? "crimson" : "#555"}`} />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 6 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Update Product{" "}
+          </h5>
+        </Link>
+      </div> */}
 
       <div className="w-full flex items-center p-4">
         <Link to="/admin-events" className="w-full flex items-center">
@@ -127,29 +139,14 @@ const AdminSideBar = ({ active }) => {
       </div>
 
       <div className="w-full flex items-center p-4">
-        <Link to="/profile" className="w-full flex items-center">
-          <AiOutlineSetting
+        <Link to="/categories" className="w-full flex items-center">
+          <BiCategoryAlt
             size={30}
             color={`${active === 8 ? "crimson" : "#555"}`}
           />
           <h5
             className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
               active === 8 ? "text-[crimson]" : "text-[#555]"
-            }`}
-          >
-            Settings
-          </h5>
-        </Link>
-      </div>
-      <div className="w-full flex items-center p-4">
-        <Link to="/categories" className="w-full flex items-center">
-          <BiCategoryAlt
-            size={30}
-            color={`${active === 10 ? "crimson" : "#555"}`}
-          />
-          <h5
-            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
-              active === 10 ? "text-[crimson]" : "text-[#555]"
             }`}
           >
             Category
@@ -160,11 +157,11 @@ const AdminSideBar = ({ active }) => {
         <Link to="/carousel" className="w-full flex items-center">
           <BiCarousel
             size={30}
-            color={`${active === 11 ? "crimson" : "#555"}`}
+            color={`${active === 9 ? "crimson" : "#555"}`}
           />
           <h5
             className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
-              active === 11 ? "text-[crimson]" : "text-[#555]"
+              active === 9 ? "text-[crimson]" : "text-[#555]"
             }`}
           >
             Carousel
@@ -175,14 +172,29 @@ const AdminSideBar = ({ active }) => {
         <Link to="/statements" className="w-full flex items-center">
           <AiOutlineScan
             size={30}
-            color={`${active === 12 ? "crimson" : "#555"}`}
+            color={`${active === 10 ? "crimson" : "#555"}`}
           />
           <h5
             className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
-              active === 12 ? "text-[crimson]" : "text-[#555]"
+              active === 10 ? "text-[crimson]" : "text-[#555]"
             }`}
           >
             Statements
+          </h5>
+        </Link>
+      </div>
+      <div className="w-full flex items-center p-4">
+        <Link to="/profile" className="w-full flex items-center">
+          <AiOutlineSetting
+            size={30}
+            color={`${active === 11 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 11 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Settings
           </h5>
         </Link>
       </div>

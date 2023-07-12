@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import {
   LoginPage,
   SignupPage,
@@ -55,6 +55,7 @@ import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import { ShopHomePage } from "./ShopRoutes.js";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
 import { getAllProducts } from "./redux/actions/product";
+import { getProduct } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import axios from "axios";
 import { server } from "./server";
@@ -72,11 +73,12 @@ import AdminCategories from "./pages/AdminCategories";
 import { getAllStatements } from "./redux/actions/statements";
 import AdminCarousel from "./pages/AdminCarousel";
 import ShopUpdateProduct from "./pages/Shop/ShopUpdateProduct";
-import EditProduct from "./components/Shop/UpdateProduct";
+import EditProduct from "./components/Admin/UpdateProduct";
 import AdminStatements from "./pages/AdminStatements";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
+  // const { id } = useParams();
 
   async function getStripeApikey() {
     const { data } = await axios.get(`${server}/payment/stripeapikey`);
@@ -87,6 +89,7 @@ const App = () => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
+    // Store.dispatch(getProduct(id));
     Store.dispatch(getAllEvents());
     getStripeApikey();
   }, []);
@@ -165,9 +168,9 @@ const App = () => {
         <Route
           path="/edit-product/:productId"
           element={
-            <SellerProtectedRoute>
+            <ProtectedAdminRoute>
               <EditProduct />
-            </SellerProtectedRoute>
+            </ProtectedAdminRoute>
           }
         />
         <Route

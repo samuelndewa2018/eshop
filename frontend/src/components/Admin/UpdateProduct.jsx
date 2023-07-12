@@ -7,12 +7,13 @@ import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { getProduct, updateProduct } from "../../redux/actions/product";
+import { getAllProductsShop, updateProduct } from "../../redux/actions/product";
 import { categoriesData, conditionsData } from "../../static/data";
-import DashboardSideBar from "./Layout/DashboardSideBar";
-import DashboardHeader from "./Layout/DashboardHeader";
 import axios from "axios";
 import { server } from "../../server";
+import Spinner from "../Spinner";
+import AdminSideBar from "./Layout/AdminSidebar";
+import AdminHeader from "../Layout/AdminHeader";
 
 const editProductSchema = yup.object({
   name: yup.string().required("Name is required"),
@@ -22,11 +23,11 @@ const editProductSchema = yup.object({
   originalPrice: yup.string().required("Original Price is required"),
   discountPrice: yup.string().required("Discount Price is required"),
   stock: yup.string().required("Stock is required"),
-  condition: yup.string().required("Condition is required"),
+  // condition: yup.string().required("Condition is required"),
 });
 
 const EditProduct = () => {
-  const { seller } = useSelector((state) => state.seller);
+  // const { user } = useSelector((state) => state.user.role);
   const { success, error, product } = useSelector((state) => state.products);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,6 +36,8 @@ const EditProduct = () => {
 
   const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       name: product?.name,
@@ -44,24 +47,35 @@ const EditProduct = () => {
       originalPrice: product?.originalPrice,
       discountPrice: product?.discountPrice,
       stock: product?.stock,
-      condition: product?.condition,
+      // condition: product?.condition,
     },
     validationSchema: editProductSchema,
     onSubmit: async (values) => {
-      const updatedProduct = {
-        productId,
-        name: values.name,
-        description: values.description,
-        category: values.category,
-        tags: values.tags,
-        originalPrice: values.originalPrice,
-        discountPrice: values.discountPrice,
-        stock: values.stock,
-        condition: values.condition,
-        images: images,
-        shopId: seller._id,
-      };
-      dispatch(updateProduct(productId, updatedProduct));
+      try {
+        setLoading(true);
+        const updatedProduct = {
+          productId,
+          name: values.name,
+          description: values.description,
+          category: values.category,
+          tags: values.tags,
+          originalPrice: values.originalPrice,
+          discountPrice: values.discountPrice,
+          stock: values.stock,
+          // condition: values.condition,
+          images: images,
+          // shopId: seller._id,
+        };
+
+        await dispatch(updateProduct(productId, updatedProduct));
+        setLoading(false);
+        toast.success("Product updated!");
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+      // navuigate('/')
+      // window.location.reload();
     },
   });
 
@@ -71,8 +85,8 @@ const EditProduct = () => {
     }
     if (success) {
       toast.success("Product updated successfully!");
-      navigate("/dashboard");
-      window.location.reload();
+      // navigate("/dashboard");
+      // window.location.reload();
     }
   }, [dispatch, error, success]);
 
@@ -80,8 +94,8 @@ const EditProduct = () => {
     // Fetch categories from the backend when the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${server}/category/categories`); // Replace "/api/categories" with the actual API endpoint for retrieving categories
-        setCategories(response.data); // Update the categories state with the fetched data
+        const response = await axios.get(`${server}/category/categories`);
+        setCategories(response.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
@@ -91,8 +105,15 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await getProduct(productId);
-        const productData = response.data;
+        // const response =  getAllProductsShop(productId);
+        const response = await axios.get(
+          `${server}/product/get-product/${productId}`
+        );
+
+        const productData = response.data.product;
+
+        console.log("productData", productData);
+
         formik.setValues({
           name: productData.name,
           description: productData.description,
@@ -101,7 +122,7 @@ const EditProduct = () => {
           originalPrice: productData.originalPrice,
           discountPrice: productData.discountPrice,
           stock: productData.stock,
-          condition: productData.condition,
+          // condition: productData.condition,
         });
       } catch (error) {
         console.log(error);
@@ -118,10 +139,10 @@ const EditProduct = () => {
 
   return (
     <div>
-      <DashboardHeader />
+      <AdminHeader />
       <div className="flex items-stretch">
         <div className="w-[80px] 800px:w-[330px]">
-          <DashboardSideBar active={5} />
+          <AdminSideBar active={5} />
         </div>
         <div className="w-[90%] 800px:w-[50%] bg-white shadow mx-auto rounded p-6">
           <h1 className="text-2xl font-bold ">Edit Product</h1>
@@ -205,7 +226,7 @@ const EditProduct = () => {
               </div>
             </div>
             <br />
-            <div>
+            {/* <div>
               <label className="pb-2">
                 Condition<span className="text-red-500">*</span>
               </label>
@@ -229,7 +250,7 @@ const EditProduct = () => {
               <div className="text-red-500">
                 {formik.touched.condition && formik.errors.condition}
               </div>
-            </div>
+            </div> */}
             <br />
             <div>
               <label className="pb-2">Original Price</label>
@@ -314,14 +335,19 @@ const EditProduct = () => {
                   ))}
               </div>
               <br />
-            </div>
-
-            {/* You can use the same format as above for each field */}
+            </div>{" "}
             <button
+              disabled={loading}
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
-              Update Product
+              {loading ? (
+                <p className="flex">
+                  <Spinner /> Updating...
+                </p>
+              ) : (
+                <p className="">Update Product</p>
+              )}
             </button>
           </form>
         </div>

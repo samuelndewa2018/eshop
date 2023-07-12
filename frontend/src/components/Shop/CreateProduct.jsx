@@ -30,13 +30,6 @@ const CreateProduct = () => {
 
   const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]); // state for storing categories
-  // const [name, setName] = useState("");
-  // const [description, setDescription] = useState("");
-  // const [category, setCategory] = useState("");
-  // const [tags, setTags] = useState("");
-  // const [originalPrice, setOriginalPrice] = useState();
-  // const [discountPrice, setDiscountPrice] = useState();
-  // const [stock, setStock] = useState();
 
   useEffect(() => {
     if (error) {
@@ -107,25 +100,6 @@ const CreateProduct = () => {
       dispatch(createProduct(newForm));
     },
   });
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const newForm = new FormData();
-
-  //   images.forEach((image) => {
-  //     newForm.append("images", image);
-  //   });
-  //   newForm.append("name", name);
-  //   newForm.append("description", description);
-  //   newForm.append("category", category);
-  //   newForm.append("tags", tags);
-  //   newForm.append("originalPrice", originalPrice);
-  //   newForm.append("discountPrice", discountPrice);
-  //   newForm.append("stock", stock);
-  //   newForm.append("shopId", seller._id);
-  //   dispatch(createProduct(newForm));
-  // };
 
   return (
     <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
