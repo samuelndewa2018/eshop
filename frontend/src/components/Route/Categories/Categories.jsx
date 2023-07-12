@@ -72,9 +72,9 @@ const Categories = () => {
       </div>
 
       {/* Categories component */}
-      <div className="mt-1 lg:mt-6">
+      <div className="mt-1 lg:mt-6 ">
         <div
-          className={`${styles.section} relative bg-white lg:p-6 sm:p-2 rounded-lg lg:mb-12 sm:mb-3`}
+          className={`${styles.section} relative  bg-white lg:p-6 sm:p-2 rounded-lg lg:mb-12 sm:mb-3 `}
           id="categories"
         >
           {!hideLeftArrow && (
@@ -86,7 +86,7 @@ const Categories = () => {
           )}
 
           <div
-            className="overflow-x-auto flex space-x-4 border-0"
+            className="overflow-x-auto flex space-x-4 border-0 scroll__bar"
             id="slider"
             ref={sliderRef}
             style={{ scrollBehavior: "smooth" }}
@@ -117,6 +117,17 @@ const Categories = () => {
               size={35}
             />
           )}
+          <style jsx>{`
+            .scroll__bar::-webkit-scrollbar-track {
+              display: none;
+            }
+            .scroll__bar::-webkit-scrollbar-thumb {
+              display: none;
+            }
+            .scroll__bar::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
         </div>
       </div>
     </>

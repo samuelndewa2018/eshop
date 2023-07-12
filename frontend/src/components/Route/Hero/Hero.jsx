@@ -57,7 +57,7 @@ const Hero = () => {
   });
 
   const sortedNewProducts = featuredProduct.sort((a, b) => {
-    return a.createdAt - b.createdAt;
+    return b.createdAt - a.createdAt;
   });
 
   return (
@@ -68,8 +68,8 @@ const Hero = () => {
             {carouselData.map((slide) => (
               <div key={slide._id}>
                 <img
-                  className="rounded carousel-image"
-                  src={slide.imageUrl}
+                  className="rounded carousel-image object-contain"
+                  src={`${backend_url}${slide.image}`}
                   alt={slide.caption}
                 />
                 <p className="legend">{slide.caption}</p>
@@ -135,8 +135,8 @@ const Hero = () => {
                 })}
             </div>
             <div className="flex">
-              {sortedNewProducts &&
-                sortedNewProducts.slice(0, 1).map((i) => {
+              {featuredProduct &&
+                featuredProduct.slice(0, 1).map((i) => {
                   return (
                     <Link
                       to={`/product/${i._id}`}

@@ -138,7 +138,7 @@ const App = () => {
           element={<ShopResetPassword />}
         />
         <Route
-          path="/admin-carousel"
+          path="/carousel"
           element={
             <ProtectedAdminRoute>
               <AdminCarousel />

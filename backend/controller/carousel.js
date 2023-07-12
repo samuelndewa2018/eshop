@@ -1,6 +1,7 @@
 const express = require("express");
 const Carousel = require("../model/carousel");
 const router = express.Router();
+const multer = require("multer");
 
 router.get("/get-carousel", async (req, res) => {
   try {
@@ -12,29 +13,41 @@ router.get("/get-carousel", async (req, res) => {
   }
 });
 
-router.post("/carousel", async (req, res) => {
-  try {
-    const { imageUrl, caption } = req.body;
-
-    // Create a new carousel item using the CarouselModel
-    const newCarouselItem = new Carousel({ imageUrl, caption });
-
-    // Save the new carousel item to the database
-    const savedCarouselItem = await newCarouselItem.save();
-
-    res.json(savedCarouselItem);
-  } catch (error) {
-    console.error("Error creating carousel item:", error);
-    res.status(500).json({ error: "Server error" });
-  }
+const storage = multer.diskStorage({
+  destination: function (req, res, cb) {
+    cb(null, "../uploads/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const filename = file.originalname.split(".")[0];
+    cb(null, filename + "-" + uniqueSuffix + ".png");
+  },
 });
 
-router.delete("/carousel/:itemId", async (req, res) => {
-  const itemId = req.params.itemId;
+const upload = multer({ storage }).single("image");
+
+router.post("/carousel", upload, (req, res) => {
+  const { caption } = req.body;
+  const image = req.file ? `${req.file.filename}` : "";
+
+  const newCarouselItem = new Carousel({ caption, image });
+
+  newCarouselItem
+    .save()
+    .then((savedCarouselItem) => {
+      res.json(savedCarouselItem);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to save the carousel" });
+    });
+});
+
+router.delete("/carousel/:id", async (req, res) => {
+  const { id } = req.params;
 
   try {
     // Find the carousel item by ID and remove it
-    await Carousel.findByIdAndRemove(itemId);
+    await Carousel.findByIdAndDelete(id);
 
     res.status(200).json({ message: "Carousel item deleted successfully" });
   } catch (error) {

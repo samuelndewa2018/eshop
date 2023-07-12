@@ -12,3 +12,6 @@
 //==choose category refreshes the page
 //== carousel list seller
 //== preorder if its out of stock
+
+//=== if create 2 products consecutively... it does not capture created at
+//== can each shop receive its products order only

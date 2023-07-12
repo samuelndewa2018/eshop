@@ -9,7 +9,7 @@ const BestDeals = () => {
   useEffect(() => {
     const allProductsData = allProducts ? [...allProducts] : [];
     const sortedData = allProductsData?.sort((a, b) => b.sold_out - a.sold_out);
-    const firstFive = sortedData && sortedData.slice(0, 5);
+    const firstFive = sortedData && sortedData.slice(0, 6);
     setData(firstFive);
   }, [allProducts]);
 
@@ -19,7 +19,7 @@ const BestDeals = () => {
         <div className={`${styles.heading}`}>
           <h1>Best Deals</h1>
         </div>
-        <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
+        <div className="overflow-x-auto flex space-x-4 mb-12 border-0 scroll__bar">
           {data &&
             data.map((i, index) => (
               <div
@@ -29,6 +29,17 @@ const BestDeals = () => {
                 <ProductCard data={i} />
               </div>
             ))}
+          <style jsx>{`
+            .scroll__bar::-webkit-scrollbar-track {
+              display: none;
+            }
+            .scroll__bar::-webkit-scrollbar-thumb {
+              display: none;
+            }
+            .scroll__bar::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
         </div>
       </div>
     </div>

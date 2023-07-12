@@ -8,7 +8,7 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { BsHandbag } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { AiOutlineSetting, AiOutlineScan } from "react-icons/ai";
-import { BiCategoryAlt } from "react-icons/bi";
+import { BiCategoryAlt, BiCarousel } from "react-icons/bi";
 
 const AdminSideBar = ({ active }) => {
   return (
@@ -157,14 +157,29 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
       <div className="w-full flex items-center p-4">
-        <Link to="/statements" className="w-full flex items-center">
-          <AiOutlineScan
+        <Link to="/carousel" className="w-full flex items-center">
+          <BiCarousel
             size={30}
             color={`${active === 11 ? "crimson" : "#555"}`}
           />
           <h5
             className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
               active === 11 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Carousel
+          </h5>
+        </Link>
+      </div>
+      <div className="w-full flex items-center p-4">
+        <Link to="/statements" className="w-full flex items-center">
+          <AiOutlineScan
+            size={30}
+            color={`${active === 12 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 12 ? "text-[crimson]" : "text-[#555]"
             }`}
           >
             Statements

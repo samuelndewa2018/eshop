@@ -1,10 +1,13 @@
 import React from "react";
+import { backend_url } from "../../server";
 
-const CarouselCard = ({ imageUrl, caption, handleDelete }) => {
+const CarouselCard = ({ image, caption, handleDelete }) => {
+  console.log(image);
   return (
     <div className="flex flex-col mb-4">
       <img
-        src={imageUrl}
+        // src={image}
+        src={`${backend_url}${image}`}
         alt={caption}
         className="h-40 w-60 object-cover"
         style={{ maxWidth: "100%", maxHeight: "100%" }}

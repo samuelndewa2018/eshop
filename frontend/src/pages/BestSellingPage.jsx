@@ -15,6 +15,12 @@ const BestSellingPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const { allProducts, isLoading } = useSelector((state) => state.products);
 
+  useEffect(() => {
+    const allProductsData = allProducts ? [...allProducts] : [];
+    const sortedData = allProductsData?.sort((a, b) => b.sold_out - a.sold_out);
+    const firstFive = sortedData && sortedData.slice(0, 6);
+    setData(firstFive);
+  }, [allProducts]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,13 +38,6 @@ const BestSellingPage = () => {
   };
 
   const categoriesData = useSelector((state) => state.categories);
-
-  useEffect(() => {
-    const allProductsData = allProducts ? [...allProducts] : [];
-    const sortedData = allProductsData?.sort((a, b) => a.sold_out - b.sold_out);
-    const firstFive = sortedData && sortedData.slice(0, 6);
-    setData(firstFive);
-  }, [allProducts]);
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);

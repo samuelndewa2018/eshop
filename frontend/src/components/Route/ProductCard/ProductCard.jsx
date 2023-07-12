@@ -136,13 +136,13 @@ const ProductCard = ({ data, isEvent }) => {
             <Ratings rating={data?.ratings} />
           </div>
           <div className="flex items-center justify-end">
-            {data?.sold_out === 0 ? (
+            {data?.sold_out > 0 ? (
               <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
-                New Product
+                {data?.sold_out} sold
               </span>
             ) : (
               <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
-                {data?.sold_out} sold
+                New Product
               </span>
             )}
           </div>
@@ -160,8 +160,12 @@ const ProductCard = ({ data, isEvent }) => {
                   prefix={"Ksh "}
                 />
               </h5>
-              <h5 className={`${styles.price}`}>
-                {"Ksh " + data.originalPrice ? data.originalPrice : null}
+              <h5 className={`${styles.price} text-sm`}>
+                <NumericFormat
+                  value={data.originalPrice ? data.originalPrice : "New"}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
               </h5>
             </div>
           </div>
@@ -171,13 +175,19 @@ const ProductCard = ({ data, isEvent }) => {
               className="bg-blue-500 text-white py-1 px-2 text-xs rounded-full"
               style={{ transform: "rotate(45deg)" }}
             >
-              {data.condition}
+              -
+              {Math.round(
+                ((data.originalPrice - data.discountPrice) /
+                  data.originalPrice) *
+                  100
+              )}
+              %
             </span>
           </div>
         </Link>
 
         {/* side options */}
-        <div>
+        <div className="bg-white">
           {click ? (
             <AiFillHeart
               size={22}

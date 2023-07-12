@@ -31,6 +31,8 @@ const CreateCategory = () => {
 
   const navigate = useNavigate();
 
+  console.log(categories);
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -87,12 +89,6 @@ const CreateCategory = () => {
       // Get the ID of the created category
       const categoryId = response.data._id;
 
-      // Create the sub-category
-      // const subCategoryResponse = await axios.post(
-      //   `${server}/category/create-subcategory`,
-      //   { category: categoryId, name: subCategoryName }
-      // );
-
       toast.success("Category and sub-category created!");
       window.location.reload();
     } catch (error) {
@@ -123,9 +119,9 @@ const CreateCategory = () => {
     };
     reader.readAsDataURL(selectedImage);
   };
-  const handleDeleteCategory = async (categoryId) => {
+  const handleDeleteCategory = async (id) => {
     try {
-      await axios.delete(`${server}/category/delete-category/${categoryId}`);
+      await axios.delete(`${server}/category/delete-category/${id}`);
       toast.success("Category deleted!");
       fetchCategories(); // Refresh the categories list after deletion
     } catch (error) {
