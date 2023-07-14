@@ -29,17 +29,6 @@ const BestDeals = () => {
                 <ProductCard data={i} />
               </div>
             ))}
-          <style jsx>{`
-            .scroll__bar::-webkit-scrollbar-track {
-              display: none;
-            }
-            .scroll__bar::-webkit-scrollbar-thumb {
-              display: none;
-            }
-            .scroll__bar::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
         </div>
       </div>
     </div>

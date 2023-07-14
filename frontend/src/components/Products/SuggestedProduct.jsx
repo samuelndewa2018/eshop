@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { productData } from "../../static/data";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
+import { getAllProducts } from "../../redux/actions/product";
 
 const SuggestedProduct = ({ data }) => {
   const { allProducts } = useSelector((state) => state.products);
   const [productData, setProductData] = useState();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const d =
@@ -14,10 +16,14 @@ const SuggestedProduct = ({ data }) => {
     setProductData(d);
   }, []);
 
+  const handleScrollToTop = () => {
+    dispatch(getAllProducts());
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <div>
       {data ? (
-        <div className={`p-4 ${styles.section}`}>
+        <div className={`p-4 ${styles.section}`} onClick={handleScrollToTop}>
           <h2
             className={`${styles.heading} text-[25px] font-[500] border-b mb-5`}
           >

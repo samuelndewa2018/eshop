@@ -182,3 +182,30 @@ select {
   width: 50px;
   background-image: url("");
 }
+/* componets that appears on top of others to appear smoothly */
+.appear__smoothly {
+  animation-name: appear-smoothly-animation;
+  animation-duration: 0.5s;
+}
+
+@keyframes appear-smoothly-animation {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*  */
+.scroll__bar::-webkit-scrollbar-track {
+  display: none;
+}
+.scroll__bar::-webkit-scrollbar-thumb {
+  display: none;
+}
+.scroll__bar::-webkit-scrollbar {
+  display: none;
+}

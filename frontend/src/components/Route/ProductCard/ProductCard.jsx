@@ -22,6 +22,7 @@ import Ratings from "../../Products/Ratings";
 import { NumericFormat } from "react-number-format";
 import { TbArrowsShuffle2 } from "react-icons/tb";
 import { IoIosShareAlt } from "react-icons/io";
+import { getAllProducts } from "../../../redux/actions/product";
 
 const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -222,8 +223,7 @@ const ProductCard = ({ data, isEvent }) => {
           />
           <IoIosShareAlt
             size={25}
-            className="cursor-pointer absolute right-2 top-36
-            "
+            className="cursor-pointer absolute right-2 top-36"
             // onClick={() => {
             //   copyToClipboard(window.location.href);
             // }}

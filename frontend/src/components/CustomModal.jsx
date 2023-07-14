@@ -46,7 +46,7 @@ const CustomModal = ({
         id="popup-modal"
         tabindex="-1"
         onClick={(e) => falseModel(e)}
-        class="fixed top-0 left-0 right-0 bg-black/[.6] p-4 z-50 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full"
+        class="fixed top-0 left-0 right-0 bg-black/[.6] p-4 z-50 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full appear__smoothly"
       >
         <div
           onClick={(e) => retainModel(e)}

@@ -65,7 +65,7 @@ const BestSellingPage = () => {
           <Header activeHeading={2} />
           <br />
           <br />
-          <div className={`${styles.section}`}>
+          <div className={`${styles.section} appear__smoothly`}>
             <div className="flex justify-start mb-4">
               <div className="lg:flex sm:block">
                 <div>

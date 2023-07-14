@@ -60,7 +60,6 @@ router.get(
 //get single product
 router.get(
   "/get-product/:id",
-  // isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;

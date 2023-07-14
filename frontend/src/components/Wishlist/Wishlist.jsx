@@ -37,14 +37,13 @@ const Wishlist = ({ setOpenWishlist }) => {
   const addToCartHandler = (data) => {
     const newData = { ...data, qty: 1 };
     dispatch(addTocart(newData));
-    // var e = window.event;
-    // myClickHandler(0, false);
+    dispatch(removeFromWishlist(data));
     toast.success("Item added to cart");
   };
 
   return (
     <div
-      className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10"
+      className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10 appear__smoothly"
       onClick={(e) => myClickHandler(e, false)}
     >
       <div
@@ -52,7 +51,7 @@ const Wishlist = ({ setOpenWishlist }) => {
         className="fixed top-0 right-0 h-full w-[80%] overflow-y-scroll 800px:w-[25%] bg-white flex flex-col justify-between shadow-sm"
       >
         {wishlist && wishlist.length === 0 ? (
-          <div className="w-full h-screen flex items-center justify-center">
+          <div className="w-full h-screen flex items-center justify-center appear__smoothly">
             <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
               <RxCross1
                 size={25}
@@ -127,7 +126,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
           closeModel={() => setModalOpen(false)}
         />
       )}
-      <div className="border-b p-4">
+      <div className="border-b p-4 appear__smoothly">
         <div className="w-full 800px:flex items-center">
           <AiFillDelete
             className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2 min-w-[20px]"

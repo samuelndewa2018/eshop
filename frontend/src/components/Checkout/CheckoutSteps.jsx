@@ -2,10 +2,10 @@ import React from "react";
 import styles from "../../styles/styles";
 
 const CheckoutSteps = ({ active }) => {
-  console.log(active);
   return (
     <div className="w-full flex justify-center">
-      <div className="w-[90%] 800px:w-[50%] flex items-center flex-wrap">
+      {/* w-[90%] 800px:w-[50%] */}
+      <div className="flex items-center flex-wrap">
         <div className={`${styles.noramlFlex}`}>
           <div className={`${styles.cart_button}`}>
             <span className={`${styles.cart_button_text}`}>1.Shipping</span>
@@ -48,7 +48,7 @@ const CheckoutSteps = ({ active }) => {
             }`}
           />
           <div
-            className={`mt-[5px] ${
+            className={`${
               active > 2
                 ? `${styles.cart_button}`
                 : `${styles.cart_button} !bg-[#FDE1E6]`

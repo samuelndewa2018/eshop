@@ -94,16 +94,33 @@ const ProductDetailsCard = ({ setOpen, data }) => {
       toast.success("Product added to comparelist!");
     }
   };
+
+  const [showMore, setShowMore] = useState(false);
+
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
+  const getDescription = () => {
+    if (showMore) {
+      return data.description;
+    } else {
+      return data.description.length > 450
+        ? data.description.slice(0, 450) + "..."
+        : data.description;
+    }
+  };
+
   return (
     <div className="bg-[#fff]">
       {data ? (
         <div
           onClick={(e) => myClickHandler(e, false)}
-          className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center"
+          className="appear__smoothly fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center"
         >
           <div
             onClick={(e) => myClickHandler(e, true)}
-            className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4"
+            className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4 scroll__bar"
           >
             <RxCross1
               size={30}
@@ -151,11 +168,15 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   {data.name}
                 </h1>
                 <div className="disableStyles">
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: data.description,
-                    }}
-                  ></p>
+                  <p dangerouslySetInnerHTML={{ __html: getDescription() }}></p>
+                  {data.description.length > 450 && (
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleShowMore}
+                    >
+                      {showMore ? "Show less" : "Show more"}
+                    </button>
+                  )}
                 </div>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>

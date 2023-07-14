@@ -335,6 +335,18 @@ const PaymentInfo = ({
     },
   });
 
+  const myClickHandler = (e, props) => {
+    setOpen(props);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <div className="w-full 800px:w-[95%] bg-[#fff] rounded-md p-5 pb-8">
       {/* select buttons */}
@@ -375,7 +387,7 @@ const PaymentInfo = ({
                 </div>
               )} */}
             </div>
-            <div className=" w-ful lg:flex sm:block border-b">
+            <div className=" w-ful lg:flex sm:block border-b appear__smoothly">
               <div className="items-center">
                 <img
                   className="w-[125px] h-[125px] m-auto"
@@ -383,7 +395,7 @@ const PaymentInfo = ({
                   alt="mpesaImg"
                 />
               </div>
-              <form className="pt-2" onSubmit={formik.handleSubmit}>
+              <form className="pt-2 " onSubmit={formik.handleSubmit}>
                 <div className="w-full flex pb-3">
                   <label className=" w-[50%] pb-2 mt-[11px]">
                     Total Amount
@@ -475,7 +487,7 @@ const PaymentInfo = ({
 
         {/* pay with payement */}
         {select === 2 ? (
-          <div className="w-full flex border-b">
+          <div className="w-full flex border-b appear__smoothly">
             <div
               className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               onClick={() => setOpen(true)}
@@ -483,13 +495,19 @@ const PaymentInfo = ({
               Pay Now
             </div>
             {open && (
-              <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
-                <div className="w-full 800px:w-[40%] h-screen 800px:h-[80vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll">
+              <div
+                className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999] appear__smoothly"
+                onClick={(e) => myClickHandler(e, false)}
+              >
+                <div
+                  className="w-full 800px:w-[30%] 800px:h-[60vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll"
+                  onClick={(e) => myClickHandler(e, true)}
+                >
                   <div className="w-full flex justify-end p-3">
                     <RxCross1
                       size={30}
                       className="cursor-pointer absolute top-3 right-3"
-                      onClick={() => setOpen(false)}
+                      onClick={(e) => myClickHandler(e, false)}
                     />
                   </div>
                   <PayPalScriptProvider
@@ -531,7 +549,10 @@ const PaymentInfo = ({
         {/* cash on delivery */}
         {select === 3 ? (
           <div className="w-full flex">
-            <form className="w-full" onSubmit={cashOnDeliveryHandler}>
+            <form
+              className="w-full appear__smoothly"
+              onSubmit={cashOnDeliveryHandler}
+            >
               <input
                 type="submit"
                 disabled={loading1}

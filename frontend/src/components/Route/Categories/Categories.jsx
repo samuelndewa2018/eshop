@@ -96,7 +96,7 @@ const Categories = () => {
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((category, index) => (
                   <div
-                    className="border mb-2 p-3 min-w-[127px] rounded-md"
+                    className="border mb-2 p-3 min-w-[127px] rounded-md cursor-pointer"
                     key={index}
                     onClick={() => submitHandle(category)}
                   >
@@ -117,17 +117,6 @@ const Categories = () => {
               size={35}
             />
           )}
-          <style jsx>{`
-            .scroll__bar::-webkit-scrollbar-track {
-              display: none;
-            }
-            .scroll__bar::-webkit-scrollbar-thumb {
-              display: none;
-            }
-            .scroll__bar::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
         </div>
       </div>
     </>

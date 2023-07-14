@@ -22,6 +22,7 @@ import Ratings from "./Ratings";
 import axios from "axios";
 import { TbArrowsShuffle2 } from "react-icons/tb";
 import { addTocompare } from "../../redux/actions/compare";
+import { NumericFormat } from "react-number-format";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -142,6 +143,23 @@ const ProductDetails = ({ data }) => {
     toast.info("Link copied to clipboard");
   };
 
+  const [showMore, setShowMore] = useState(false);
+
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const getDescription = () => {
+    if (showMore) {
+      return data.description;
+    } else {
+      return data.description.length > 450
+        ? data.description.slice(0, 450) + "..."
+        : data.description;
+    }
+  };
+
   return (
     <div className="bg-white">
       {data ? (
@@ -184,24 +202,36 @@ const ProductDetails = ({ data }) => {
                 <div className="disableStyles">
                   {/* <p
                     dangerouslySetInnerHTML={{
-                      __html: data.description,
-                    }}
-                  ></p> */}
-                  <p
-                    dangerouslySetInnerHTML={{
                       __html:
                         data.description.length > 450
                           ? data.description.slice(0, 450) + "..."
                           : data.description,
                     }}
-                  ></p>
+                  ></p> */}
+                  <p dangerouslySetInnerHTML={{ __html: getDescription() }}></p>
+                  {data.description.length > 450 && (
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleShowMore}
+                    >
+                      {showMore ? "Show less" : "Show more"}
+                    </button>
+                  )}
                 </div>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    Ksh. {data.discountPrice}
+                    <NumericFormat
+                      value={data.discountPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                    />
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {"Ksh. " + data.originalPrice ? data.originalPrice : null}
+                    <NumericFormat
+                      value={data.originalPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                    />
                   </h3>
                 </div>
 
@@ -379,7 +409,7 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p
-            className="py-2 lg:text-[18px]  sm:text-[12px] leading-8 pb-10 whitespace-pre-line disableStyles"
+            className="py-2 lg:text-[18px]  sm:text-[12px] leading-8 pb-10 whitespace-pre-line disableStyles appear__smoothly"
             dangerouslySetInnerHTML={{
               __html: data.description,
             }}
@@ -388,7 +418,7 @@ const ProductDetailsInfo = ({
       ) : null}
 
       {active === 2 ? (
-        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
+        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll appear__smoothly">
           {data &&
             data.reviews.map((item, index) => (
               <div className="w-full flex my-2">
@@ -416,7 +446,7 @@ const ProductDetailsInfo = ({
       ) : null}
 
       {active === 3 && (
-        <div className="w-full block 800px:flex p-5">
+        <div className="w-full block 800px:flex p-5 appear__smoothly">
           <div className="w-full 800px:w-[50%]">
             <Link to={`/shop/preview/${data.shop._id}`}>
               <div className="flex items-center">
