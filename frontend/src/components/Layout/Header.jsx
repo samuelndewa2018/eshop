@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
 import {
@@ -12,7 +12,8 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { BiMenuAltLeft } from "react-icons/bi";
+import { BiMenuAltLeft, BiHomeAlt2 } from "react-icons/bi";
+import { BsSearch } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
@@ -23,6 +24,9 @@ import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
 import Typed from "react-typed";
 import axios from "axios";
+import { TbArrowsShuffle2 } from "react-icons/tb";
+import CustomModal from "../CustomModal";
+import { toast } from "react-toastify";
 
 const Header = ({ activeHeading }) => {
   const { statements } = useSelector((state) => state.statements);
@@ -39,6 +43,10 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const promotionName = statements?.map((i) => i.promotionName);
   const typingName1 = statements?.map((i) => i.typingName1);
@@ -81,6 +89,8 @@ const Header = ({ activeHeading }) => {
   const myClickHandler2 = (e, props) => {
     // Here you'll do whatever you want to happen when they click
     setOpenCart(props);
+    setOpenWishlist(false);
+    setSearchOpen(false);
 
     if (!e) {
       var e = window.event;
@@ -93,6 +103,8 @@ const Header = ({ activeHeading }) => {
   const myClickHandler3 = (e, props) => {
     // Here you'll do whatever you want to happen when they click
     setOpenWishlist(props);
+    setOpenCart(false);
+    setSearchOpen(false);
     setOpen(false);
 
     if (!e) {
@@ -103,7 +115,34 @@ const Header = ({ activeHeading }) => {
       e.stopPropagation();
     }
   };
+  const myClickHandler4 = (e, props) => {
+    setSearchOpen(props);
+    setOpenCart(false);
+    setOpenWishlist(false);
 
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+  const myClickHandler5 = (e) => {
+    e.preventDefault();
+    setSearchOpen(false);
+    setOpenCart(false);
+    setOpenWishlist(false);
+    navigate("/");
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
   useEffect(() => {
     const fetchCategoriesData = async () => {
       try {
@@ -117,10 +156,23 @@ const Header = ({ activeHeading }) => {
     fetchCategoriesData();
   }, []);
 
+  const logoutHandler = () => {
+    axios
+      .get(`${server}/user/logout`, { withCredentials: true })
+      .then((res) => {
+        toast.success(res.data.message);
+        navigate("/");
+        window.location.reload(true);
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
   return (
     <div onClick={dropDown === true ? () => setDropDown(false) : () => {}}>
       <div className="flex p-auto w-full bg-[#3321c8] h-[40px] justify-between py-[7px] px-[5px] lg:py-[22px] lg:px-[60px] lg:h-[70px]">
-        <div className="flex">
+        <div className="flex ml-2">
           <p className="hidden text-white lg:block">{promotionName}</p>
           <Typed
             className="text-white lg:ml-20 sm:ml-0"
@@ -146,7 +198,9 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                // src="https://res.cloudinary.com/bramuels/image/upload/v1689344968/logo_transparent_szdcj7.png"
+                src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
+                className="w-28 h-28"
                 alt=""
               />
             </Link>
@@ -154,17 +208,30 @@ const Header = ({ activeHeading }) => {
           {/* search box */}
           <div className="w-[50%] relative">
             <input
-              type="text"
+              type="search"
               placeholder="Search Product..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
             />
-            <AiOutlineSearch
-              size={30}
-              className="absolute right-2 top-1.5 cursor-pointer"
-            />
-            {searchData && searchData.length !== 0 ? (
+            {searchTerm === "" && (
+              <BsSearch
+                size={30}
+                className="absolute right-2 top-1.5 cursor-pointer"
+              />
+            )}
+            {searchData && searchData.length === 0 && searchTerm !== "" ? (
+              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+                <div className="w-full flex items-start-py-3">
+                  <img
+                    src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
+                    alt=""
+                    className="w-[40px] h-[40px] mr-[10px]"
+                  />
+                  <h1>We are sorry, No such Product in our store</h1>
+                </div>
+              </div>
+            ) : searchData && searchData.length !== 0 && searchTerm !== "" ? (
               <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
@@ -323,9 +390,9 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
                 alt=""
-                className="mt-3 cursor-pointer"
+                className="cursor-pointer h-20 w-20"
               />
             </Link>
           </div>
@@ -335,7 +402,7 @@ const Header = ({ activeHeading }) => {
               onClick={(e) => myClickHandler2(e, true)}
             >
               <AiOutlineShoppingCart size={30} />
-              <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
+              <span className="absolute rounded-full flex items-center justify-center bottom-[70%] right-0 h-[20px] w-[20px] border-none text-white bg-[#3bc177]">
                 {cart && cart.length}
               </span>
             </div>
@@ -350,7 +417,7 @@ const Header = ({ activeHeading }) => {
         {/* header sidebar */}
         {open && (
           <div
-            className={`fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0`}
+            className={`fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0 appear__smoothly`}
             onClick={(e) => myClickHandler(e, false)}
           >
             <div
@@ -376,7 +443,7 @@ const Header = ({ activeHeading }) => {
                 />
               </div>
 
-              <div className="my-8 w-[92%] m-auto h-[40px relative]">
+              <div className="relative my-8 w-[92%] m-auto h-[40px relative]">
                 <input
                   type="search"
                   placeholder="Search Product..."
@@ -384,12 +451,28 @@ const Header = ({ activeHeading }) => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                {searchData && (
+                {searchTerm === "" && (
+                  <BsSearch
+                    size={30}
+                    className="absolute right-2 top-1.5 cursor-pointer"
+                  />
+                )}
+                {searchData && searchData.length === 0 && searchTerm !== "" ? (
+                  <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+                    <div className="w-full flex items-start-py-3">
+                      <img
+                        src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
+                        alt=""
+                        className="w-[40px] h-[40px] mr-[10px]"
+                      />
+                      <h1>We are sorry, No such Product in our store</h1>
+                    </div>
+                  </div>
+                ) : searchData &&
+                  searchData.length !== 0 &&
+                  searchTerm !== "" ? (
                   <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
                     {searchData.map((i) => {
-                      const d = i.name;
-
-                      // const Product_name = d.replace(/\s+/g, "-");
                       return (
                         <Link to={`/product/${i._id}`}>
                           <div className="flex items-center">
@@ -398,16 +481,41 @@ const Header = ({ activeHeading }) => {
                               alt=""
                               className="w-[50px] mr-2"
                             />
-                            <h5>{i.name}</h5>
+                            <h5>
+                              {" "}
+                              {i.name.length > 40
+                                ? i.name.slice(0, 40) + "..."
+                                : i.name}
+                            </h5>
                           </div>
                         </Link>
                       );
                     })}
                   </div>
-                )}
+                ) : null}
               </div>
 
               <Navbar active={activeHeading} />
+              <div>
+                {modalOpen && (
+                  <CustomModal
+                    message={"Are you sure you want to logout?"}
+                    ok={" Yes, I'm sure"}
+                    cancel={"No, cancel"}
+                    setModalOpen={setModalOpen}
+                    performAction={() => logoutHandler()}
+                    closeModel={() => setModalOpen(false)}
+                  />
+                )}
+                {isAuthenticated && (
+                  <div
+                    onClick={() => setModalOpen(true)}
+                    className="pb-[30px] 800px:pb-0 font-[500] px-6 cursor-pointer"
+                  >
+                    Log Out
+                  </div>
+                )}
+              </div>
               <div className={`${styles.button} ml-4 !rounded-[4px]`}>
                 <Link to={`${isAuthenticated ? "/profile" : "/login"}`}>
                   <h1 className="text-[#fff] flex items-center">
@@ -425,38 +533,161 @@ const Header = ({ activeHeading }) => {
               <br />
               <br />
               <br />
-
-              <div className="flex w-full justify-center">
-                {isAuthenticated ? (
-                  <div>
-                    <Link to="/profile">
-                      <img
-                        src={`${backend_url}${user?.avatar}`}
-                        alt=""
-                        className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88]"
-                      />
-                    </Link>
-                  </div>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      className="text-[18px] pr-[10px] text-[#000000b7]"
-                    >
-                      Login /
-                    </Link>
-                    <Link
-                      to="/sign-up"
-                      className="text-[18px] text-[#000000b7]"
-                    >
-                      Sign up
-                    </Link>
-                  </>
-                )}
-              </div>
             </div>
           </div>
         )}
+        {/* search for bottom tab */}
+        {searchOpen && (
+          <div
+            onClick={(e) => myClickHandler4(e, false)}
+            className=" fixed top-0 left-0 right-0 bg-black/[.6] p-4 z-50 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%)] max-h-full appear__smoothly"
+          >
+            <div className="w-[90%] absolute top-[20%]">
+              <input
+                type="search"
+                placeholder="Search Product..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onClick={(e) => myClickHandler4(e, true)}
+                className="h-[40px]  w-full px-2 border-[#3957db] border-[2px] rounded-md"
+              />
+              {searchTerm === "" && (
+                <BsSearch
+                  size={30}
+                  className="absolute right-2 top-1.5 cursor-pointer"
+                />
+              )}
+              {searchData && searchData.length === 0 && searchTerm !== "" ? (
+                <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+                  <div className="w-full flex items-start-py-3">
+                    <img
+                      src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
+                      alt=""
+                      className="w-[40px] h-[40px] mr-[10px]"
+                    />
+                    <h1>We are sorry, No such Product in our store</h1>
+                  </div>
+                </div>
+              ) : searchData && searchData.length !== 0 && searchTerm !== "" ? (
+                <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+                  {searchData &&
+                    searchData.map((i, index) => {
+                      return (
+                        <Link
+                          to={`/product/${i._id}`}
+                          onClick={(e) => myClickHandler4(e, false)}
+                        >
+                          <div className="w-full flex items-start-py-3">
+                            <img
+                              src={`${backend_url}${i.images[0]}`}
+                              alt=""
+                              className="w-[40px] h-[40px] mr-[10px]"
+                            />
+                            <h1>
+                              {" "}
+                              {i.name.length > 40
+                                ? i.name.slice(0, 40) + "..."
+                                : i.name}
+                            </h1>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        )}
+        <div className="bottomOption">
+          <div>
+            <BiHomeAlt2
+              style={{
+                color: "#000",
+                fontSize: "35px",
+                margin: "5px",
+                opacity: ".8",
+              }}
+              onClick={(e) => myClickHandler5(e)}
+            />
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+            }}
+          >
+            <AiOutlineHeart
+              style={{
+                color: "#000",
+                fontSize: "35px",
+                margin: "5px",
+                opacity: ".8",
+              }}
+              onClick={(e) => myClickHandler3(e, true)}
+            />
+
+            <span className="absolute rounded-full flex items-center justify-center bottom-[70%] right-[5%] h-[20px] w-[20px] border-none text-white bg-[#3bc177]">
+              {wishlist.length}
+            </span>
+          </div>
+          <div
+            style={{
+              position: "relative",
+            }}
+          >
+            <AiOutlineShoppingCart
+              style={{
+                color: "#000",
+                fontSize: "35px",
+                margin: "5px",
+                opacity: ".8",
+              }}
+              onClick={(e) => myClickHandler2(e, true)}
+            />
+
+            <span className="absolute rounded-full flex items-center justify-center bottom-[70%] right-[5%] h-[20px] w-[20px] border-none text-white bg-[#3bc177]">
+              {cart.length}
+            </span>
+          </div>
+
+          <div onClick={(e) => myClickHandler4(e, true)}>
+            <BsSearch
+              style={{
+                color: "#000",
+                fontSize: "35px",
+                margin: "5px",
+                opacity: ".8",
+              }}
+            />
+          </div>
+          <Link to="/compare-products">
+            <TbArrowsShuffle2
+              style={{
+                color: "#000",
+                fontSize: "35px",
+                margin: "5px",
+                opacity: ".8",
+              }}
+            />
+          </Link>
+          <div>
+            {isAuthenticated ? (
+              <div>
+                <Link to="/profile">
+                  <img
+                    src={`${backend_url}${user?.avatar}`}
+                    alt=""
+                    className="w-[44px] h-[44px] rounded-full border-[3px] border-[#0eae88]"
+                  />
+                </Link>
+              </div>
+            ) : (
+              <Link to="/login">
+                <CgProfile size={44} color="rgb(0 0 0 / 83%)" />
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

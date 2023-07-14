@@ -127,7 +127,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
         />
       )}
       <div className="border-b p-4 appear__smoothly">
-        <div className="w-full 800px:flex items-center">
+        <div className="w-full flex items-center">
           <AiFillDelete
             className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2 min-w-[20px]"
             onClick={() => setModalOpen(true)}
@@ -137,9 +137,8 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
           <img
             src={`${backend_url}${data?.images[0]}`}
             alt=""
-            className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
+            className="w-[70px] lg:w-[130px] h-min ml-2 mr-2 rounded-[5px]"
           />
-
           <div className="pl-[5px]">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
             <h4 className="font-[600] pt-3 800px:pt-[3px] text-[17px] text-[#d02222] font-Roboto">

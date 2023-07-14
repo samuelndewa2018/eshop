@@ -10,7 +10,7 @@ import {
   footercompanyLinks,
   footerProductLinks,
   footerSupportLinks,
-} from "../../static/data"; 
+} from "../../static/data";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
@@ -90,9 +90,10 @@ const Footer = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:gird-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 sm:text-center">
-        <ul className="px-5 text-center sm:text-start flex sm:block flex-col items-center">
+        <ul className="text-center sm:text-start flex sm:block flex-col items-center">
           <img
-            src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+            src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
+            className="w-28 h-28 m-auto"
             alt=""
             style={{ filter: "brightness(0) invert(1)" }}
           />
