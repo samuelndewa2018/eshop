@@ -4,7 +4,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import styles from "../../styles/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { backend_url } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { addTocart, removeFromCart } from "../../redux/actions/cart";
@@ -15,6 +15,7 @@ import CustomModal from "../CustomModal";
 const Cart = ({ setOpenCart }) => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const removeFromCartHandler = (data) => {
     dispatch(removeFromCart(data));
@@ -31,6 +32,20 @@ const Cart = ({ setOpenCart }) => {
 
   const myClickHandler = (e, props) => {
     setOpenCart(props);
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
+
+  const CheckoutClose = (e, props) => {
+    e.preventDefault();
+    setOpenCart(props);
+    navigate("/checkout");
 
     if (!e) {
       var e = window.event;
@@ -81,7 +96,7 @@ const Cart = ({ setOpenCart }) => {
                 />
               </div>
               {/* Item length */}
-              <div className={`${styles.noramlFlex} p-4`}>
+              <div className={`${styles.noramlFlex} p-2 lg:p-4`}>
                 <IoBagHandleOutline size={25} />
                 <h5 className="pl-2 text-[20px] font-[500]">
                   {cart && cart.length} items
@@ -105,9 +120,10 @@ const Cart = ({ setOpenCart }) => {
 
             <div className="px-5 mb-3">
               {/* checkout buttons */}
-              <Link to="/checkout">
+              <div className="cursor-pointer">
                 <div
-                  className={`h-[45px] mb-16 mt-1 lg:mb-0 flex items-center justify-center w-[100%] bg-[#e44343] rounded-[5px]`}
+                  className={`h-[45px] mb-12 mt-1 lg:mb-0 flex items-center justify-center w-[100%] bg-[#e44343] rounded-[5px]`}
+                  onClick={(e) => CheckoutClose(e, false)}
                 >
                   <h1 className="text-[#fff] text-[18px] font-[600]">
                     Checkout Now (
@@ -120,7 +136,7 @@ const Cart = ({ setOpenCart }) => {
                     )
                   </h1>
                 </div>
-              </Link>
+              </div>
             </div>
           </>
         )}
@@ -185,9 +201,8 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             alt=""
             className="w-[70px] lg:w-[130px] h-min ml-2 mr-2 rounded-[5px]"
           />
-          <div className="pl-[5px]">
+          <div className="pl-[5px] text-[14px] lg:text-[16px]">
             <Link to="/">
-              {/* <h1>{data.name}</h1> */}
               <h1>
                 {data.name.length > 40
                   ? data.name.slice(0, 40) + "..."
@@ -216,7 +231,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           <AiFillDelete
             className="cursor-pointer min-w-[20px]"
             onClick={() => setModalOpen(true)}
-            size={60}
+            size={40}
             color={"rgb(240 11 11 / 86%)"}
           />
         </div>

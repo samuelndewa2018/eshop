@@ -12,7 +12,7 @@ import { NumericFormat } from "react-number-format";
 const Checkout = () => {
   const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("KE");
   const [city, setCity] = useState("");
   const [userInfo, setUserInfo] = useState(false);
   const [address1, setAddress1] = useState("");
@@ -174,9 +174,9 @@ const ShippingInfo = ({
       <h5 className="text-[18px] font-[500]">Shipping Address</h5>
       <br />
       <form>
-        <div className="w-full flex pb-3">
-          <div className="w-[50%]">
-            <label className="block pb-2">Full Name</label>
+        <div className="w-full block lg:flex pb-3">
+          <div className="w-full lg:w-[50%]">
+            <label className="block pb-2 font-[500]">Full Name</label>
             <input
               type="text"
               value={user && user.name}
@@ -184,20 +184,20 @@ const ShippingInfo = ({
               className={`${styles.input} !w-[95%]`}
             />
           </div>
-          <div className="w-[50%]">
-            <label className="block pb-2">Email Address</label>
+          <div className="w-full lg:w-[50%]">
+            <label className="block pb-2 font-[500] ">Email Address</label>
             <input
               type="email"
               value={user && user.email}
               required
-              className={`${styles.input}`}
+              className={`${styles.input} `}
             />
           </div>
         </div>
 
         <div className="w-full flex pb-3">
           <div className="w-[50%]">
-            <label className="block pb-2">Phone Number</label>
+            <label className="block pb-2 font-[500]">Phone Number</label>
             <input
               type="number"
               required
@@ -206,7 +206,7 @@ const ShippingInfo = ({
             />
           </div>
           <div className="w-[50%]">
-            <label className="block pb-2">Zip Code</label>
+            <label className="block pb-2 font-[500]">Zip Code</label>
             <input
               type="number"
               value={zipCode}
@@ -219,7 +219,7 @@ const ShippingInfo = ({
 
         <div className="w-full flex pb-3">
           <div className="w-[50%]">
-            <label className="block pb-2">Country</label>
+            <label className="block pb-2 font-[500]">Country</label>
             <select
               className="w-[95%] border h-[40px] rounded-[5px]"
               value={country}
@@ -237,7 +237,7 @@ const ShippingInfo = ({
             </select>
           </div>
           <div className="w-[50%]">
-            <label className="block pb-2">City</label>
+            <label className="block pb-2 font-bold">City</label>
             <select
               className="w-[95%] border h-[40px] rounded-[5px]"
               value={city}
@@ -258,7 +258,7 @@ const ShippingInfo = ({
 
         <div className="w-full flex pb-3">
           <div className="w-[50%]">
-            <label className="block pb-2">Address1</label>
+            <label className="block pb-2 font-[500]">Address1</label>
             <input
               type="address"
               required
@@ -268,7 +268,7 @@ const ShippingInfo = ({
             />
           </div>
           <div className="w-[50%]">
-            <label className="block pb-2">Address2</label>
+            <label className="block pb-2 font-[500]">Address2</label>
             <input
               type="address"
               value={address2}

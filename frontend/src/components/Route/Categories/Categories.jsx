@@ -96,14 +96,14 @@ const Categories = () => {
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((category, index) => (
                   <div
-                    className="border mb-2 p-3 min-w-[127px] rounded-md cursor-pointer"
+                    className="border mb-2 p-3 min-w-[100px] w-fit h-[100px] lg:h-[120px] rounded-md cursor-pointer"
                     key={index}
                     onClick={() => submitHandle(category)}
                   >
                     <p className="text-sm">{category.name}</p>
                     <img
                       src={`${backend_url}${category?.image}`}
-                      className="lg:w-[170px] sm:w-[100px] object-cover lg:h-[100px] sm:h-[50px]"
+                      className="lg:w-[170px] sm:w-[100px] object-cover h-[60px] lg:h-[80px]"
                       alt=""
                     />
                   </div>

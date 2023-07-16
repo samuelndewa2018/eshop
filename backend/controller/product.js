@@ -57,32 +57,10 @@ router.get(
   })
 );
 
-//get single product
-router.get(
-  "/get-product/:id",
-  catchAsyncErrors(async (req, res, next) => {
-    try {
-      const productId = req.params.id;
-
-      const productData = await Product.findById(productId);
-      if (!productData) {
-        return next(new ErrorHandler("Product not found", 404));
-      }
-
-      res.status(200).json({
-        success: true,
-        product: productData,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  })
-);
-
 // delete product of a shop
 router.delete(
   "/delete-shop-product/:id",
-  isAdmin("Admin"),
+  isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
@@ -91,7 +69,7 @@ router.delete(
 
       productData.images.forEach((imageUrl) => {
         const filename = imageUrl;
-        const filePath = `uploads/${filename}`;
+        const filePath = `../uploads/${filename}`;
 
         fs.unlink(filePath, (err) => {
           if (err) {
@@ -182,7 +160,7 @@ router.put(
 
       res.status(200).json({
         success: true,
-        message: "Reviwed succesfully!",
+        message: "Reviewed successfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
@@ -210,41 +188,94 @@ router.get(
   })
 );
 
-// update seller info
-router.put(
-  "/update-product/:id",
-  // isAdmin,
+// get a single product
+router.get(
+  "/get-product/:id",
+  // isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const {
-        name,
-        description,
-        tags,
-        originalPrice,
-        discountPrice,
-        stock,
-        variations,
-      } = req.body;
-
       const productId = req.params.id;
 
       const productData = await Product.findById(productId);
       if (!productData) {
-        return next(new ErrorHandler("Product not found", 400));
+        return next(new ErrorHandler("Product not found", 404));
       }
-      productData.name = name;
-      productData.description = description;
-      productData.tags = tags;
-      productData.originalPrice = originalPrice;
-      productData.discountPrice = discountPrice;
-      productData.stock = stock;
-      // productData.variations = variations;
 
-      await productData.save();
-
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         product: productData,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+//update product
+router.put(
+  "/update-product/:productId",
+  upload.array("images"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.productId;
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return next(new ErrorHandler("Product not found!", 404));
+      } else {
+        const files = req.files;
+        const updatedData = req.body;
+
+        if (files && files.length > 0) {
+          const imageUrls = files.map((file) => `${file.filename}`);
+          updatedData.images = imageUrls.concat(product.images);
+        } else {
+          updatedData.images = product.images;
+        }
+
+        // Update the product with the new data
+        product.set(updatedData);
+        await product.save();
+
+        res.status(200).json({
+          success: true,
+          product,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// remove user avater
+router.put(
+  "/delete-image/:productId",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.productId;
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return next(new ErrorHandler("Product not found!", 404));
+      }
+
+      const image = req.body.image;
+      const imagePath = `../uploads/${image}`;
+
+      if (imagePath) {
+        fs.unlinkSync(imagePath);
+      }
+
+      const updatedImages = product.images.filter((img) => img !== image);
+      product.images = updatedImages;
+
+      product.save();
+
+      res.status(200).json({
+        success: true,
+        product,
       });
     } catch (error) {
       console.log(error);
@@ -252,4 +283,5 @@ router.put(
     }
   })
 );
+
 module.exports = router;

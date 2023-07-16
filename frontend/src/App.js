@@ -73,8 +73,11 @@ import AdminCategories from "./pages/AdminCategories";
 import { getAllStatements } from "./redux/actions/statements";
 import AdminCarousel from "./pages/AdminCarousel";
 import ShopUpdateProduct from "./pages/Shop/ShopUpdateProduct";
-import EditProduct from "./components/Admin/UpdateProduct";
+import EditProduct from "./components/Shop/UpdateProduct";
+import AdminEditProduct from "./components/Admin/UpdateProduct";
+
 import AdminStatements from "./pages/AdminStatements";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -168,9 +171,9 @@ const App = () => {
         <Route
           path="/edit-product/:productId"
           element={
-            <ProtectedAdminRoute>
+            <SellerProtectedRoute>
               <EditProduct />
-            </ProtectedAdminRoute>
+            </SellerProtectedRoute>
           }
         />
         <Route
@@ -392,6 +395,15 @@ const App = () => {
             </ProtectedAdminRoute>
           }
         />
+        <Route
+          path="/admin-edit-product/:productId"
+          element={
+            <ProtectedAdminRoute>
+              <AdminEditProduct />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
         position="top-center"

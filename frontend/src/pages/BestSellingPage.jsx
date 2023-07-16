@@ -95,7 +95,9 @@ const BestSellingPage = () => {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+            {/* <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+             */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-12 lg:mb-12 border-0">
               {data &&
                 data.map((i, index) => <ProductCard data={i} key={index} />)}
             </div>

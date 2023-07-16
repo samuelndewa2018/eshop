@@ -3,20 +3,21 @@ import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
 import CustomModal from "../CustomModal";
+import { toast } from "react-toastify";
 
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalOpen2, setModalOpen2] = useState(false);
-  const [id, setId] = useState("");
 
-  const [id2, setId2] = useState("");
+  const navigate = useNavigate();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [id, setId] = useState("");
 
   const dispatch = useDispatch();
 
@@ -24,24 +25,19 @@ const AllProducts = () => {
     dispatch(getAllProductsShop(seller._id));
   }, [dispatch]);
 
+  const handleDelete = async () => {
+    dispatch(deleteProduct(id));
+    toast.success("Product deleted!");
+    dispatch(getAllProductsShop(seller._id));
+    navigate("/dashboard");
+    // window.location.reload();
+  };
+
   const setOperations = async (productId) => {
     setModalOpen(true);
     setId(productId);
-    console.log("1st id", id);
   };
 
-  const sendDeleteMessage = () => {
-    console.log("2nd id", id);
-  };
-
-  const setOperations2 = async (productId) => {
-    setModalOpen2(true);
-    setId2(productId);
-    console.log("1st id", id2);
-  };
-  const consoleId2 = () => {
-    console.log("2nd id", id2);
-  };
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
     {
@@ -63,7 +59,6 @@ const AllProducts = () => {
       minWidth: 80,
       flex: 0.5,
     },
-
     {
       field: "sold",
       headerName: "Sold out",
@@ -102,12 +97,11 @@ const AllProducts = () => {
         const productId = params.row.id;
         return (
           <>
-            <Button>
-              <AiOutlineEdit
-                onClick={() => setOperations2(productId)}
-                size={20}
-              />
-            </Button>
+            <Link to={`/edit-product/${productId}`}>
+              <Button>
+                <AiOutlineEdit size={20} />
+              </Button>
+            </Link>
           </>
         );
       },
@@ -120,10 +114,9 @@ const AllProducts = () => {
       type: "number",
       sortable: false,
       renderCell: (params) => {
-        const productId = params.row.id;
         return (
           <>
-            <Button onClick={() => setOperations(productId)}>
+            <Button onClick={() => setOperations(params.id)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -132,13 +125,15 @@ const AllProducts = () => {
     },
   ];
 
-  const rows = products?.map((item) => ({
-    id: item._id,
-    name: item.name,
-    price: "Ksh " + item.discountPrice,
-    Stock: item.stock,
-    sold: item?.sold_out,
-  }));
+  const rows =
+    products &&
+    products?.map((item) => ({
+      id: item._id,
+      name: item.name,
+      price: "Ksh " + item.discountPrice,
+      Stock: item.stock,
+      sold: item?.sold_out,
+    }));
 
   return (
     <>
@@ -148,26 +143,12 @@ const AllProducts = () => {
         <div className="w-full mx-8 pt-1 mt-10 bg-white">
           {modalOpen && (
             <CustomModal
-              message={"Request this product be Delete?"}
-              ok={" Yes, Please"}
+              message={"Are you sure you want to delete this product?"}
+              ok={" Yes, I'm sure"}
               cancel={"No, cancel"}
               setModalOpen={setModalOpen}
-              performAction={() => {
-                sendDeleteMessage();
-              }}
+              performAction={() => handleDelete()}
               closeModel={() => setModalOpen(false)}
-            />
-          )}
-          {modalOpen2 && (
-            <CustomModal
-              message={"Request this product be edited?"}
-              ok={" Yes, Please"}
-              cancel={"No, cancel"}
-              setModalOpen={setModalOpen}
-              performAction={() => {
-                consoleId2();
-              }}
-              closeModel={() => setModalOpen2(false)}
             />
           )}
           <DataGrid

@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { conditionsData } from "../../static/data";
 import { useFormik } from "formik";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { getAllProductsShop, updateProduct } from "../../redux/actions/product";
-import { categoriesData, conditionsData } from "../../static/data";
-import axios from "axios";
-import { server } from "../../server";
+import { AiOutlinePlusCircle, AiOutlineDelete } from "react-icons/ai";
 import Spinner from "../Spinner";
-import AdminSideBar from "./Layout/AdminSidebar";
+import { backend_url, server } from "../../server";
+import axios from "axios";
+import CustomModal from "../CustomModal";
 import AdminHeader from "../Layout/AdminHeader";
+import AdminSideBar from "./Layout/AdminSidebar";
+// import axiosInstance from "./axiosInstance";
 
 const editProductSchema = yup.object({
   name: yup.string().required("Name is required"),
@@ -21,74 +21,77 @@ const editProductSchema = yup.object({
   category: yup.string().required("Category is required"),
   tags: yup.string().required("Tags is required"),
   originalPrice: yup.string().required("Original Price is required"),
-  discountPrice: yup.string().required("Discount Price is required"),
-  stock: yup.string().required("Stock is required"),
-  // condition: yup.string().required("Condition is required"),
+  discountPrice: yup.number().required("Discount Price is required"),
+  stock: yup.number().required("Stock is required"),
+  // condition: yup.number().required("Condition is required"),
 });
 
-const EditProduct = () => {
-  // const { user } = useSelector((state) => state.user.role);
-  const { success, error, product } = useSelector((state) => state.products);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+const AdminEditProduct = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
+  const [currentImages, setcurrentImages] = useState([]);
+
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [select, setSelect] = useState(0); // Selected image index
+  const [modalOpen, setModalOpen] = useState(false);
+  const [index, setIndex] = useState("");
+  const [image, setImage] = useState("");
 
   const formik = useFormik({
     initialValues: {
-      name: product?.name,
-      description: product?.description,
-      category: product?.category,
-      tags: product?.tags,
-      originalPrice: product?.originalPrice,
-      discountPrice: product?.discountPrice,
-      stock: product?.stock,
-      // condition: product?.condition,
+      name: "",
+      description: "",
+      category: "",
+      tags: "",
+      originalPrice: "",
+      discountPrice: "",
+      stock: "",
+      condition: "",
     },
     validationSchema: editProductSchema,
     onSubmit: async (values) => {
       try {
         setLoading(true);
-        const updatedProduct = {
-          productId,
-          name: values.name,
-          description: values.description,
-          category: values.category,
-          tags: values.tags,
-          originalPrice: values.originalPrice,
-          discountPrice: values.discountPrice,
-          stock: values.stock,
-          // condition: values.condition,
-          images: images,
-          // shopId: seller._id,
-        };
 
-        await dispatch(updateProduct(productId, updatedProduct));
+        const name = values.name;
+        const description = values.description;
+        const category = values.category;
+        const tags = values.tags;
+        const originalPrice = values.originalPrice;
+        const discountPrice = values.discountPrice;
+        const stock = values.stock;
+        // condition: values.condition,
+        const imagesi = images;
+
+        const newForm = new FormData();
+
+        imagesi.forEach((image) => {
+          newForm.append("images", image);
+        });
+        newForm.append("name", name);
+        newForm.append("description", description);
+        newForm.append("category", category);
+        newForm.append("tags", tags);
+        newForm.append("originalPrice", originalPrice);
+        newForm.append("discountPrice", discountPrice);
+        newForm.append("stock", stock);
+
+        await axios.put(
+          `${server}/product/update-product/${productId}`,
+          newForm
+        );
+
         setLoading(false);
         toast.success("Product updated!");
       } catch (error) {
         setLoading(false);
         console.log(error);
       }
-      // navuigate('/')
-      // window.location.reload();
     },
   });
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-    if (success) {
-      toast.success("Product updated successfully!");
-      // navigate("/dashboard");
-      // window.location.reload();
-    }
-  }, [dispatch, error, success]);
 
   useEffect(() => {
     // Fetch categories from the backend when the component mounts
@@ -102,17 +105,15 @@ const EditProduct = () => {
     };
     fetchCategories();
   }, []);
+
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        // const response =  getAllProductsShop(productId);
         const response = await axios.get(
           `${server}/product/get-product/${productId}`
         );
 
         const productData = response.data.product;
-
-        console.log("productData", productData);
 
         formik.setValues({
           name: productData.name,
@@ -122,30 +123,71 @@ const EditProduct = () => {
           originalPrice: productData.originalPrice,
           discountPrice: productData.discountPrice,
           stock: productData.stock,
-          // condition: productData.condition,
+          condition: productData.condition,
         });
+
+        setcurrentImages(productData.images); // Set the images array in state
       } catch (error) {
         console.log(error);
       }
     };
+
     fetchProductData();
   }, [productId]);
 
   const handleImageChange = (e) => {
     e.preventDefault();
+
     let files = Array.from(e.target.files);
     setImages((prevImages) => [...prevImages, ...files]);
+  };
+  const handleImageChange2 = (e) => {
+    e.preventDefault();
+
+    let files = Array.from(e.target.files);
+    setcurrentImages((prevImages) => [...prevImages, ...files]);
+  };
+
+  const deleteImage = async (index, image) => {
+    try {
+      await axios.put(`${server}/product/delete-image/${productId}`, { image });
+      const updatedImages = [...currentImages];
+      updatedImages.splice(index, 1); // Remove the image at the specified index
+      setcurrentImages(updatedImages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteImage2 = async (index, image) => {
+    const updatedImages = [...images];
+    updatedImages.splice(index, 1); // Remove the image at the specified index
+    setImages(updatedImages);
+  };
+  const setOperations = async (index, image) => {
+    setModalOpen(true);
+    setIndex(index);
+    setImage(image);
   };
 
   return (
     <div>
       <AdminHeader />
       <div className="flex items-stretch">
+        {modalOpen && (
+          <CustomModal
+            message={"Are you sure you want to delete this image?"}
+            ok={" Yes, I'm sure"}
+            cancel={"No, cancel"}
+            setModalOpen={setModalOpen}
+            performAction={() => deleteImage(index, image)}
+            closeModel={() => setModalOpen(false)}
+          />
+        )}
         <div className="w-[80px] 800px:w-[330px]">
           <AdminSideBar active={5} />
         </div>
         <div className="w-[90%] 800px:w-[50%] bg-white shadow mx-auto rounded p-6">
-          <h1 className="text-2xl font-bold ">Edit Product</h1>
+          <h1 className="text-2xl font-bold">Edit Product</h1>
           <form onSubmit={formik.handleSubmit}>
             <div className="mb-4">
               <label
@@ -194,9 +236,10 @@ const EditProduct = () => {
               </label>
               <select
                 className="w-full mt-2 border h-[35px] rounded-[5px]"
-                onChange={formik.handleChange("category")}
-                onBlur={formik.handleBlur("category")}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.category}
+                name="category"
               >
                 <option value="">Select category</option>
                 {categories.map((category) => (
@@ -226,36 +269,12 @@ const EditProduct = () => {
               </div>
             </div>
             <br />
-            {/* <div>
-              <label className="pb-2">
-                Condition<span className="text-red-500">*</span>
-              </label>
-              <select
-                className="w-full mt-2 border h-[35px] rounded-[5px]"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.condition}
-                name="condition"
-              >
-                <option value="Choose Product Condition">
-                  Choose Product Condition
-                </option>
-                {conditionsData &&
-                  conditionsData.map((i) => (
-                    <option value={i.title} key={i.title}>
-                      {i.title}
-                    </option>
-                  ))}
-              </select>
-              <div className="text-red-500">
-                {formik.touched.condition && formik.errors.condition}
-              </div>
-            </div> */}
+
             <br />
             <div>
               <label className="pb-2">Original Price</label>
               <input
-                type="number"
+                type="text"
                 name="originalPrice"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -273,7 +292,7 @@ const EditProduct = () => {
                 Price (With Discount) <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
+                type="text"
                 name="discountPrice"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -291,7 +310,7 @@ const EditProduct = () => {
                 Product Stock <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
+                type="text"
                 name="stock"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -304,6 +323,44 @@ const EditProduct = () => {
               </div>
             </div>
             <br />
+            <div>
+              <label className="pb-2">Current Images</label>
+              <input
+                type="text"
+                name=""
+                id=""
+                className="hidden"
+                multiple
+                onChange={handleImageChange2}
+              />
+              <div className="w-full flex items-center flex-wrap">
+                <label htmlFor="upload"></label>
+                {currentImages &&
+                  currentImages.map((image, index) => (
+                    <>
+                      <div
+                        className={`${
+                          select === index ? "border" : null
+                        } cursor-pointer`}
+                        key={index}
+                      >
+                        <img
+                          src={`${backend_url}${image}`}
+                          alt=""
+                          className="h-[120px] w-[120px] object-cover m-2"
+                        />
+                        <div
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setOperations(index, image)}
+                        >
+                          <AiOutlineDelete size={20} />
+                        </div>
+                      </div>
+                    </>
+                  ))}
+              </div>
+              <br />
+            </div>
             <div>
               <label className="pb-2">
                 Upload Images <span className="text-red-500">*</span>
@@ -325,17 +382,29 @@ const EditProduct = () => {
                   />
                 </label>
                 {images &&
-                  images.map((i) => (
-                    <img
-                      src={URL.createObjectURL(i)}
-                      key={i}
-                      alt=""
-                      className="h-[120px] w-[120px] object-cover m-2"
-                    />
+                  images.map((image, index) => (
+                    <div
+                      className={`${
+                        select === index ? "border" : null
+                      } cursor-pointer`}
+                      key={index}
+                    >
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt=""
+                        className="h-[120px] w-[120px] object-cover m-2"
+                      />
+                      <div
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => deleteImage2(index, image)}
+                      >
+                        <AiOutlineDelete size={20} />
+                      </div>
+                    </div>
                   ))}
               </div>
               <br />
-            </div>{" "}
+            </div>
             <button
               disabled={loading}
               type="submit"
@@ -356,4 +425,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default AdminEditProduct;

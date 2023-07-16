@@ -22,7 +22,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       const filename = req?.file?.filename
         ? req.file.filename
         : "defaultavatar.png";
-      const filePath = `uploads/${filename}`;
+      const filePath = `../uploads/${filename}`;
       fs.unlink(filePath, (err) => {
         if (err) {
           console.log(err);
@@ -1193,6 +1193,7 @@ router.put(
         user,
       });
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })

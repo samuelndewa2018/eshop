@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle, AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createProduct } from "../../redux/actions/product";
@@ -17,9 +17,13 @@ const createProductSchema = yup.object({
   description: yup.string().required("Description is required"),
   category: yup.string().required("Category is required"),
   tags: yup.string().required("Tags is required"),
-  originalPrice: yup.string().required("Original Price is required"),
-  discountPrice: yup.string().required("Discount Price is required"),
-  stock: yup.string().required("Stock is required"),
+  originalPrice: yup
+    .number("Price should be numbers")
+    .required("Original Price is required"),
+  discountPrice: yup
+    .number("Price should be numbers")
+    .required("Discount Price is required"),
+  stock: yup.number("Stock should be numbers").required("Stock is required"),
 });
 
 const CreateProduct = () => {
@@ -54,6 +58,7 @@ const CreateProduct = () => {
 
     fetchCategories();
   }, []);
+
   const handleImageChange = (e) => {
     e.preventDefault();
 
@@ -100,6 +105,11 @@ const CreateProduct = () => {
       dispatch(createProduct(newForm));
     },
   });
+  const deleteImage = (index) => {
+    const updatedImages = [...images];
+    updatedImages.splice(index, 1); // Remove the image at the specified index
+    setImages(updatedImages);
+  };
 
   return (
     <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
@@ -120,7 +130,7 @@ const CreateProduct = () => {
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="Enter your product name..."
           />
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.name && formik.errors.name}
           </div>
         </div>
@@ -139,19 +149,7 @@ const CreateProduct = () => {
             value={formik.values.description}
             placeholder="Enter your product description..."
           />
-          {/* <textarea
-            cols="30"
-            required
-            rows="8"
-            type="text"
-            name="description"
-            onChange={formik.handleChange("description")}
-            onBlur={formik.handleBlur("description")}
-            value={formik.values.description}
-            className="mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Enter your product description..."
-          ></textarea> */}
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.description && formik.errors.description}
           </div>
         </div>
@@ -173,7 +171,7 @@ const CreateProduct = () => {
               </option>
             ))}
           </select>
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.category && formik.errors.category}
           </div>
         </div>
@@ -189,7 +187,7 @@ const CreateProduct = () => {
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="Enter your product tags..."
           />
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.tags && formik.errors.tags}
           </div>
         </div>
@@ -197,7 +195,7 @@ const CreateProduct = () => {
         <div>
           <label className="pb-2">Original Price</label>
           <input
-            type="number"
+            type="text"
             name="price"
             onChange={formik.handleChange("originalPrice")}
             onBlur={formik.handleBlur("originalPrice")}
@@ -205,7 +203,7 @@ const CreateProduct = () => {
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="Enter your product price..."
           />
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.originalPrice && formik.errors.originalPrice}
           </div>
         </div>
@@ -215,7 +213,7 @@ const CreateProduct = () => {
             Price (With Discount) <span className="text-red-500">*</span>
           </label>
           <input
-            type="number"
+            type="text"
             name="price"
             onChange={formik.handleChange("discountPrice")}
             onBlur={formik.handleBlur("discountPrice")}
@@ -223,7 +221,7 @@ const CreateProduct = () => {
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="Enter your product price with discount..."
           />
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.discountPrice && formik.errors.discountPrice}
           </div>
         </div>
@@ -233,7 +231,7 @@ const CreateProduct = () => {
             Product Stock <span className="text-red-500">*</span>
           </label>
           <input
-            type="number"
+            type="text"
             name="price"
             onChange={formik.handleChange("stock")}
             onBlur={formik.handleBlur("stock")}
@@ -241,7 +239,7 @@ const CreateProduct = () => {
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             placeholder="Enter your product stock..."
           />
-          <div className="text-red-500">
+          <div className="text-red-500 text-sm">
             {formik.touched.stock && formik.errors.stock}
           </div>
         </div>
@@ -263,13 +261,20 @@ const CreateProduct = () => {
               <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
             </label>
             {images &&
-              images.map((i) => (
-                <img
-                  src={URL.createObjectURL(i)}
-                  key={i}
-                  alt=""
-                  className="h-[120px] w-[120px] object-cover m-2"
-                />
+              images.map((image, index) => (
+                <div className="relative" key={index}>
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt=""
+                    className="h-[120px] w-[120px] object-cover m-2"
+                  />
+                  <p
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full cursor-pointer p-1"
+                    onClick={() => deleteImage(index)}
+                  >
+                    <AiOutlineDelete size={16} />
+                  </p>
+                </div>
               ))}
           </div>
           <br />

@@ -147,7 +147,7 @@ const ProductDetails = ({ data }) => {
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const getDescription = () => {
@@ -170,21 +170,20 @@ const ProductDetails = ({ data }) => {
                 <img
                   src={`${backend_url}${data && data.images[select]}`}
                   alt=""
-                  className="w-[80%]"
+                  className="w-[370px] lg:w-[80%] h-[370px] lg:h-fit"
                 />
-                <div className="w-full flex">
+                <div className="w-full flex justify-center items-center gap-1">
                   {data &&
                     data.images.map((i, index) => (
                       <div
                         className={`${
-                          select === 0 ? "border" : "null"
+                          select === 0 ? "border rounded" : "null"
                         } cursor-pointer`}
                       >
                         <img
                           src={`${backend_url}${i}`}
                           alt=""
-                          // className="h-[200px] overflow-hidden mr-3 mt-3"
-                          className="h-[100px] w-[100px] object-cover mr-3 mt-3"
+                          className="h-[50px] w-[50px] lg:h-[100px] lg:w-[100px] object-cover mr-3 mt-3"
                           onClick={() => setSelect(index)}
                         />
                       </div>
@@ -197,17 +196,10 @@ const ProductDetails = ({ data }) => {
                 </div>
               </div>
               <div className="w-full 800px:w-[50%] pt-5 ml-2">
-                <h1 className={`${styles.productTitle}`}>{data.name}</h1>
-                <p>{data.stock}</p>
-                <div className="disableStyles">
-                  {/* <p
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        data.description.length > 450
-                          ? data.description.slice(0, 450) + "..."
-                          : data.description,
-                    }}
-                  ></p> */}
+                <h1 className="text-[16px] lg:text-[25px]  font-[600] font-Roboto text-[#333]">
+                  {data.name}
+                </h1>
+                <div className="disableStyles mt-3 text-[14px] lg:text-[16px]">
                   <p dangerouslySetInnerHTML={{ __html: getDescription() }}></p>
                   {data.description.length > 450 && (
                     <button
@@ -234,8 +226,16 @@ const ProductDetails = ({ data }) => {
                     />
                   </h3>
                 </div>
-
-                <div className="flex items-center mt-12 justify-between pr-3">
+                <p
+                  className={`${
+                    data.stock === 0 ? `text-[#5500ff]` : `text-[#2200ff]`
+                  } mt-2`}
+                >
+                  {data.stock !== 0
+                    ? `${data.stock} products reamaining`
+                    : `Out of Stocks`}
+                </p>
+                <div className="flex items-center mt-2 lg:mt-6 justify-between pr-3">
                   <div>
                     <button
                       disabled={count === 1}
@@ -275,14 +275,16 @@ const ProductDetails = ({ data }) => {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div
-                    className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
-                    onClick={() => addToCartHandler(data._id)}
-                  >
-                    <span className="text-white flex items-center">
-                      Add to cart <AiOutlineShoppingCart className="ml-1" />
-                    </span>
-                  </div>
+                  {data.stock !== 0 && (
+                    <div
+                      className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
+                      onClick={() => addToCartHandler(data._id)}
+                    >
+                      <span className="text-white flex items-center">
+                        Add to cart <AiOutlineShoppingCart className="ml-1" />
+                      </span>
+                    </div>
+                  )}
                   <div
                     className={`${styles.button} !mt-6 !rounded !h-11 flex items-center`}
                     onClick={() => addToCompareHandler(data._id)}
@@ -292,7 +294,26 @@ const ProductDetails = ({ data }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center pt-8">
+                <div className="flex items-center my-3 text-sm">
+                  <h3 className="product-heading mr-1">Product Link:</h3>
+                  <a
+                    href="javascript:void(0);"
+                    onClick={() => {
+                      copyToClipboard(window.location.href);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <FiCopy size={25} className="fs-5 me-2" />
+                      <Typed
+                        strings={["Click Here To Copy The Product Link"]}
+                        typeSpeed={40}
+                        backSpeed={50}
+                        loop
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="flex items-center pt-4">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
                       src={`${backend_url}${data?.shop?.avatar}`}
@@ -318,25 +339,6 @@ const ProductDetails = ({ data }) => {
                       Send Message <AiOutlineMessage className="ml-1" />
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center my-3 text-sm">
-                  <h3 className="product-heading mr-1">Product Link:</h3>
-                  <a
-                    href="javascript:void(0);"
-                    onClick={() => {
-                      copyToClipboard(window.location.href);
-                    }}
-                  >
-                    <div className="flex items-center">
-                      <FiCopy size={25} className="fs-5 me-2" />
-                      <Typed
-                        strings={["Click Here To Copy The Product Link"]}
-                        typeSpeed={40}
-                        backSpeed={50}
-                        loop
-                      />
-                    </div>
-                  </a>
                 </div>
               </div>
             </div>
@@ -365,11 +367,11 @@ const ProductDetailsInfo = ({
 
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
-      <div className="w-full flex justify-between border-b pt-10 pb-2">
+      <div className="w-full flex justify-between border-b pt-2 lg:pt-10 pb-2">
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px]  sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px] text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(1)}
           >
@@ -382,7 +384,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px]  sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px]  text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(2)}
           >
@@ -395,7 +397,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px] sm:text-[12px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] lg:text-[18px] text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(3)}
           >
@@ -409,7 +411,7 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p
-            className="py-2 lg:text-[18px]  sm:text-[12px] leading-8 pb-10 whitespace-pre-line disableStyles appear__smoothly"
+            className="py-2 lg:text-[18px] text-[14px] leading-8 pb-10 whitespace-pre-line disableStyles appear__smoothly"
             dangerouslySetInnerHTML={{
               __html: data.description,
             }}

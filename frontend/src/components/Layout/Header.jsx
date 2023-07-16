@@ -4,7 +4,7 @@ import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
 import {
   AiOutlineHeart,
-  AiOutlineSearch,
+  AiOutlineMessage,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import {
@@ -17,7 +17,7 @@ import { BsSearch } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { backend_url, server } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
@@ -27,6 +27,7 @@ import axios from "axios";
 import { TbArrowsShuffle2 } from "react-icons/tb";
 import CustomModal from "../CustomModal";
 import { toast } from "react-toastify";
+import { getAllProducts } from "../../redux/actions/product";
 
 const Header = ({ activeHeading }) => {
   const { statements } = useSelector((state) => state.statements);
@@ -47,6 +48,7 @@ const Header = ({ activeHeading }) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const promotionName = statements?.map((i) => i.promotionName);
   const typingName1 = statements?.map((i) => i.typingName1);
@@ -62,7 +64,12 @@ const Header = ({ activeHeading }) => {
       allProducts.filter((product) =>
         product.name.toLowerCase().includes(term.toLowerCase())
       );
+
     setSearchData(filteredProducts);
+  };
+
+  const getAlloProducts = () => {
+    dispatch(getAllProducts());
   };
 
   window.addEventListener("scroll", () => {
@@ -143,6 +150,21 @@ const Header = ({ activeHeading }) => {
       e.stopPropagation();
     }
   };
+  const myClickHandler6 = (e) => {
+    e.preventDefault();
+    setSearchOpen(false);
+    setOpenCart(false);
+    setOpenWishlist(false);
+    navigate("/inbox");
+
+    if (!e) {
+      var e = window.event;
+      e.cancelBubble = true;
+    }
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+  };
   useEffect(() => {
     const fetchCategoriesData = async () => {
       try {
@@ -198,7 +220,6 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                // src="https://res.cloudinary.com/bramuels/image/upload/v1689344968/logo_transparent_szdcj7.png"
                 src="https://res.cloudinary.com/bramuels/image/upload/v1689346467/logo_transparent_mrwg4g.png"
                 className="w-28 h-28"
                 alt=""
@@ -237,7 +258,12 @@ const Header = ({ activeHeading }) => {
                   searchData.map((i, index) => {
                     return (
                       <Link to={`/product/${i._id}`}>
-                        <div className="w-full flex items-start-py-3">
+                        <div
+                          onClick={() => {
+                            getAlloProducts();
+                          }}
+                          className="w-full flex items-start-py-3"
+                        >
                           <img
                             src={`${backend_url}${i.images[0]}`}
                             alt=""
@@ -475,7 +501,12 @@ const Header = ({ activeHeading }) => {
                     {searchData.map((i) => {
                       return (
                         <Link to={`/product/${i._id}`}>
-                          <div className="flex items-center">
+                          <div
+                            onClick={() => {
+                              getAlloProducts();
+                            }}
+                            className="flex items-center"
+                          >
                             <img
                               src={`${backend_url}${i.images[0]}`}
                               alt=""
@@ -577,7 +608,12 @@ const Header = ({ activeHeading }) => {
                           to={`/product/${i._id}`}
                           onClick={(e) => myClickHandler4(e, false)}
                         >
-                          <div className="w-full flex items-start-py-3">
+                          <div
+                            onClick={() => {
+                              getAlloProducts();
+                            }}
+                            className="w-full flex items-start-py-3"
+                          >
                             <img
                               src={`${backend_url}${i.images[0]}`}
                               alt=""
@@ -603,7 +639,7 @@ const Header = ({ activeHeading }) => {
             <BiHomeAlt2
               style={{
                 color: "#000",
-                fontSize: "35px",
+                fontSize: "25px",
                 margin: "5px",
                 opacity: ".8",
               }}
@@ -619,7 +655,7 @@ const Header = ({ activeHeading }) => {
             <AiOutlineHeart
               style={{
                 color: "#000",
-                fontSize: "35px",
+                fontSize: "25px",
                 margin: "5px",
                 opacity: ".8",
               }}
@@ -635,26 +671,22 @@ const Header = ({ activeHeading }) => {
               position: "relative",
             }}
           >
-            <AiOutlineShoppingCart
+            <AiOutlineMessage
               style={{
                 color: "#000",
-                fontSize: "35px",
+                fontSize: "25px",
                 margin: "5px",
                 opacity: ".8",
               }}
-              onClick={(e) => myClickHandler2(e, true)}
+              onClick={(e) => myClickHandler6(e, true)}
             />
-
-            <span className="absolute rounded-full flex items-center justify-center bottom-[70%] right-[5%] h-[20px] w-[20px] border-none text-white bg-[#3bc177]">
-              {cart.length}
-            </span>
           </div>
 
           <div onClick={(e) => myClickHandler4(e, true)}>
             <BsSearch
               style={{
                 color: "#000",
-                fontSize: "35px",
+                fontSize: "25px",
                 margin: "5px",
                 opacity: ".8",
               }}
@@ -664,7 +696,7 @@ const Header = ({ activeHeading }) => {
             <TbArrowsShuffle2
               style={{
                 color: "#000",
-                fontSize: "35px",
+                fontSize: "25px",
                 margin: "5px",
                 opacity: ".8",
               }}
@@ -677,7 +709,7 @@ const Header = ({ activeHeading }) => {
                   <img
                     src={`${backend_url}${user?.avatar}`}
                     alt=""
-                    className="w-[44px] h-[44px] rounded-full border-[3px] border-[#0eae88]"
+                    className="w-[30px] h-[30px] rounded-full border-[3px] border-[#0eae88]"
                   />
                 </Link>
               </div>
