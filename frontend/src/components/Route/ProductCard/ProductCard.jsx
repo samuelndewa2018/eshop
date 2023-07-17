@@ -16,13 +16,13 @@ import {
 } from "../../../redux/actions/wishlist";
 import { useEffect } from "react";
 import { addTocart } from "../../../redux/actions/cart";
-import { addTocompare } from "../../../redux/actions/compare";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 import { NumericFormat } from "react-number-format";
 import { TbArrowsShuffle2 } from "react-icons/tb";
+import { addTocompare } from "../../../redux/actions/compare";
 import { IoIosShareAlt } from "react-icons/io";
-import { getAllProducts } from "../../../redux/actions/product";
+// import Ratings from "../../Products/Ratings";
 
 const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -49,22 +49,6 @@ const ProductCard = ({ data, isEvent }) => {
     setClick(!click);
     dispatch(addToWishlist(data));
   };
-
-  const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
-    if (isItemExists) {
-      toast.error("Item already in cart!");
-    } else {
-      if (data.stock < 1) {
-        toast.error("Product stock limited!");
-      } else {
-        const cartData = { ...data, qty: 1 };
-        dispatch(addTocart(cartData));
-        toast.success("Item added to cart successfully!");
-      }
-    }
-  };
-
   const addToCompareHandler = (id) => {
     const isItemExists = compare && compare.find((i) => i._id === id);
     if (isItemExists) {
@@ -102,152 +86,158 @@ const ProductCard = ({ data, isEvent }) => {
     toast.info("Product link copied to clipboard!");
   };
 
+  const addToCartHandler = (id) => {
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: 1 };
+        dispatch(addTocart(cartData));
+        toast.success("Item added to cart successfully!");
+      }
+    }
+  };
+
   return (
     <>
-      <div className="mb-1 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer min-w-[200px]">
-        <div className="flex justify-end"></div>
-        <Link
-          to={`${
-            isEvent === true
-              ? `/product/${data._id}?isEvent=true`
-              : `/product/${data._id}`
-          }`}
-        >
-          <img
-            src={`${backend_url}${data.images && data.images[0]}`}
-            alt=""
-            className="w-full h-[170px] object-contain"
-          />
-        </Link>
-        <Link to={`/shop/preview/${data?.shop._id}`}>
-          <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
-        </Link>
-        <Link
-          to={`${
-            isEvent === true
-              ? `/product/${data._id}?isEvent=true`
-              : `/product/${data._id}`
-          }`}
-        >
-          <h4 className="pb-3 font-[500]">
-            {data.name.length > 24 ? data.name.slice(0, 24) + "..." : data.name}
-          </h4>
+      <div className=" md:grid-cols-1 gap-2">
+        <div className="w-full min-h-[370px] max-h-[370px] mb-2 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
+          <div className="flex justify-end"></div>
+          <Link
+            to={`${
+              isEvent === true
+                ? `/product/${data._id}?isEvent=true`
+                : `/product/${data._id}`
+            }`}
+          >
+            <img
+              src={`${backend_url}${data.images && data.images[0]}`}
+              alt=""
+              className="w-full h-[170px] object-contain"
+            />
+          </Link>
+          <Link to={`/shop/preview/${data?.shop._id}`}>
+            <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+          </Link>
 
-          <div className="flex">
-            <Ratings rating={data?.ratings} />
-          </div>
-          <div className="flex items-center justify-end">
-            {data?.sold_out > 0 ? (
-              <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
-                {data?.sold_out} sold
-              </span>
-            ) : (
-              <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
-                New Product
-              </span>
-            )}
-          </div>
-          <div className="py-2 flex items-center justify-between">
+          <Link
+            to={`${
+              isEvent === true
+                ? `/product/${data._id}?isEvent=true`
+                : `/product/${data._id}`
+            }`}
+          >
+            <h4 className="pb-3 font-[500]">
+              {data.name.length > 25
+                ? data.name.slice(0, 25) + "..."
+                : data.name}
+            </h4>
+
             <div className="flex">
-              <h5 className={`${styles.productDiscountPrice}`}>
-                <NumericFormat
-                  value={
-                    data.originalPrice === 0
-                      ? data.originalPrice
-                      : data.discountPrice
-                  }
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  prefix={"Ksh "}
-                />
-              </h5>
-              <h5 className={`${styles.price} text-sm`}>
-                <NumericFormat
-                  value={data.originalPrice ? data.originalPrice : "New"}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                />
-              </h5>
+              <Ratings rating={data?.ratings} />
             </div>
-          </div>
+            <div className="flex items-center justify-end">
+              <span className="font-[400] text-[14px] mx-3 text-[#68d284]">
+                {data.sold_out === 0 ? "New Product" : `${data.sold_out} sold`}
+              </span>
+            </div>
 
-          <div className="absolute top-2 left-2">
-            <span
-              className="bg-blue-500 text-white py-1 px-2 text-xs rounded-full"
-              style={{ transform: "rotate(45deg)" }}
-            >
-              -
-              {Math.round(
-                ((data.originalPrice - data.discountPrice) /
-                  data.originalPrice) *
-                  100
-              )}
-              %
-            </span>
-          </div>
-        </Link>
+            <div className="py-2 flex items-center justify-between">
+              <div className="flex">
+                <h5 className={`${styles.productDiscountPrice} text-base flex`}>
+                  <p className="text-sm mr-1">Ksh</p>
+                  <NumericFormat
+                    value={
+                      data.originalPrice === 0
+                        ? data.originalPrice
+                        : data.discountPrice
+                    }
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={" "}
+                  />
+                </h5>
+                <h5 className={`${styles.price} text-sm`}>
+                  {data.originalPrice ? data.originalPrice : null}
+                </h5>
+              </div>
+            </div>
 
-        {/* side options */}
-        <div className="bg-white">
-          {click ? (
-            <AiFillHeart
+            <div className="absolute top-2 left-2">
+              <span
+                className="bg-blue-500 text-white py-1 px-2 text-xs rounded-full"
+                style={{ transform: "rotate(45deg)" }}
+              >
+                {data.condition}
+              </span>
+            </div>
+          </Link>
+
+          {/* side options */}
+          <div>
+            {click ? (
+              <AiFillHeart
+                size={22}
+                className="cursor-pointer absolute right-2 top-5"
+                onClick={() => removeFromWishlistHandler(data)}
+                color={click ? "red" : "#333"}
+                title="Remove from wishlist"
+              />
+            ) : (
+              <AiOutlineHeart
+                size={22}
+                className="cursor-pointer absolute right-2 top-5"
+                onClick={() => addToWishlistHandler(data)}
+                color={click ? "red" : "#333"}
+                title="Add to wishlist"
+              />
+            )}
+            <AiOutlineEye
               size={22}
-              className="cursor-pointer absolute right-2 top-5"
-              onClick={() => removeFromWishlistHandler(data)}
-              color={click ? "red" : "#333"}
-              title="Remove from wishlist"
+              className="cursor-pointer absolute right-2 top-14"
+              onClick={() => setOpen(!open)}
+              color="#333"
+              title="Quick view"
             />
-          ) : (
-            <AiOutlineHeart
-              size={22}
-              className="cursor-pointer absolute right-2 top-5"
-              onClick={() => addToWishlistHandler(data)}
-              color={click ? "red" : "#333"}
-              title="Add to wishlist"
+            <AiOutlineShoppingCart
+              size={25}
+              className="cursor-pointer absolute right-2 top-24"
+              onClick={() => addToCartHandler(data._id)}
+              color="#444"
+              title="Add to cart"
             />
-          )}
-          <AiOutlineEye
-            size={22}
-            className="cursor-pointer absolute right-2 top-14"
-            onClick={() => setOpen(!open)}
-            color="#333"
-            title="Quick view"
-          />
+            <IoIosShareAlt
+              size={25}
+              className="cursor-pointer absolute right-2 top-36
+            "
+              // onClick={() => {
+              //   copyToClipboard(window.location.href);
+              // }}
+              onClick={() =>
+                shareToSocialMedia(
+                  `${
+                    isEvent === true
+                      ? `/product/${data._id}?isEvent=true`
+                      : `/product/${data._id}`
+                  }`
+                )
+              }
+              color="#444"
+              title="Share"
+            />
+            <TbArrowsShuffle2
+              size={25}
+              className="cursor-pointer absolute right-2 top-48"
+              onClick={() => addToCompareHandler(data._id)}
+              color="#444"
+              title="Compare Products"
+            />
 
-          <AiOutlineShoppingCart
-            size={25}
-            className="cursor-pointer absolute right-2 top-24"
-            onClick={() => addToCartHandler(data._id)}
-            color="#444"
-            title="Add to cart"
-          />
-          <IoIosShareAlt
-            size={25}
-            className="cursor-pointer absolute right-2 top-36"
-            // onClick={() => {
-            //   copyToClipboard(window.location.href);
-            // }}
-            onClick={() =>
-              shareToSocialMedia(
-                `${
-                  isEvent === true
-                    ? `/product/${data._id}?isEvent=true`
-                    : `/product/${data._id}`
-                }`
-              )
-            }
-            color="#444"
-            title="Share"
-          />
-          <TbArrowsShuffle2
-            size={25}
-            className="cursor-pointer absolute right-2 top-48"
-            onClick={() => addToCompareHandler(data._id)}
-            color="#444"
-            title="Compare Products"
-          />
-
-          {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
+            {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
+          </div>
         </div>
       </div>
     </>

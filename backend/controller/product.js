@@ -249,7 +249,7 @@ router.put(
   })
 );
 
-// remove user avater
+// remove user image
 router.put(
   "/delete-image/:productId",
   catchAsyncErrors(async (req, res, next) => {

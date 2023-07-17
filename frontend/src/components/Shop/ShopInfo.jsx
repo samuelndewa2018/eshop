@@ -48,7 +48,8 @@ const ShopInfo = ({ isOwner }) => {
       0
     );
 
-  const averageRating = totalRatings / totalReviewsLength || 0;
+  const averageRatin = totalRatings / totalReviewsLength || 0;
+  const averageRating = averageRatin.toFixed(1);
 
   return (
     <>
@@ -70,13 +71,21 @@ const ShopInfo = ({ isOwner }) => {
             </p>
           </div>
           <div className="p-3">
-            <h5 className="font-[600]">Address</h5>
-            <h4 className="text-[#000000a6]">{data.address}</h4>
+            <h5 className="font-[600]">InstaShop Link</h5>
+            <a
+              href={`https://www.instagram.com/${data.instaShop}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="insta-link"
+            >
+              <h4 className="text-[#000000a6]">{data.instaShop}</h4>
+            </a>
           </div>
-          <div className="p-3">
+
+          {/* <div className="p-3">
             <h5 className="font-[600]">Phone Number</h5>
             <h4 className="text-[#000000a6]">{data.phoneNumber}</h4>
-          </div>
+          </div> */}
           <div className="p-3">
             <h5 className="font-[600]">Total Products</h5>
             <h4 className="text-[#000000a6]">{products && products.length}</h4>

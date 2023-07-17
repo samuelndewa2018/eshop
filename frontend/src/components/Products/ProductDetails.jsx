@@ -23,6 +23,7 @@ import axios from "axios";
 import { TbArrowsShuffle2 } from "react-icons/tb";
 import { addTocompare } from "../../redux/actions/compare";
 import { NumericFormat } from "react-number-format";
+import { formatDistanceToNow } from "date-fns";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -235,45 +236,42 @@ const ProductDetails = ({ data }) => {
                     ? `${data.stock} products reamaining`
                     : `Out of Stocks`}
                 </p>
-                <div className="flex items-center mt-2 lg:mt-6 justify-between pr-3">
-                  <div>
-                    <button
-                      disabled={count === 1}
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                      onClick={decrementCount}
-                    >
-                      -
-                    </button>
-                    <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
-                      {count}
-                    </span>
-                    <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                      onClick={count < data.stock ? incrementCount : maximum}
-                    >
-                      +
-                    </button>
+                {data.stock < 1 ? (
+                  <p className="text-red-600">Out Of Stock</p>
+                ) : (
+                  <div className="w-full mt-4">
+                    <div className="w-full flex">
+                      <div className="w-1/2">
+                        <div className="text-lg font-bold">Qty:</div>
+                        <div className="flex items-center mt-2">
+                          <div
+                            className={`${
+                              count <= 1
+                                ? "bg-gray-300 cursor-not-allowed"
+                                : "bg-gray-300 cursor-pointer"
+                            } w-10 h-10 flex items-center justify-center rounded-full`}
+                            onClick={decrementCount}
+                          >
+                            <span className="text-xl">-</span>
+                          </div>
+                          <div className="mx-4">{count}</div>
+                          <div
+                            className={`${
+                              count >= data.stock
+                                ? "bg-gray-300 cursor-not-allowed"
+                                : "bg-gray-300 cursor-pointer"
+                            } w-10 h-10 flex items-center justify-center rounded-full`}
+                            onClick={
+                              count >= data.stock ? maximum : incrementCount
+                            }
+                          >
+                            <span className="text-xl">+</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    {click ? (
-                      <AiFillHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => removeFromWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Remove from wishlist"
-                      />
-                    ) : (
-                      <AiOutlineHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => addToWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Add to wishlist"
-                      />
-                    )}
-                  </div>
-                </div>
+                )}
                 <div className="flex gap-4">
                   {data.stock !== 0 && (
                     <div
@@ -367,11 +365,11 @@ const ProductDetailsInfo = ({
 
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
-      <div className="w-full flex justify-between border-b pt-2 lg:pt-10 pb-2">
+      <div className="w-full flex justify-between border-b pt-10 pb-2">
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px] text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(1)}
           >
@@ -384,7 +382,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px]  text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(2)}
           >
@@ -397,7 +395,7 @@ const ProductDetailsInfo = ({
         <div className="relative">
           <h5
             className={
-              "text-[#000] lg:text-[18px] text-[14px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
             onClick={() => setActive(3)}
           >
@@ -411,7 +409,7 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p
-            className="py-2 lg:text-[18px] text-[14px] leading-8 pb-10 whitespace-pre-line disableStyles appear__smoothly"
+            className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line disableStyles"
             dangerouslySetInnerHTML={{
               __html: data.description,
             }}
@@ -420,24 +418,34 @@ const ProductDetailsInfo = ({
       ) : null}
 
       {active === 2 ? (
-        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll appear__smoothly">
+        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
           {data &&
-            data.reviews.map((item, index) => (
-              <div className="w-full flex my-2">
-                <img
-                  src={`${backend_url}/${item.user.avatar}`}
-                  alt=""
-                  className="w-[50px] h-[50px] rounded-full"
-                />
-                <div className="pl-2 ">
-                  <div className="w-full flex items-center">
-                    <h1 className="font-[500] mr-3">{item.user.name}</h1>
-                    <Ratings rating={data?.ratings} />
+            data.reviews
+              .slice()
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((item, index) => (
+                <div className="w-full flex my-4" key={index}>
+                  <img
+                    src={`${backend_url}/${item.user.avatar}`}
+                    className="w-[50px] h-[50px] rounded-full"
+                    alt=""
+                  />
+                  <div className="pl-2">
+                    <div className="flex w-full items-center">
+                      <h1 className="font-[600] pr-2">{item.user.name}</h1>
+                      <Ratings rating={item.rating} />
+                    </div>
+                    <p className="font-[400] text-[#000000a7]">
+                      {item?.comment}
+                    </p>
+                    <p className="text-[#1307f1a7] text-sm">
+                      {formatDistanceToNow(new Date(item?.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
                   </div>
-                  <p>{item.comment}</p>
                 </div>
-              </div>
-            ))}
+              ))}
 
           <div className="w-full flex justify-center">
             {data && data.reviews.length === 0 && (
@@ -448,7 +456,7 @@ const ProductDetailsInfo = ({
       ) : null}
 
       {active === 3 && (
-        <div className="w-full block 800px:flex p-5 appear__smoothly">
+        <div className="w-full block 800px:flex p-5">
           <div className="w-full 800px:w-[50%]">
             <Link to={`/shop/preview/${data.shop._id}`}>
               <div className="flex items-center">

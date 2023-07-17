@@ -86,7 +86,7 @@ const UserOrderDetails = () => {
       });
   };
 
-  const [imgSrc, setImgSrc] = useState(`${backend_url}${data?.user.avatar}`);
+  // const [imgSrc, setImgSrc] = useState(`${backend_url}${data?.user.avatar}`);
 
   const handleMessageSubmit = async () => {
     if (isAuthenticated) {
@@ -422,8 +422,7 @@ const UserOrderDetails = () => {
               <div className="flex flex-col justify-start items-start flex-shrink-0">
                 <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
                   <img
-                    src={imgSrc}
-                    onError={() => setImgSrc(`${backend_url}defaultavatar.png`)}
+                    src={`${backend_url}${user.avatar}`}
                     className="w-[60px] h-[60px] rounded-full avatarimg"
                     alt=""
                   />

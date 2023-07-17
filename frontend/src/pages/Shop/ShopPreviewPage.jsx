@@ -4,6 +4,7 @@ import ShopInfo from "../../components/Shop/ShopInfo";
 import ShopProfileData from "../../components/Shop/ShopProfileData";
 import Meta from "../../components/Meta";
 import Header from "../../components/Layout/Header";
+import Footer from "../../components/Layout/Footer";
 
 const ShopPreviewPage = () => {
   return (
@@ -21,6 +22,7 @@ const ShopPreviewPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

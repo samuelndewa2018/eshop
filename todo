@@ -1,20 +1,11 @@
 // TODO LIST...
 
-//== on wishlist page the add to cart product icon is NOT clossing the page
 //=== address not displaying propery
-//== cant update avatar
+//== cant update avatar....
 
-//==edit product pages not going with previous data
-//==categories not deleting
-//==imprement category on home page to be dynamic
-// === confirm delete product not complete
-// == products by default not leadering all products
-//==choose category refreshes the page
-//== carousel list seller
 //== preorder if its out of stock
 
 //=== if create 2 products consecutively... it does not capture created at
-//== can each shop receive its products order only
-//===update product not protected as admin
+//== can each shop receive its products order only --- i will confirm
 
 ///categories not deleting propery because of custom model... index problem

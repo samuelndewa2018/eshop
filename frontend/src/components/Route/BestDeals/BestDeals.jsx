@@ -6,10 +6,14 @@ import ProductCard from "../ProductCard/ProductCard";
 const BestDeals = () => {
   const [data, setData] = useState([]);
   const { allProducts } = useSelector((state) => state.products);
+
   useEffect(() => {
     const allProductsData = allProducts ? [...allProducts] : [];
-    const sortedData = allProductsData?.sort((a, b) => b.sold_out - a.sold_out);
-    const firstFive = sortedData && sortedData.slice(0, 6);
+    const inStockProducts = allProductsData.filter(
+      (product) => product.stock > 0
+    );
+    const sortedData = inStockProducts.sort((a, b) => b.sold_out - a.sold_out);
+    const firstFive = sortedData.slice(0, 6);
     setData(firstFive);
   }, [allProducts]);
 
@@ -19,14 +23,14 @@ const BestDeals = () => {
         <div className={`${styles.heading}`}>
           <h1>Best Deals</h1>
         </div>
-        <div className="overflow-x-auto flex space-x-4 mb-12 border-0 scroll__bar">
+        <div className="overflow-x-auto flex space-x-4 mb-12 border-0">
           {data &&
-            data.map((i, index) => (
+            data.map((product, index) => (
               <div
-                className="flex-none w-[250px] h-full min-w-[200px]"
+                className="flex-none h-[400px] w-[168px] sm:w-[250px]"
                 key={index}
               >
-                <ProductCard data={i} />
+                <ProductCard data={product} />
               </div>
             ))}
         </div>

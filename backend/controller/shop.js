@@ -5,13 +5,14 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
+const crypto = require("crypto");
 const Shop = require("../model/shop");
 const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken");
-const crypto = require("crypto");
+const shop = require("../model/shop");
 
 // create shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
@@ -38,22 +39,20 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
       email: email,
       password: req.body.password,
       avatar: fileUrl,
-      address: req.body.address,
+      // address: req.body.address,
       phoneNumber: req.body.phoneNumber,
-      zipCode: req.body.zipCode,
+      instaShop: req.body.instaShop,
     };
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/seller/activation/${activationToken}`;
+    const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
 
     try {
       await sendMail({
         email: seller.email,
         subject: "Activate your Shop",
-        html: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
+        message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
       });
       res.status(201).json({
         success: true,
@@ -70,7 +69,7 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
 // create activation token
 const createActivationToken = (seller) => {
   return jwt.sign(seller, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "10m",
   });
 };
 
@@ -89,7 +88,7 @@ router.post(
       if (!newSeller) {
         return next(new ErrorHandler("Invalid token", 400));
       }
-      const { name, email, password, avatar, zipCode, address, phoneNumber } =
+      const { name, email, password, avatar, phoneNumber, instaShop } =
         newSeller;
 
       let seller = await Shop.findOne({ email });
@@ -103,8 +102,8 @@ router.post(
         email,
         avatar,
         password,
-        zipCode,
-        address,
+        instaShop,
+        // address,
         phoneNumber,
       });
 
@@ -188,24 +187,7 @@ router.get(
   })
 );
 
-//get all sellers
-router.get(
-  "/get-all-sellers",
-  catchAsyncErrors(async (req, res, next) => {
-    try {
-      const sellers = await Shop.find().sort({
-        createdAt: -1,
-      });
-      res.status(201).json({
-        success: true,
-        sellers,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  })
-);
-// get shop info
+/// get shop info
 router.get(
   "/get-shop-info/:id",
   catchAsyncErrors(async (req, res, next) => {
@@ -218,55 +200,6 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
-);
-
-//forgot password token
-router.post(
-  "/forgot-password-token",
-  catchAsyncErrors(async (req, res) => {
-    const { email } = req.body;
-    const user = await Shop.findOne({ email });
-    if (!user) throw new Error("User not found with this email");
-    try {
-      const token = await user.createPasswordResetToken();
-      await user.save();
-      const resetURL = `Hi, Please follow this link to reset your Password. \nThis link is valid for 10 minutes starting now.\n Click the link below to reset \n ${
-        req.protocol
-      }://${req.get("host")}/shop/reset-password/${token}`;
-      const data = {
-        email: email,
-        subject: "Forgot Password Link",
-        message: resetURL,
-      };
-      sendMail(data);
-      res.json(token);
-    } catch (error) {
-      throw new Error(error);
-    }
-  })
-);
-
-//reset password
-router.put(
-  "/reset-password/:token",
-  catchAsyncErrors(async (req, res) => {
-    const { password } = req.body;
-    const { token } = req.params;
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const user = await Shop.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordTime: { $gt: Date.now() },
-    });
-    if (!user)
-      throw new Error(
-        "Password reset link Expired or invalid, please try again"
-      );
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordTime = undefined;
-    await user.save();
-    res.json(user);
   })
 );
 
@@ -305,7 +238,8 @@ router.put(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { name, description, address, phoneNumber, zipCode } = req.body;
+      const { name, description, instaShop, address, phoneNumber, zipCode } =
+        req.body;
 
       const shop = await Shop.findOne(req.seller._id);
 
@@ -315,9 +249,9 @@ router.put(
 
       shop.name = name;
       shop.description = description;
-      shop.address = address;
-      shop.phoneNumber = phoneNumber;
-      shop.zipCode = zipCode;
+      // shop.address = address;
+      // shop.phoneNumber = phoneNumber;
+      shop.instaShop = instaShop;
 
       await shop.save();
 
@@ -331,7 +265,6 @@ router.put(
   })
 );
 
-// all sellers --- for admin
 router.get(
   "/admin-all-sellers",
   isAuthenticated,
@@ -419,6 +352,72 @@ router.delete(
       res.status(201).json({
         success: true,
         seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+//forgot password token
+router.post(
+  "/forgot-password-token",
+  catchAsyncErrors(async (req, res) => {
+    const { email } = req.body;
+    const user = await Shop.findOne({ email });
+    if (!user) throw new Error("User not found with this email");
+    try {
+      const host = process.env.base_url;
+      const token = await user.createPasswordResetToken();
+      await user.save();
+      const resetURL = `Hi, Please follow this link to reset your Password. \nThis link is valid for 10 minutes starting now.\n Click the link below to reset \n ${req.protocol}://${host}/shop/reset-password/${token}`;
+      const data = {
+        email: email,
+        subject: "Forgot Password Link",
+        message: resetURL,
+      };
+
+      sendMail(data);
+      res.json(token);
+    } catch (error) {
+      throw new Error(error);
+    }
+  })
+);
+
+//reset password
+router.put(
+  "/reset-password/:token",
+  catchAsyncErrors(async (req, res) => {
+    const { password } = req.body;
+    const { token } = req.params;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await Shop.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordTime: { $gt: Date.now() },
+    });
+    if (!user)
+      throw new Error(
+        "Password reset link Expired or invalid, please try again"
+      );
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTime = undefined;
+    await user.save();
+    res.json(user);
+  })
+);
+//get all sellers
+router.get(
+  "/get-all-sellers",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const sellers = await Shop.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        sellers,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

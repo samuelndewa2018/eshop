@@ -14,7 +14,7 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
-      // console.log(cart, user, paymentInfo, shippingAddress, totalPrice);
+      console.log(shippingAddress);
 
       //   group cart items by shopId
       const shopItemsMap = new Map();

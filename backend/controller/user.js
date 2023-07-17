@@ -1178,7 +1178,12 @@ router.put(
       const existsUser = await User.findById(req.user.id);
 
       const existAvatarPath = `../uploads/${existsUser.avatar}`;
-      if (existAvatarPath !== "../uploads/defaultavatar.png") {
+
+      console.log("avatar", existsUser.avatar);
+      if (
+        existAvatarPath &&
+        existAvatarPath !== "../uploads/defaultavatar.png"
+      ) {
         fs.unlinkSync(existAvatarPath);
       }
 
@@ -1218,6 +1223,7 @@ router.put(
         user,
       });
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })
