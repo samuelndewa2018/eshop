@@ -32,6 +32,7 @@ import { HiUserRemove } from "react-icons/hi";
 import Spinner from "../Spinner";
 import { NumericFormat } from "react-number-format";
 import CustomModal from "../CustomModal";
+import { Card } from "@material-ui/core";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -264,6 +265,108 @@ const ProfileContent = ({ active }) => {
   );
 };
 
+// const AllOrders = () => {
+//   const { user } = useSelector((state) => state.user);
+//   const { orders } = useSelector((state) => state.order);
+//   const dispatch = useDispatch();
+
+//   useEffect(() => {
+//     dispatch(getAllOrdersOfUser(user._id));
+//   }, []);
+
+//   const columns = [
+//     { field: "no", headerName: "Order No.", minWidth: 130, flex: 0.7 },
+//     {
+//       field: "createdAt",
+//       headerName: "Order Date",
+//       minWidth: 130,
+//       flex: 0.7,
+//     },
+//     {
+//       field: "status",
+//       headerName: "Status",
+//       minWidth: 130,
+//       flex: 0.7,
+//       cellClassName: (params) => {
+//         return params.getValue(params.id, "status") === "Delivered"
+//           ? "greenColor"
+//           : "redColor";
+//       },
+//     },
+//     {
+//       field: "items",
+//       headerName: "Items",
+//       minWidth: 130,
+//       flex: 0.7,
+//     },
+//     {
+//       field: "itemsQty",
+//       headerName: "Items Qty",
+//       maxWidth: 50,
+//       flex: 0.5,
+//     },
+
+//     {
+//       field: "total",
+//       headerName: "Total",
+//       minWidth: 130,
+//       flex: 0.7,
+//     },
+
+//     {
+//       field: "See Order",
+//       flex: 0.7,
+//       minWidth: 130,
+//       headerName: "",
+//       type: "number",
+//       sortable: false,
+//       renderCell: (params) => {
+//         return (
+//           <>
+//             <Link to={`/user/order/${params.id}`}>
+//               <Button>
+//                 <AiOutlineArrowRight size={20} />
+//               </Button>
+//             </Link>
+//           </>
+//         );
+//       },
+//     },
+//   ];
+
+//   const row = [];
+//   orders &&
+//     orders.forEach((item) => {
+//       row.push({
+//         id: item._id,
+//         no: item?._id.replace(/\D/g, "").slice(0, 10),
+//         createdAt: item?.createdAt.slice(0, 10),
+//         items: item?.cart.map((i) => i.name),
+//         itemsQty: item?.cart.length,
+//         total: "Ksh " + item.totalPrice,
+//         status: item.status,
+//       });
+//       console.log(item?.cart.map((i) => i.name));
+//     });
+
+//   return (
+//     <>
+//       <h3 className="text-[22px] font-Poppins pb-2 ml-2">
+//         {user.name}'s Orders
+//       </h3>
+//       <div className="ml-1 bg-white rounded">
+//         <DataGrid
+//           rows={row}
+//           columns={columns}
+//           pageSize={10}
+//           disableSelectionOnClick
+//           autoHeight
+//         />
+//       </div>
+//     </>
+//   );
+// };
+
 const AllOrders = () => {
   const { user } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
@@ -273,96 +376,84 @@ const AllOrders = () => {
     dispatch(getAllOrdersOfUser(user._id));
   }, []);
 
-  const columns = [
-    { field: "no", headerName: "Order No.", minWidth: 130, flex: 0.7 },
-    {
-      field: "createdAt",
-      headerName: "Order Date",
-      minWidth: 130,
-      flex: 0.7,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      minWidth: 130,
-      flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
-      },
-    },
-    {
-      field: "items",
-      headerName: "Items",
-      minWidth: 130,
-      flex: 0.7,
-    },
-    {
-      field: "itemsQty",
-      headerName: "Items Qty",
-      maxWidth: 50,
-      flex: 0.5,
-    },
+  const getOrderStatusColor = (status) => {
+    return status === "Delivered" ? "text-green-500" : "text-red-500";
+  };
 
-    {
-      field: "total",
-      headerName: "Total",
-      minWidth: 130,
-      flex: 0.7,
-    },
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "KES",
+    }).format(value);
+  };
 
-    {
-      field: "See Order",
-      flex: 0.7,
-      minWidth: 130,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`/user/order/${params.id}`}>
-              <Button>
-                <AiOutlineArrowRight size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
+  const renderOrderButton = (orderId) => {
+    return (
+      <Link to={`/user/order/${orderId}`}>
+        <Button
+          variant="contained"
+          className="bg-blue-500 text-white"
+          startIcon={<AiOutlineArrowRight size={20} />}
+        >
+          See Order
+        </Button>
+      </Link>
+    );
+  };
 
-  const row = [];
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        no: item?._id.replace(/\D/g, "").slice(0, 10),
-        createdAt: item?.createdAt.slice(0, 10),
-        items: item?.cart.map((i) => i.name),
-        itemsQty: item?.cart.length,
-        total: "Ksh " + item.totalPrice,
-        status: item.status,
-      });
-      console.log(item?.cart.map((i) => i.name));
-    });
+  // const getOrderImage = (orderId) => {
+  //   // Return the corresponding image based on the orderId or any other condition
+  //   // For demonstration purposes, we'll return different images for even and odd orderIds
+  //   return orderId % 2 === 0 ? image1 : image2;
+  // };
+
+  const rows = orders?.map((item) => ({
+    id: item._id,
+    no: item._id.replace(/\D/g, "").slice(0, 10),
+    createdAt: item.createdAt.slice(0, 10),
+    items: item.cart.map((i) => i.name).join(", "),
+    itemsQty: item.cart.length,
+    total: formatCurrency(item.totalPrice),
+    status: item.status,
+    orderButton: renderOrderButton(item._id),
+    // orderImage: getOrderImage(item._id),
+  }));
 
   return (
-    <>
-      <h3 className="text-[22px] font-Poppins pb-2 ml-2">
-        {user.name}'s Orders
-      </h3>
-      <div className="ml-1 bg-white rounded">
-        <DataGrid
-          rows={row}
-          columns={columns}
-          pageSize={10}
-          disableSelectionOnClick
-          autoHeight
-        />
+    <div>
+      <h3 className="text-3xl font-bold pb-4">{user.name}'s Orders</h3>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {rows?.map((row) => (
+          <Card
+            key={row.id}
+            className="p-4 shadow-md rounded-lg hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-lg font-medium">Order No. {row.no}</h4>
+              <span
+                className={`font-medium ${getOrderStatusColor(row.status)}`}
+              >
+                {row.status}
+              </span>
+            </div>
+            <div className="mb-4">
+              <img
+                src={row.orderImage}
+                alt="Order"
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
+            <p className="mb-2">Order Date: {row.createdAt}</p>
+            <p className="mb-2">
+              Items: <span className="italic">{row.items}</span>
+            </p>
+            <p className="mb-2">Items Qty: {row.itemsQty}</p>
+            <p className="mb-2">Total: {row.total}</p>
+            <div className="flex justify-end">{row.orderButton}</div>
+          </Card>
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 
