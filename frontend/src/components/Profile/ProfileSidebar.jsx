@@ -63,10 +63,13 @@ const ProfileSidebar = ({ setActive, active }) => {
           </span>
         </div>
         <div
-          className="flex items-center cursor-pointer w-full mb-8"
+          className="block lg:flex items-center cursor-pointer w-full mb-8"
           onClick={() => setActive(2)}
         >
-          <HiOutlineShoppingBag size={20} color={active === 2 ? "red" : ""} />
+          <HiOutlineShoppingBag
+            size={20}
+            color={active === 2 ? "red" : "black"}
+          />
           <span
             className={`pl-3 ${
               active === 2 ? "text-[red]" : ""

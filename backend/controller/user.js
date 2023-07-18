@@ -1178,20 +1178,17 @@ router.put(
       const existsUser = await User.findById(req.user.id);
 
       const existAvatarPath = `../uploads/${existsUser.avatar}`;
-
-      console.log("avatar", existsUser.avatar);
-      if (
-        existAvatarPath &&
-        existAvatarPath !== "../uploads/defaultavatar.png"
-      ) {
-        fs.unlinkSync(existAvatarPath);
-      }
+      const avatartoDelete = existAvatarPath ? existAvatarPath : "";
 
       const fileUrl = path.join(req.file.filename);
 
       const user = await User.findByIdAndUpdate(req.user.id, {
         avatar: fileUrl,
       });
+
+      if (avatartoDelete && avatartoDelete !== "../uploads/defaultavatar.png") {
+        fs.unlinkSync(avatartoDelete);
+      }
 
       res.status(200).json({
         success: true,
@@ -1212,9 +1209,13 @@ router.put(
     try {
       const existsUser = await User.findById(req.user.id);
       const existAvatarPath = `../uploads/${existsUser.avatar}`;
-      if (existAvatarPath !== "../uploads/defaultavatar.png") {
+      if (
+        existAvatarPath &&
+        existAvatarPath !== "../uploads/defaultavatar.png"
+      ) {
         fs.unlinkSync(existAvatarPath);
       }
+
       const user = await User.findByIdAndUpdate(req.user.id, {
         avatar: "defaultavatar.png",
       });

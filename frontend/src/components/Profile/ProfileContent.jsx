@@ -9,7 +9,7 @@ import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { MdTrackChanges } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Typed from "react-typed";
@@ -265,108 +265,6 @@ const ProfileContent = ({ active }) => {
   );
 };
 
-// const AllOrders = () => {
-//   const { user } = useSelector((state) => state.user);
-//   const { orders } = useSelector((state) => state.order);
-//   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     dispatch(getAllOrdersOfUser(user._id));
-//   }, []);
-
-//   const columns = [
-//     { field: "no", headerName: "Order No.", minWidth: 130, flex: 0.7 },
-//     {
-//       field: "createdAt",
-//       headerName: "Order Date",
-//       minWidth: 130,
-//       flex: 0.7,
-//     },
-//     {
-//       field: "status",
-//       headerName: "Status",
-//       minWidth: 130,
-//       flex: 0.7,
-//       cellClassName: (params) => {
-//         return params.getValue(params.id, "status") === "Delivered"
-//           ? "greenColor"
-//           : "redColor";
-//       },
-//     },
-//     {
-//       field: "items",
-//       headerName: "Items",
-//       minWidth: 130,
-//       flex: 0.7,
-//     },
-//     {
-//       field: "itemsQty",
-//       headerName: "Items Qty",
-//       maxWidth: 50,
-//       flex: 0.5,
-//     },
-
-//     {
-//       field: "total",
-//       headerName: "Total",
-//       minWidth: 130,
-//       flex: 0.7,
-//     },
-
-//     {
-//       field: "See Order",
-//       flex: 0.7,
-//       minWidth: 130,
-//       headerName: "",
-//       type: "number",
-//       sortable: false,
-//       renderCell: (params) => {
-//         return (
-//           <>
-//             <Link to={`/user/order/${params.id}`}>
-//               <Button>
-//                 <AiOutlineArrowRight size={20} />
-//               </Button>
-//             </Link>
-//           </>
-//         );
-//       },
-//     },
-//   ];
-
-//   const row = [];
-//   orders &&
-//     orders.forEach((item) => {
-//       row.push({
-//         id: item._id,
-//         no: item?._id.replace(/\D/g, "").slice(0, 10),
-//         createdAt: item?.createdAt.slice(0, 10),
-//         items: item?.cart.map((i) => i.name),
-//         itemsQty: item?.cart.length,
-//         total: "Ksh " + item.totalPrice,
-//         status: item.status,
-//       });
-//       console.log(item?.cart.map((i) => i.name));
-//     });
-
-//   return (
-//     <>
-//       <h3 className="text-[22px] font-Poppins pb-2 ml-2">
-//         {user.name}'s Orders
-//       </h3>
-//       <div className="ml-1 bg-white rounded">
-//         <DataGrid
-//           rows={row}
-//           columns={columns}
-//           pageSize={10}
-//           disableSelectionOnClick
-//           autoHeight
-//         />
-//       </div>
-//     </>
-//   );
-// };
-
 const AllOrders = () => {
   const { user } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
@@ -390,43 +288,33 @@ const AllOrders = () => {
   const renderOrderButton = (orderId) => {
     return (
       <Link to={`/user/order/${orderId}`}>
-        <Button
-          variant="contained"
-          className="bg-blue-500 text-white"
-          startIcon={<AiOutlineArrowRight size={20} />}
-        >
+        <button className="bg-blue-500 text-white rounded-lg py-2 px-4 flex items-center">
           See Order
-        </Button>
+        </button>
       </Link>
     );
   };
-
-  // const getOrderImage = (orderId) => {
-  //   // Return the corresponding image based on the orderId or any other condition
-  //   // For demonstration purposes, we'll return different images for even and odd orderIds
-  //   return orderId % 2 === 0 ? image1 : image2;
-  // };
 
   const rows = orders?.map((item) => ({
     id: item._id,
     no: item._id.replace(/\D/g, "").slice(0, 10),
     createdAt: item.createdAt.slice(0, 10),
-    items: item.cart.map((i) => i.name).join(", "),
+    items: item.cart.map((i) => i.name),
+    image: item.cart.map((i) => i.images[0]),
     itemsQty: item.cart.length,
     total: formatCurrency(item.totalPrice),
     status: item.status,
     orderButton: renderOrderButton(item._id),
-    // orderImage: getOrderImage(item._id),
   }));
 
   return (
     <div>
-      <h3 className="text-3xl font-bold pb-4">{user.name}'s Orders</h3>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <h3 className="pb-4 font-bold">{user.name}'s Orders</h3>
+      <div className="grid grid-cols-1">
         {rows?.map((row) => (
-          <Card
+          <div
             key={row.id}
-            className="p-4 shadow-md rounded-lg hover:shadow-lg transition-shadow"
+            className="p-4 border m-2 border-indigo-500  rounded-lg"
           >
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-lg font-medium">Order No. {row.no}</h4>
@@ -436,21 +324,41 @@ const AllOrders = () => {
                 {row.status}
               </span>
             </div>
-            <div className="mb-4">
-              <img
-                src={row.orderImage}
-                alt="Order"
-                className="w-full h-auto rounded-lg"
-              />
+            <p className="mb-2">Ordered On: {row.createdAt}</p>
+            <div className="block lg:flex">
+              <div className="flex">
+                <div className="mb-4 flex mr-1 w-full lg:w-24">
+                  <img
+                    src={`${backend_url}/${row.image[0]}`}
+                    alt="Order"
+                    className="w-fit lg:w-24 h-24 ml-[20%] lg:ml-0 rounded-lg object-contain"
+                  />
+                </div>
+              </div>
+              <div className="ml-1 block lg:flex space-x-0 lg:space-x-8">
+                <div>
+                  <div className="mb-2">
+                    <p className="font-bold">Items:</p>
+                    {row.items.slice(0, 1) + "..."}
+                  </div>
+                </div>
+                <div className="flex">
+                  <div className="mb-2 block">
+                    <p className="font-bold">Items Qty:</p>{" "}
+                    <p>{row.itemsQty}</p>
+                  </div>
+                  <div className="mb-2 ml-6 lg:ml-2">
+                    <p className="font-bold">Total:</p>
+                    <p>{row.total}</p>
+                  </div>
+                </div>
+                <div className="block">
+                  <p className="font-bold mb-3">Actions</p>
+                  {row.orderButton}
+                </div>
+              </div>
             </div>
-            <p className="mb-2">Order Date: {row.createdAt}</p>
-            <p className="mb-2">
-              Items: <span className="italic">{row.items}</span>
-            </p>
-            <p className="mb-2">Items Qty: {row.itemsQty}</p>
-            <p className="mb-2">Total: {row.total}</p>
-            <div className="flex justify-end">{row.orderButton}</div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>

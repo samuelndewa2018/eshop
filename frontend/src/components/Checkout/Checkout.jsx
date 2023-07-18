@@ -12,7 +12,7 @@ import { NumericFormat } from "react-number-format";
 const Checkout = () => {
   const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
-  const [country, setCountry] = useState("KE");
+  const [country, setCountry] = useState("Kenya");
   const [city, setCity] = useState("");
   const [userInfo, setUserInfo] = useState(false);
   const [address1, setAddress1] = useState("");
@@ -222,13 +222,10 @@ const ShippingInfo = ({
             <label className="block pb-2 font-[500]">Country</label>
             <select
               className="w-[95%] border h-[40px] rounded-[5px]"
-              value={country}
+              value={"Kenya"}
               onChange={(e) => setCountry(e.target.value)}
             >
-              <option className="block pb-2" value="">
-                Choose your country
-              </option>
-              <option value="kenya">Kenya</option>
+              <option value="Kenya">Kenya</option>
               {/* {Country &&
                 Country.getAllCountries().map((item) => (
                   <option key={item.isoCode} value={item.isoCode}>
@@ -393,27 +390,34 @@ const CartData = ({
         </h5>
       </div>
       <br />
-      <div className="flex justify-between border-b pb-3">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-        <h5 className="text-[18px] font-[600]">
-          {discountPercentenge ? (
-            <NumericFormat
-              value={discountPercentenge.toString()}
-              displayType={"text"}
-              thousandSeparator={true}
-              prefix={"- Ksh. "}
-            />
-          ) : null}
+      {discountPercentenge.toString() > 0 && (
+        <div className="flex justify-between border-b pb-3">
+          <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
+          <h5 className="text-[18px] font-[600]">
+            {discountPercentenge ? (
+              <NumericFormat
+                value={discountPercentenge.toString()}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"- Ksh. "}
+              />
+            ) : null}
+          </h5>
+        </div>
+      )}
+      <div className="flex justify-between border-b border-t pb-3">
+        <h3 className="text-[16px] font-[400] text-[#000000a4] pt-3">
+          Total Amount:
+        </h3>
+        <h5 className="text-[18px] font-[600] text-end pt-3">
+          <NumericFormat
+            value={totalPrice}
+            displayType={"text"}
+            thousandSeparator={true}
+            prefix={"Ksh. "}
+          />
         </h5>
       </div>
-      <h5 className="text-[18px] font-[600] text-end pt-3">
-        <NumericFormat
-          value={totalPrice}
-          displayType={"text"}
-          thousandSeparator={true}
-          prefix={"Ksh. "}
-        />
-      </h5>
       <br />
       <form onSubmit={handleSubmit}>
         <input
